@@ -6,15 +6,26 @@
 
 import { fromJS } from 'immutable';
 import {
-  DEFAULT_ACTION,
+  ARTICLES_LOADED,
+  LOAD_ARTICLES_ERROR,
 } from './constants';
 
-const initialState = fromJS({});
+const initialState = fromJS({
+  fetching: true,
+  error: false,
+  posts: [],
+});
 
 function articlesReducer(state = initialState, action) {
   switch (action.type) {
-    case DEFAULT_ACTION:
-      return state;
+    case ARTICLES_LOADED:
+      return state
+        .set('fetching', false)
+        .set('posts', action.articles);
+    case LOAD_ARTICLES_ERROR:
+      return state
+        .set('fetching', false)
+        .set('error', true);
     default:
       return state;
   }

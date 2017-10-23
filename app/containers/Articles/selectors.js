@@ -3,23 +3,30 @@ import { createSelector } from 'reselect';
 /**
  * Direct selector to the articles state domain
  */
-const selectArticlesDomain = (state) => state.get('articles');
+const selectArticles = (state) => state.get('articles');
 
 /**
  * Other specific selectors
  */
 
-
-/**
- * Default selector used by Articles
- */
-
-const makeSelectArticles = () => createSelector(
-  selectArticlesDomain,
-  (substate) => substate.toJS()
+const makeSelectPosts = () => createSelector(
+  selectArticles,
+  (substate) => substate.get('posts')
 );
 
-export default makeSelectArticles;
+const makeSelectError = () => createSelector(
+  selectArticles,
+  (substate) => substate.get('error')
+);
+
+const makeSelectFetching = () => createSelector(
+  selectArticles,
+  (substate) => substate.get('fetching')
+);
+
 export {
-  selectArticlesDomain,
+  selectArticles,
+  makeSelectPosts,
+  makeSelectError,
+  makeSelectFetching,
 };

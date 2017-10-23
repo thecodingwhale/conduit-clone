@@ -8,42 +8,97 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import { Alert, Container, Card, CardTitle, CardText } from 'reactstrap';
+
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import makeSelectArticles from './selectors';
+import { getUrlParams } from 'utils/url';
+import Loader from 'components/Loader';
+import { fetchArticles } from './actions';
+import { makeSelectPosts, makeSelectError, makeSelectFetching } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
+import Wrapper from './Wrapper';
 
 export class Articles extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
-  render() {
+  componentDidMount() {
+    const value = getUrlParams(this.props.location.search, 'page');
+    this.props.onFetchArticles(value);
+  }
+  renderPost(post, index) {
+    const { title, description, createdAt } = post;
     return (
-      <div>
+      <Wrapper key={index}>
+        <Card body>
+          <CardTitle>{title}</CardTitle>
+          <CardText>{description}</CardText>
+          <CardText>
+            <small className="text-muted">{createdAt}</small>
+          </CardText>
+        </Card>
+      </Wrapper>
+    );
+  }
+  render() {
+    const { fetching, error, posts } = this.props;
+    let content = <Loader />;
+    if (!fetching) {
+      if (!error) {
+        if (posts.length !== 0) {
+          content = posts.map((post, index) => this.renderPost(post, index));
+        } else {
+          content = (
+            <Alert color="info">
+              This is a warning alert — check it out!
+            </Alert>
+          );
+        }
+      } else {
+        content = (
+          <Alert color="danger">
+            This is a warning alert — check it out!
+          </Alert>
+        );
+      }
+    }
+    return (
+      <Container>
         <Helmet>
           <title>Articles</title>
           <meta name="description" content="Description of Articles" />
         </Helmet>
-        <FormattedMessage {...messages.header} />
-      </div>
+        {content}
+      </Container>
     );
   }
 }
 
+Articles.defaultProps = {
+  posts: [],
+};
+
 Articles.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  onFetchArticles: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }),
+  error: PropTypes.bool.isRequired,
+  posts: PropTypes.array.isRequired,
+  fetching: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  articles: makeSelectArticles(),
+  posts: makeSelectPosts(),
+  error: makeSelectError(),
+  fetching: makeSelectFetching(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onFetchArticles: (page) => dispatch(fetchArticles(page)),
   };
 }
 

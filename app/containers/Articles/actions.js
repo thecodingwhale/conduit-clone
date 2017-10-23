@@ -5,11 +5,28 @@
  */
 
 import {
-  DEFAULT_ACTION,
+  FETCH_ARTICLES,
+  ARTICLES_LOADED,
+  LOAD_ARTICLES_ERROR,
 } from './constants';
 
-export function defaultAction() {
+export function fetchArticles(page) {
   return {
-    type: DEFAULT_ACTION,
+    type: FETCH_ARTICLES,
+    page,
+  };
+}
+
+export function articlesLoaded(payload) {
+  const { articles } = payload;
+  return {
+    type: ARTICLES_LOADED,
+    articles,
+  };
+}
+
+export function articlesLoadingError() {
+  return {
+    type: LOAD_ARTICLES_ERROR,
   };
 }

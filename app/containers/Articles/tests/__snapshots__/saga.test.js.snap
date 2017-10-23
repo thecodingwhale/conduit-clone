@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getRepos Saga should dispatch the articlesLoaded action if it requests the data successfully 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "https://conduit.productionready.io/api/articles?limit=10&offset=0",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`getRepos Saga should dispatch the articlesLoaded action if it requests the data successfully 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "articles": undefined,
+      "type": "app/Articles/ARTICLES_LOADED",
+    },
+    "channel": null,
+  },
+}
+`;

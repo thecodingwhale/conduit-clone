@@ -1,18 +1,44 @@
 
 import {
-  defaultAction,
+  fetchArticles,
+  articlesLoaded,
+  articlesLoadingError,
 } from '../actions';
 import {
-  DEFAULT_ACTION,
+  FETCH_ARTICLES,
+  ARTICLES_LOADED,
+  LOAD_ARTICLES_ERROR,
 } from '../constants';
 
 describe('Articles actions', () => {
-  describe('Default Action', () => {
-    it('has a type of DEFAULT_ACTION', () => {
+  describe('fetchArticles Action', () => {
+    it('has a type of fetchArticles', () => {
+      const fixture = 1;
       const expected = {
-        type: DEFAULT_ACTION,
+        type: FETCH_ARTICLES,
+        page: fixture,
       };
-      expect(defaultAction()).toEqual(expected);
+      expect(fetchArticles(fixture)).toEqual(expected);
+    });
+  });
+
+  describe('articlesLoaded Action', () => {
+    it('has a type of articlesLoaded', () => {
+      const fixture = {};
+      const expected = {
+        type: ARTICLES_LOADED,
+        articles: fixture,
+      };
+      expect(articlesLoaded({ articles: fixture })).toEqual(expected);
+    });
+  });
+
+  describe('articlesLoaded Action', () => {
+    it('has a type of articlesLoaded', () => {
+      const expected = {
+        type: LOAD_ARTICLES_ERROR,
+      };
+      expect(articlesLoadingError()).toEqual(expected);
     });
   });
 });
