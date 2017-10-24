@@ -4,6 +4,7 @@ import {
   makeSelectPosts,
   makeSelectError,
   makeSelectFetching,
+  makeSelectPageCount,
 } from '../selectors';
 
 describe('selectArticles', () => {
@@ -59,3 +60,18 @@ describe('makeSelectFetching', () => {
     expect(fetchingSelector(mockedState)).toEqual(fixture);
   });
 });
+
+describe('makeSelectPageCount', () => {
+  const pageCountSelector = makeSelectPageCount();
+  it('should select the pageCount state', () => {
+    const fixture = 0;
+    const articleState = fromJS({
+      pageCount: fixture,
+    });
+    const mockedState = fromJS({
+      articles: articleState,
+    });
+    expect(pageCountSelector(mockedState)).toEqual(fixture);
+  });
+});
+

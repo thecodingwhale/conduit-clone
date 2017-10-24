@@ -1,6 +1,6 @@
 import 'url-search-params-polyfill';
 
-const BASE_LIMIT = 10;
+export const BASE_LIMIT = 10;
 
 export const getUrlParams = (string, param) => {
   const query = new URLSearchParams(string);

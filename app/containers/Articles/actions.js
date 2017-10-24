@@ -18,9 +18,10 @@ export function fetchArticles(page) {
 }
 
 export function articlesLoaded(payload) {
-  const { articles } = payload;
+  const { articles, articlesCount } = payload;
   return {
     type: ARTICLES_LOADED,
+    pageCount: articlesCount,
     articles,
   };
 }

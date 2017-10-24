@@ -24,9 +24,15 @@ const makeSelectFetching = () => createSelector(
   (substate) => substate.get('fetching')
 );
 
+const makeSelectPageCount = () => createSelector(
+  selectArticles,
+  (substate) => substate.get('pageCount')
+);
+
 export {
   selectArticles,
   makeSelectPosts,
   makeSelectError,
   makeSelectFetching,
+  makeSelectPageCount,
 };

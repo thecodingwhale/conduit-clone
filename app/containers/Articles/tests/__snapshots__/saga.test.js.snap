@@ -19,6 +19,7 @@ Object {
   "PUT": Object {
     "action": Object {
       "articles": undefined,
+      "pageCount": undefined,
       "type": "app/Articles/ARTICLES_LOADED",
     },
     "channel": null,
