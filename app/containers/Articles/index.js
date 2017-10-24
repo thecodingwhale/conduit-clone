@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import ReactPaginate from 'react-paginate';
-import { Container, Row, Col, Alert, Card, CardTitle, CardText } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -64,36 +64,30 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
 
   renderPosts() {
     return (
-      <Container>
-        <Row>
-          <Col xs="8">
-            {this.props.posts.map((post, index) => this.renderPost(post, index))}
-            <ReactPaginate
-              disableInitialCallback={false}
-              previousLabel="previous"
-              nextLabel="next"
-              breakLabel={<a className="page-link" href="">...</a>}
-              breakClassName="page-item"
-              forcePage={this.getForcePage()}
-              pageCount={this.getPageCount()}
-              marginPagesDisplayed={3}
-              pageRangeDisplayed={3}
-              onPageChange={this.onPageChange}
-              containerClassName="pagination"
-              subContainerClassName="pages pagination"
-              pageClassName="page-item"
-              pageLinkClassName="page-link"
-              activeClassName="active"
-              previousClassName="page-item"
-              previousLinkClassName="page-link"
-              nextClassName="page-item"
-              nextLinkClassName="page-link"
-            />
-          </Col>
-          <Col xs="6">
-          </Col>
-        </Row>
-      </Container>
+      <div>
+        {this.props.posts.map((post, index) => this.renderPost(post, index))}
+        <ReactPaginate
+          disableInitialCallback={false}
+          previousLabel="previous"
+          nextLabel="next"
+          breakLabel={<a className="page-link" href="">...</a>}
+          breakClassName="page-item"
+          forcePage={this.getForcePage()}
+          pageCount={this.getPageCount()}
+          marginPagesDisplayed={3}
+          pageRangeDisplayed={3}
+          onPageChange={this.onPageChange}
+          containerClassName="pagination"
+          subContainerClassName="pages pagination"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          activeClassName="active"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+        />
+      </div>
     );
   }
   render() {
@@ -119,13 +113,13 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
       }
     }
     return (
-      <Container>
+      <div>
         <Helmet>
           <title>Articles</title>
           <meta name="description" content="Description of Articles" />
         </Helmet>
         {content}
-      </Container>
+      </div>
     );
   }
 }
