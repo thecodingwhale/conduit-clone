@@ -14,6 +14,7 @@ const initialState = fromJS({
   fetching: true,
   error: false,
   posts: [],
+  pageCount: 0,
 });
 
 function articlesReducer(state = initialState, action) {
@@ -21,6 +22,7 @@ function articlesReducer(state = initialState, action) {
     case ARTICLES_LOADED:
       return state
         .set('fetching', false)
+        .set('pageCount', action.pageCount)
         .set('posts', action.articles);
     case LOAD_ARTICLES_ERROR:
       return state

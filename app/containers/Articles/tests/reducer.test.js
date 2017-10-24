@@ -13,6 +13,7 @@ describe('articlesReducer', () => {
       fetching: true,
       error: false,
       posts: [],
+      pageCount: 0,
     });
   });
 
@@ -24,8 +25,9 @@ describe('articlesReducer', () => {
   it('should handle the articlesLoaded action correctly', () => {
     const fixture = {
       articles: {},
+      articlesCount: 100,
     };
-    const expectedResult = state.set('fetching', false).set('posts', fixture.articles);
+    const expectedResult = state.set('fetching', false).set('posts', fixture.articles).set('pageCount', fixture.articlesCount);
     expect(articlesReducer(state, articlesLoaded(fixture))).toEqual(expectedResult);
   });
 
