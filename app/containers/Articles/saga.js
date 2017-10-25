@@ -8,9 +8,6 @@ import {
 import request from 'utils/request';
 import { getOffsetLimit } from 'utils/url';
 
-/**
- * Github repos request/response handler
- */
 export function* getArticles(params) {
   const options = getOffsetLimit(params.page);
   const apiEndpoint = `https://conduit.productionready.io/api/articles?limit=${options.limit}&offset=${options.offset}`;
@@ -23,7 +20,6 @@ export function* getArticles(params) {
   }
 }
 
-// Individual exports for testing
 export default function* articlesData() {
   yield takeLatest(FETCH_ARTICLES, getArticles);
 }
