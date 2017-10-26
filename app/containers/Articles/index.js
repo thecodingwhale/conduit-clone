@@ -31,13 +31,22 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     this.onPageChange = this.onPageChange.bind(this);
   }
   componentDidMount() {
-    const value = getUrlParams(this.props.location.search, 'page');
-    this.props.onFetchArticles(value);
+    const page = getUrlParams(this.props.location.search, 'page');
+    const tag = getUrlParams(this.props.location.search, 'tag');
+    this.props.onFetchArticles(page, tag);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.search !== this.props.location.search) {
+      const page = getUrlParams(nextProps.location.search, 'page');
+      const tag = getUrlParams(nextProps.location.search, 'tag');
+      this.props.onFetchArticles(page, tag);
+    }
   }
   onPageChange(data) {
     const setActivePage = data.selected + 1;
-    this.props.onFetchArticles(setActivePage);
-    this.props.onPageChange(setActivePage);
+    const tag = getUrlParams(this.props.location.search, 'tag');
+    this.props.onFetchArticles(setActivePage, tag);
+    this.props.onPageChange(setActivePage, tag);
   }
   getPageCount() {
     const { pageCount } = this.props;
@@ -150,12 +159,13 @@ const mapStateToProps = createStructuredSelector({
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onFetchArticles: (page) => {
-      dispatch(fetchArticles(page));
+    onFetchArticles: (page, tag) => {
+      dispatch(fetchArticles(page, tag));
     },
-    onPageChange: (page) => {
+    onPageChange: (page, tag) => {
       if (page) {
-        dispatch(push(`/?page=${page}`));
+        const setTag = tag ? `tag=${tag}&` : '';
+        dispatch(push(`/?${setTag}page=${page}`));
       }
     },
   };

@@ -98,7 +98,7 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     getTags: () => dispatch(getTags()),
-    onTagSelect: (tag) => dispatch(push(`/?tag=${tag}`)),
+    onTagSelect: (tag) => dispatch(push(`/?tag=${tag}&page=1`)),
   };
 }
 

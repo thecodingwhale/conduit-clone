@@ -139,7 +139,7 @@ describe('<PopularTags />', () => {
         const dispatch = jest.fn();
         const result = mapDispatchToProps(dispatch);
         result.onTagSelect(tag);
-        expect(dispatch).toHaveBeenCalledWith(push(`/?tag=${tag}`));
+        expect(dispatch).toHaveBeenCalledWith(push(`/?tag=${tag}&page=1`));
       });
     });
   });
