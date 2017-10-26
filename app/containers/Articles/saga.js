@@ -10,7 +10,8 @@ import { getOffsetLimit } from 'utils/url';
 
 export function* getArticles(params) {
   const options = getOffsetLimit(params.page);
-  const apiEndpoint = `https://conduit.productionready.io/api/articles?limit=${options.limit}&offset=${options.offset}`;
+  const tag = params.tag ? `tag=${params.tag}&` : '';
+  const apiEndpoint = `https://conduit.productionready.io/api/articles?${tag}limit=${options.limit}&offset=${options.offset}`;
 
   try {
     const repos = yield call(request, apiEndpoint);

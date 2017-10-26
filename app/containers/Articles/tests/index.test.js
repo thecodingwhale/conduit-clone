@@ -172,6 +172,41 @@ describe('<Articles />', () => {
     expect(pageCount).toEqual(basePageCount / BASE_LIMIT);
   });
 
+  it('should call componentWillReceiveProps', () => {
+    const spy = jest.spyOn(Articles.prototype, 'componentWillReceiveProps');
+    const onFetchArticlesSpy = jest.fn();
+    const component = shallow(
+      <Articles
+        fetching={false}
+        error={false}
+        onFetchArticles={onFetchArticlesSpy}
+        onPageChange={() => {}}
+        location={{
+          search: '?page=1',
+        }}
+        posts={[
+          {
+            title: 'sample title',
+            description: 'sample description',
+            createdAt: 'sample date',
+          },
+        ]}
+      />
+    );
+
+    expect(spy).not.toHaveBeenCalled();
+    component.setProps({
+      location: {
+        search: '?tag=foo&page=1',
+      },
+    });
+    expect(spy).toHaveBeenCalled();
+    expect(onFetchArticlesSpy).toHaveBeenCalled();
+
+    spy.mockReset();
+    spy.mockRestore();
+  });
+
   describe('mapDispatchToProps', () => {
     describe('onFetchArticles', () => {
       it('should be injected', () => {
@@ -193,8 +228,9 @@ describe('<Articles />', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
       const page = 1;
-      result.onFetchArticles(page);
-      expect(dispatch).toHaveBeenCalledWith(fetchArticles(page));
+      const tag = 'foo';
+      result.onFetchArticles(page, tag);
+      expect(dispatch).toHaveBeenCalledWith(fetchArticles(page, tag));
     });
 
     it('should dispatch onPageChange when called', () => {

@@ -10,10 +10,11 @@ import {
   LOAD_ARTICLES_ERROR,
 } from './constants';
 
-export function fetchArticles(page) {
+export function fetchArticles(page, tag) {
   return {
     type: FETCH_ARTICLES,
     page,
+    tag,
   };
 }
 
