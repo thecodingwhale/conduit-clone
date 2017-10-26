@@ -6,12 +6,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-
+import { getUrlParams } from 'utils/url';
 import { Alert, Button } from 'reactstrap';
 import Loader from 'components/Loader';
 
@@ -25,12 +26,17 @@ export class PopularTags extends React.PureComponent { // eslint-disable-line re
     this.props.getTags();
   }
   renderButtonTag(tag) {
+    const activeTag = getUrlParams(this.props.location.search, 'tag');
     return (
       <Button
+        active={tag === activeTag}
         key={`${tag}`}
         outline
         color="primary"
         size="sm"
+        onClick={() => {
+          this.props.onTagSelect(tag);
+        }}
       >
         {tag}
       </Button>
@@ -77,6 +83,10 @@ PopularTags.propTypes = {
   error: PropTypes.bool.isRequired,
   tags: PropTypes.array.isRequired,
   getTags: PropTypes.func.isRequired,
+  onTagSelect: PropTypes.func,
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -88,6 +98,7 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     getTags: () => dispatch(getTags()),
+    onTagSelect: (tag) => dispatch(push(`/?tag=${tag}`)),
   };
 }
 
