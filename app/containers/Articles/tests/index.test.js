@@ -2,12 +2,35 @@ import React from 'react';
 import { push } from 'react-router-redux';
 import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, Badge, CardLink, Row, Col, Button } from 'reactstrap';
 import Loader from 'components/Loader';
 import Wrapper from '../Wrapper';
+import Avatar from '../Avatar';
 import { Articles, mapDispatchToProps } from '../index';
 import { fetchArticles } from '../actions';
 import { BASE_LIMIT } from '../../../utils/url';
+
+const samplePostData = [
+  {
+    author: {
+      bio: 'ab cdadaf',
+      following: false,
+      image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      username: 'trinhnguyen',
+    },
+    title: 'sample title',
+    description: 'sample description',
+    createdAt: '2017-10-27T00:13:15.524Z',
+    slug: 'hello-world-31l68b',
+    favoritesCount: 1,
+    favorited: true,
+    tagList: [
+      'dragons',
+      'angularjs',
+      'reactjs',
+    ],
+  },
+];
 
 describe('<Articles />', () => {
   it('should display a loading icon while fetching', () => {
@@ -70,13 +93,7 @@ describe('<Articles />', () => {
         location={{
           search: '?page=1',
         }}
-        posts={[
-          {
-            title: 'sample title',
-            description: 'sample description',
-            createdAt: 'sample date',
-          },
-        ]}
+        posts={samplePostData}
       />
     );
     expect(submitSpy).toHaveBeenCalled();
@@ -92,23 +109,67 @@ describe('<Articles />', () => {
         location={{
           search: '?page=100',
         }}
-        posts={[
-          {
-            title: 'sample title',
-            description: 'sample description',
-            createdAt: 'sample date',
-          },
-        ]}
+        posts={samplePostData}
       />
     );
+    const { author, title, description, createdAt, slug, favoritesCount, favorited } = samplePostData[0];
     const expectedComponent = (
       <Wrapper>
         <Card body>
-          <CardTitle>sample title</CardTitle>
-          <CardText>sample description</CardText>
-          <CardText>
-            <small className="text-muted">sample date</small>
-          </CardText>
+          <Row style={{ marginBottom: '10px' }}>
+            <Col xs="6">
+              <CardLink href="#" style={{ float: 'left' }}>
+                <Avatar image={author.image} />
+              </CardLink>
+              <div
+                className="info"
+                style={{
+                  overflow: 'hidden',
+                  paddingLeft: '10px',
+                }}
+              >
+                <CardLink
+                  className="author"
+                  href={`@${author.username}`}
+                  style={{
+                    display: 'block',
+                  }}
+                >
+                  {author.username}
+                </CardLink>
+                <CardText>
+                  <small className="text-muted">{new Date(createdAt).toDateString()}</small>
+                </CardText>
+              </div>
+            </Col>
+            <Col xs="6">
+              <div className="text-right">
+                <Button
+                  active={favorited}
+                  outline
+                  color="primary"
+                  size="sm"
+                >
+                  <i className="ion-heart"></i>
+                  {favoritesCount}
+                </Button>
+              </div>
+            </Col>
+          </Row>
+          <CardTitle>{title}</CardTitle>
+          <CardText>{description}</CardText>
+          <Row>
+            <Col xs="6">
+              <CardLink href={`/article/${slug}`}>
+                Read More
+              </CardLink>
+            </Col>
+            <Col className="text-right" xs="6">
+              <Badge color="secondary" pill>dragons</Badge>
+              <Badge color="secondary" pill>angularjs</Badge>
+              <Badge color="secondary" pill>reactjs</Badge>
+            </Col>
+          </Row>
         </Card>
       </Wrapper>
     );
@@ -128,13 +189,7 @@ describe('<Articles />', () => {
         location={{
           search: '?page=100',
         }}
-        posts={[
-          {
-            title: 'sample title',
-            description: 'sample description',
-            createdAt: 'sample date',
-          },
-        ]}
+        posts={samplePostData}
       />
     );
 
@@ -156,13 +211,7 @@ describe('<Articles />', () => {
           search: `?page=${searchPageParam}`,
         }}
         pageCount={basePageCount}
-        posts={[
-          {
-            title: 'sample title',
-            description: 'sample description',
-            createdAt: 'sample date',
-          },
-        ]}
+        posts={samplePostData}
       />
     );
     const paginationComponentProps = component.find(ReactPaginate).props();
@@ -184,13 +233,7 @@ describe('<Articles />', () => {
         location={{
           search: '?page=1',
         }}
-        posts={[
-          {
-            title: 'sample title',
-            description: 'sample description',
-            createdAt: 'sample date',
-          },
-        ]}
+        posts={samplePostData}
       />
     );
 
