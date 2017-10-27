@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, CardLink, Badge, Button, Row, Col } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -24,6 +24,7 @@ import { makeSelectPosts, makeSelectError, makeSelectFetching, makeSelectPageCou
 import reducer from './reducer';
 import saga from './saga';
 import Wrapper from './Wrapper';
+import Avatar from './Avatar';
 
 export class Articles extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
@@ -56,16 +57,83 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     const setForcePage = getUrlParams(this.props.location.search, 'page');
     return parseInt(setForcePage, 10) - 1;
   }
+  renderPostTags(tagList) {
+    if (tagList.length === 0) return null;
+
+    const tagLists = tagList.map((list) => (
+      <Badge
+        key={list}
+        color="secondary"
+        pill
+      >
+        {list}
+      </Badge>
+    ));
+
+    return (
+      <div>
+        {tagLists}
+      </div>
+    );
+  }
   renderPost(post, index) {
-    const { title, description, createdAt } = post;
+    const { author, title, description, createdAt, tagList, slug, favoritesCount, favorited } = post;
+
     return (
       <Wrapper key={index}>
         <Card body>
+          <Row style={{ marginBottom: '10px' }}>
+            <Col xs="6">
+              <CardLink href="#" style={{ float: 'left' }}>
+                <Avatar image={author.image} />
+              </CardLink>
+              <div
+                className="info"
+                style={{
+                  overflow: 'hidden',
+                  paddingLeft: '10px',
+                }}
+              >
+                <CardLink
+                  className="author"
+                  href={`@${author.username}`}
+                  style={{
+                    display: 'block',
+                  }}
+                >
+                  {author.username}
+                </CardLink>
+                <CardText>
+                  <small className="text-muted">{new Date(createdAt).toDateString()}</small>
+                </CardText>
+              </div>
+            </Col>
+            <Col xs="6">
+              <div className="text-right">
+                <Button
+                  active={favorited}
+                  outline
+                  color="primary"
+                  size="sm"
+                >
+                  <i className="ion-heart"></i>
+                  {favoritesCount}
+                </Button>
+              </div>
+            </Col>
+          </Row>
           <CardTitle>{title}</CardTitle>
           <CardText>{description}</CardText>
-          <CardText>
-            <small className="text-muted">{createdAt}</small>
-          </CardText>
+          <Row>
+            <Col xs="6">
+              <CardLink href={`/article/${slug}`}>
+                Read More
+              </CardLink>
+            </Col>
+            <Col className="text-right" xs="6">
+              {this.renderPostTags(tagList)}
+            </Col>
+          </Row>
         </Card>
       </Wrapper>
     );
