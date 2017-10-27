@@ -165,9 +165,11 @@ describe('<Articles />', () => {
               </CardLink>
             </Col>
             <Col className="text-right" xs="6">
-              <Badge color="secondary" pill>dragons</Badge>
-              <Badge color="secondary" pill>angularjs</Badge>
-              <Badge color="secondary" pill>reactjs</Badge>
+              <div>
+                <Badge color="secondary" pill>dragons</Badge>
+                <Badge color="secondary" pill>angularjs</Badge>
+                <Badge color="secondary" pill>reactjs</Badge>
+              </div>
             </Col>
           </Row>
         </Card>
