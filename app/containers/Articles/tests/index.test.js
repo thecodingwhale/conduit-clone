@@ -2,9 +2,10 @@ import React from 'react';
 import { push } from 'react-router-redux';
 import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText, Badge, CardLink, Row, Col, Button } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, CardLink, Row, Col, Button } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
+import ArticleTags from 'components/ArticleTags';
 import Wrapper from '../Wrapper';
 import { Articles, mapDispatchToProps } from '../index';
 import { fetchArticles } from '../actions';
@@ -146,11 +147,7 @@ describe('<Articles />', () => {
               </CardLink>
             </Col>
             <Col className="text-right" xs="6">
-              <div>
-                <Badge color="secondary" pill>dragons</Badge>
-                <Badge color="secondary" pill>angularjs</Badge>
-                <Badge color="secondary" pill>reactjs</Badge>
-              </div>
+              <ArticleTags tagList={samplePostData[0].tagList} />
             </Col>
           </Row>
         </Card>

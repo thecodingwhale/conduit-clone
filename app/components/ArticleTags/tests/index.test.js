@@ -6,7 +6,6 @@ import ArticleTags from '../index';
 describe('<ArticleTags />', () => {
   it('should return null if prop is empty', () => {
     const component = shallow(<ArticleTags />);
-
     expect(component.node).toEqual(null);
   });
 
@@ -25,6 +24,6 @@ describe('<ArticleTags />', () => {
       </div>
     );
 
-    expect(component).toEqual(expectedComponent);
+    expect(component.contains(expectedComponent)).toEqual(true);
   });
 });
