@@ -14,3 +14,8 @@ export const getOffsetLimit = (page, limit = BASE_LIMIT) => {
     offset,
   };
 };
+
+export const getKeyNameParam = (params, key) => {
+  const getKey = params[key] ? `${key}=${params[key]}&` : '';
+  return getKey;
+};

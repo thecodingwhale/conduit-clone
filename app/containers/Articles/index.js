@@ -13,18 +13,19 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText, CardLink, Badge, Button, Row, Col } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, CardLink, Button, Row, Col } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { BASE_LIMIT, getUrlParams } from 'utils/url';
 import Loader from 'components/Loader';
+import AuthorCard from 'components/AuthorCard';
+import ArticleTags from 'components/ArticleTags';
 import { fetchArticles } from './actions';
 import { makeSelectPosts, makeSelectError, makeSelectFetching, makeSelectPageCount } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Wrapper from './Wrapper';
-import Avatar from './Avatar';
 
 export class Articles extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
@@ -57,25 +58,6 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     const setForcePage = getUrlParams(this.props.location.search, 'page');
     return parseInt(setForcePage, 10) - 1;
   }
-  renderPostTags(tagList) {
-    if (tagList.length === 0) return null;
-
-    const tagLists = tagList.map((list) => (
-      <Badge
-        key={list}
-        color="secondary"
-        pill
-      >
-        {list}
-      </Badge>
-    ));
-
-    return (
-      <div>
-        {tagLists}
-      </div>
-    );
-  }
   renderPost(post, index) {
     const { author, title, description, createdAt, tagList, slug, favoritesCount, favorited } = post;
 
@@ -84,29 +66,10 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
         <Card body>
           <Row style={{ marginBottom: '10px' }}>
             <Col xs="6">
-              <CardLink href="#" style={{ float: 'left' }}>
-                <Avatar image={author.image} />
-              </CardLink>
-              <div
-                className="info"
-                style={{
-                  overflow: 'hidden',
-                  paddingLeft: '10px',
-                }}
-              >
-                <CardLink
-                  className="author"
-                  href={`@${author.username}`}
-                  style={{
-                    display: 'block',
-                  }}
-                >
-                  {author.username}
-                </CardLink>
-                <CardText>
-                  <small className="text-muted">{new Date(createdAt).toDateString()}</small>
-                </CardText>
-              </div>
+              <AuthorCard
+                author={author}
+                createdAt={new Date(createdAt).toDateString()}
+              />
             </Col>
             <Col xs="6">
               <div className="text-right">
@@ -131,7 +94,7 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
               </CardLink>
             </Col>
             <Col className="text-right" xs="6">
-              {this.renderPostTags(tagList)}
+              <ArticleTags tagList={tagList} />
             </Col>
           </Row>
         </Card>

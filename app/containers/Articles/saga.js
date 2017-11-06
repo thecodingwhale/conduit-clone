@@ -6,11 +6,11 @@ import {
 } from 'containers/Articles/actions';
 
 import request from 'utils/request';
-import { getOffsetLimit } from 'utils/url';
+import { getOffsetLimit, getKeyNameParam } from 'utils/url';
 
 export function* getArticles(params) {
   const options = getOffsetLimit(params.page);
-  const tag = params.tag ? `tag=${params.tag}&` : '';
+  const tag = getKeyNameParam(params, 'tag');
   const apiEndpoint = `https://conduit.productionready.io/api/articles?${tag}limit=${options.limit}&offset=${options.offset}`;
 
   try {

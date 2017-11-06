@@ -2,10 +2,11 @@ import React from 'react';
 import { push } from 'react-router-redux';
 import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText, Badge, CardLink, Row, Col, Button } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, CardLink, Row, Col, Button } from 'reactstrap';
 import Loader from 'components/Loader';
+import AuthorCard from 'components/AuthorCard';
+import ArticleTags from 'components/ArticleTags';
 import Wrapper from '../Wrapper';
-import Avatar from '../Avatar';
 import { Articles, mapDispatchToProps } from '../index';
 import { fetchArticles } from '../actions';
 import { BASE_LIMIT } from '../../../utils/url';
@@ -118,29 +119,10 @@ describe('<Articles />', () => {
         <Card body>
           <Row style={{ marginBottom: '10px' }}>
             <Col xs="6">
-              <CardLink href="#" style={{ float: 'left' }}>
-                <Avatar image={author.image} />
-              </CardLink>
-              <div
-                className="info"
-                style={{
-                  overflow: 'hidden',
-                  paddingLeft: '10px',
-                }}
-              >
-                <CardLink
-                  className="author"
-                  href={`@${author.username}`}
-                  style={{
-                    display: 'block',
-                  }}
-                >
-                  {author.username}
-                </CardLink>
-                <CardText>
-                  <small className="text-muted">{new Date(createdAt).toDateString()}</small>
-                </CardText>
-              </div>
+              <AuthorCard
+                author={author}
+                createdAt={new Date(createdAt).toDateString()}
+              />
             </Col>
             <Col xs="6">
               <div className="text-right">
@@ -165,11 +147,7 @@ describe('<Articles />', () => {
               </CardLink>
             </Col>
             <Col className="text-right" xs="6">
-              <div>
-                <Badge color="secondary" pill>dragons</Badge>
-                <Badge color="secondary" pill>angularjs</Badge>
-                <Badge color="secondary" pill>reactjs</Badge>
-              </div>
+              <ArticleTags tagList={samplePostData[0].tagList} />
             </Col>
           </Row>
         </Card>
