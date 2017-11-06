@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Avatar from '../Avatar';
+import Avatar from '../index';
 
 describe('<Avatar />', () => {
   it('foo', () => {

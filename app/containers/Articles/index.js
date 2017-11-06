@@ -19,12 +19,12 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { BASE_LIMIT, getUrlParams } from 'utils/url';
 import Loader from 'components/Loader';
+import Avatar from 'components/Avatar';
 import { fetchArticles } from './actions';
 import { makeSelectPosts, makeSelectError, makeSelectFetching, makeSelectPageCount } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Wrapper from './Wrapper';
-import Avatar from './Avatar';
 
 export class Articles extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
