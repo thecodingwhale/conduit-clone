@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getArticle should dispatch the articleLoadingError action if it requests the data successfully 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "https://conduit.productionready.io/api/articles/sample-slug",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`getArticle should dispatch the articleLoadingError action if it requests the data successfully 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "article": undefined,
+      "type": "app/Article/ARTICLE_LOADED",
+    },
+    "channel": null,
+  },
+}
+`;
