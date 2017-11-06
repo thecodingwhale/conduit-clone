@@ -3,6 +3,7 @@ import 'url-search-params-polyfill';
 import {
   getUrlParams,
   getOffsetLimit,
+  getKeyNameParam,
   } from '../url';
 
 describe('url', () => {
@@ -27,5 +28,16 @@ describe('url', () => {
     result = getOffsetLimit(0);
     expectedResult = { limit: 10, offset: 0 };
     expect(result).toEqual(expectedResult);
+  });
+
+  it('should return the expected formatted value base on the required key name', () => {
+    const keyName = 'tag';
+    const keyValue = 'foo';
+    const params = {
+      [keyName]: keyValue,
+    };
+    const expectedResult = `${keyName}=${keyValue}&`;
+
+    expect(getKeyNameParam(params, keyName)).toEqual(expectedResult);
   });
 });
