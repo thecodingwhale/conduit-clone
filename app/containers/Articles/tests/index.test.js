@@ -4,7 +4,7 @@ import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
 import { Alert, Card, CardTitle, CardText, Badge, CardLink, Row, Col, Button } from 'reactstrap';
 import Loader from 'components/Loader';
-import Avatar from 'components/Avatar';
+import AuthorCard from 'components/AuthorCard';
 import Wrapper from '../Wrapper';
 import { Articles, mapDispatchToProps } from '../index';
 import { fetchArticles } from '../actions';
@@ -118,29 +118,10 @@ describe('<Articles />', () => {
         <Card body>
           <Row style={{ marginBottom: '10px' }}>
             <Col xs="6">
-              <CardLink href="#" style={{ float: 'left' }}>
-                <Avatar image={author.image} />
-              </CardLink>
-              <div
-                className="info"
-                style={{
-                  overflow: 'hidden',
-                  paddingLeft: '10px',
-                }}
-              >
-                <CardLink
-                  className="author"
-                  href={`@${author.username}`}
-                  style={{
-                    display: 'block',
-                  }}
-                >
-                  {author.username}
-                </CardLink>
-                <CardText>
-                  <small className="text-muted">{new Date(createdAt).toDateString()}</small>
-                </CardText>
-              </div>
+              <AuthorCard
+                author={author}
+                createdAt={new Date(createdAt).toDateString()}
+              />
             </Col>
             <Col xs="6">
               <div className="text-right">
