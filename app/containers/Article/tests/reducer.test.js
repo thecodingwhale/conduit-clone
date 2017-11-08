@@ -13,6 +13,7 @@ describe('articleReducer', () => {
       error: false,
       fetching: true,
       article: null,
+      comments: [],
     });
   });
 

@@ -17,8 +17,9 @@ import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import { Comments } from './Comments';
 import { fetchArticle } from './actions';
-import { makeSelectArticle, makeSelectError, makeSelectFetching } from './selectors';
+import { makeSelectArticle, makeSelectComments, makeSelectError, makeSelectFetching } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
@@ -28,6 +29,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 
   renderContent() {
+    const { fetching } = this.props;
     const { title, body, tagList, author, createdAt } = this.props.article;
     return (
       <div>
@@ -40,6 +42,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         />
         <hr />
         <div dangerouslySetInnerHTML={{ __html: body }} />
+        <Comments fetching={fetching} comments={this.props.comments} />
       </div>
     );
   }
@@ -79,6 +82,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 Article.defaultProps = {
   error: false,
   fetching: true,
+  comments: [],
 };
 
 Article.propTypes = {
@@ -90,6 +94,16 @@ Article.propTypes = {
     }),
   }),
   onFetchArticle: PropTypes.func.isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape({
+    body: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    author: PropTypes.shape({
+      bio: PropTypes.string,
+      following: PropTypes.bool.isRequired,
+      image: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+    }).isRequired,
+  })),
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
@@ -106,6 +120,7 @@ Article.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   article: makeSelectArticle(),
+  comments: makeSelectComments(),
   error: makeSelectError(),
   fetching: makeSelectFetching(),
 });

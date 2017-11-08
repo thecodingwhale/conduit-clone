@@ -14,6 +14,11 @@ const makeSelectArticle = () => createSelector(
   (substate) => substate.get('article')
 );
 
+const makeSelectComments = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.get('comments')
+);
+
 const makeSelectError = () => createSelector(
   selectArticleDomain,
   (substate) => substate.get('error')
@@ -27,6 +32,7 @@ const makeSelectFetching = () => createSelector(
 export {
   selectArticleDomain,
   makeSelectArticle,
+  makeSelectComments,
   makeSelectError,
   makeSelectFetching,
 };
