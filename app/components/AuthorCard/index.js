@@ -6,6 +6,7 @@ import React from 'react';
 import { CardText, CardLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Avatar from '../Avatar';
+import { AuthorPropTypes } from '../../PropTypesValues';
 
 function AuthorCard(props) {
   const { createdAt, author } = props;
@@ -40,10 +41,7 @@ function AuthorCard(props) {
 
 AuthorCard.propTypes = {
   createdAt: PropTypes.string.isRequired,
-  author: PropTypes.shape({
-    username: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
+  author: AuthorPropTypes,
 };
 
 export default AuthorCard;

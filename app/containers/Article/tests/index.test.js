@@ -8,11 +8,47 @@ import { Article, mapDispatchToProps } from '../index';
 import { Comments } from '../Comments';
 import { fetchArticle } from '../actions';
 
+const author = {
+  bio: null,
+  following: false,
+  image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+  username: 'trinhnguyen',
+};
+const fixture = {
+  author,
+  title: 'sample title',
+  body: '<h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</h1> ↵↵<h2>Praesentium blanditiis architecto aperiam porro, voluptates fugiat ullam</h2> ↵↵<h3>Odio rerum earum libero deserunt voluptas, repellat iste mollitia, aliquam</h3>',
+  description: 'sample description',
+  createdAt: '2017-10-18T11:27:14.109Z',
+  tagList: [
+    'foo',
+    'bar',
+    'baz',
+  ],
+  comments: [
+    {
+      id: 1,
+      author,
+      body: 'first sample comment',
+      createdAt: '2017-11-06T06:16:07.445Z',
+      updatedAt: '2017-11-06T06:16:07.445Z',
+    },
+    {
+      id: 2,
+      author,
+      body: 'second sample comment',
+      createdAt: '2017-11-06T06:16:07.445Z',
+      updatedAt: '2017-11-06T06:16:07.445Z',
+    },
+  ],
+};
+
 describe('<Article />', () => {
   it('should display a <Loader /> component first', () => {
     const component = shallow(
       <Article
         onFetchArticle={() => {}}
+        article={{}}
         error={false}
         fetching
       />
@@ -69,7 +105,7 @@ describe('<Article />', () => {
         onFetchArticle={() => {}}
         fetching={false}
         error={false}
-        article={null}
+        article={{}}
       />
     );
     const expectedComponent = (
@@ -79,49 +115,31 @@ describe('<Article />', () => {
         </Alert>
       </Container>
     );
-
     expect(component.contains(expectedComponent)).toEqual(true);
   });
 
   it('should render an article', () => {
-    const body = '<h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</h1> ↵↵<h2>Praesentium blanditiis architecto aperiam porro, voluptates fugiat ullam</h2> ↵↵<h3>Odio rerum earum libero deserunt voluptas, repellat iste mollitia, aliquam</h3>';
-    const author = {
-      following: false,
-      image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
-      username: 'trinhnguyen',
-    };
-    const createdAt = '2017-10-18T11:27:14.109Z';
-    const tagList = [
-      'foo',
-      'bar',
-      'baz',
-    ];
     const component = shallow(
       <Article
         onFetchArticle={() => {}}
         fetching={false}
         error={false}
-        article={{
-          author,
-          title: 'sample title',
-          body,
-          createdAt,
-          tagList,
-        }}
+        article={fixture}
       />
     );
     const expectedComponent = (
       <Container>
         <div>
-          <h1>sample title</h1>
-          <ArticleTags tagList={tagList} />
+          <h1>{fixture.title}</h1>
+          <p>{fixture.description}</p>
+          <ArticleTags tagList={fixture.tagList} />
           <hr />
           <AuthorCard
-            author={author}
-            createdAt={new Date(createdAt).toDateString()}
+            author={fixture.author}
+            createdAt={new Date(fixture.createdAt).toDateString()}
           />
           <hr />
-          <div dangerouslySetInnerHTML={{ __html: body }} />
+          <div dangerouslySetInnerHTML={{ __html: fixture.body }} />
           <Comments fetching={false} comments={[]} />
         </div>
       </Container>
@@ -154,31 +172,15 @@ describe('<Comments />', () => {
   });
 
   it('should display a comments', () => {
-    const author = {
-      following: false,
-      image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
-      username: 'trinhnguyen',
-    };
-    const comments = [
-      {
-        id: 1,
-        author,
-        body: 'first sample comment',
-        createdAt: '2017-11-06T06:16:07.445Z',
-        updatedAt: '2017-11-06T06:16:07.445Z',
-      },
-      {
-        id: 2,
-        author,
-        body: 'second sample comment',
-        createdAt: '2017-11-06T06:16:07.445Z',
-        updatedAt: '2017-11-06T06:16:07.445Z',
-      },
-    ];
-    const component = shallow(<Comments fetching={false} comments={comments} />);
+    const component = shallow(
+      <Comments
+        fetching={false}
+        comments={fixture.comments}
+      />
+    );
     const expectedComponent = (
       <div>
-        {comments.map((comment) => (
+        {fixture.comments.map((comment) => (
           <Card key={comment.id}>
             <CardBody>
               <CardText>{comment.body}</CardText>
@@ -193,7 +195,6 @@ describe('<Comments />', () => {
         ))}
       </div>
     );
-
     expect(component.contains(expectedComponent)).toEqual(true);
   });
 });

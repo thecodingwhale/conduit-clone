@@ -51,7 +51,7 @@ describe('articleReducer', () => {
     const expectedResult = state
       .set('error', fixture.error)
       .set('fetching', fixture.fetching)
-      .set('comments', fixture.comments);
+      .set('comments', fromJS(fixture.comments));
 
     expect(articleReducer(state, commentsLoaded(fixture.comments))).toEqual(expectedResult);
   });
