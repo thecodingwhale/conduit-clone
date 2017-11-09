@@ -11,16 +11,20 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import { isEmpty } from 'lodash';
+
 import { Container, Alert } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import { Comments } from './Comments';
 import { fetchArticle } from './actions';
-import { makeSelectArticle, makeSelectError, makeSelectFetching } from './selectors';
+import { makeSelectArticle, makeSelectComments, makeSelectError, makeSelectFetching } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { ArticlePropTypes, CommentPropTypes } from '../../PropTypesValues';
 
 export class Article extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   componentDidMount() {
@@ -28,10 +32,12 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 
   renderContent() {
-    const { title, body, tagList, author, createdAt } = this.props.article;
+    const { fetching } = this.props;
+    const { title, description, body, tagList, author, createdAt } = this.props.article;
     return (
       <div>
         <h1>{title}</h1>
+        <p>{description}</p>
         <ArticleTags tagList={tagList} />
         <hr />
         <AuthorCard
@@ -40,16 +46,18 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         />
         <hr />
         <div dangerouslySetInnerHTML={{ __html: body }} />
+        <Comments fetching={fetching} comments={this.props.comments} />
       </div>
     );
   }
 
   render() {
     let content;
-    const { error, fetching } = this.props;
+    const { error, fetching, article } = this.props;
+
     if (!fetching) {
       if (!error) {
-        if (this.props.article) {
+        if (!isEmpty(article)) {
           content = this.renderContent();
         } else {
           content = (
@@ -76,11 +84,6 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 }
 
-Article.defaultProps = {
-  error: false,
-  fetching: true,
-};
-
 Article.propTypes = {
   error: PropTypes.bool,
   fetching: PropTypes.bool,
@@ -90,22 +93,13 @@ Article.propTypes = {
     }),
   }),
   onFetchArticle: PropTypes.func.isRequired,
-  article: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    body: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
-    tagList: PropTypes.arrayOf(PropTypes.string).isRequired,
-    author: PropTypes.shape({
-      bio: PropTypes.string,
-      following: PropTypes.bool.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
+  comments: PropTypes.arrayOf(CommentPropTypes),
+  article: ArticlePropTypes,
 };
 
 const mapStateToProps = createStructuredSelector({
   article: makeSelectArticle(),
+  comments: makeSelectComments(),
   error: makeSelectError(),
   fetching: makeSelectFetching(),
 });

@@ -8,7 +8,9 @@ import {
   DEFAULT_ACTION,
   FETCH_ARTICLE,
   ARTICLE_LOADED,
+  COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
+  LOAD_COMMENTS_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -31,8 +33,22 @@ export function articleLoaded(article) {
   };
 }
 
+export function commentsLoaded(comments) {
+  return {
+    type: COMMENTS_LOADED,
+    comments,
+  };
+}
+
 export function articleLoadingError() {
   return {
     type: LOAD_ARTICLE_ERROR,
   };
 }
+
+export function commentsLoadingError() {
+  return {
+    type: LOAD_COMMENTS_ERROR,
+  };
+}
+

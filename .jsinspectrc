@@ -1,0 +1,8 @@
+{
+  "threshold":     30,
+  "identifiers":   true,
+  "literals":      true,
+  "color":         true,
+  "ignore":        "tests|utils",
+  "truncate":      100
+}

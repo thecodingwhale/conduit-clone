@@ -1,15 +1,19 @@
-
 import {
   defaultAction,
   fetchArticle,
   articleLoaded,
+  commentsLoaded,
   articleLoadingError,
+  commentsLoadingError,
 } from '../actions';
+
 import {
   DEFAULT_ACTION,
   FETCH_ARTICLE,
   ARTICLE_LOADED,
+  COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
+  LOAD_COMMENTS_ERROR,
 } from '../constants';
 
 describe('Article actions', () => {
@@ -34,7 +38,7 @@ describe('Article actions', () => {
   });
 
   describe('Article Loaded', () => {
-    it('has a type of FETCH_ARTICLE', () => {
+    it('has a type of ARTICLE_LOADED', () => {
       const article = {
         foo: 'bar',
       };
@@ -52,6 +56,28 @@ describe('Article actions', () => {
         type: LOAD_ARTICLE_ERROR,
       };
       expect(articleLoadingError()).toEqual(expected);
+    });
+  });
+
+  describe('Comments Loaded', () => {
+    it('has a type of COMMENTS_LOADED', () => {
+      const comments = {
+        foo: 'bar',
+      };
+      const expected = {
+        type: COMMENTS_LOADED,
+        comments,
+      };
+      expect(commentsLoaded(comments)).toEqual(expected);
+    });
+  });
+
+  describe('Article Loading Error', () => {
+    it('has a type of LOAD_COMMENTS_ERROR', () => {
+      const expected = {
+        type: LOAD_COMMENTS_ERROR,
+      };
+      expect(commentsLoadingError()).toEqual(expected);
     });
   });
 });
