@@ -3,6 +3,7 @@ import { fromJS } from 'immutable';
 import articleReducer from '../reducer';
 import {
   articleLoaded,
+  commentsLoaded,
   articleLoadingError,
 } from '../actions';
 
@@ -36,6 +37,23 @@ describe('articleReducer', () => {
       .set('article', fixture.article);
 
     expect(articleReducer(state, articleLoaded(fixture.article))).toEqual(expectedResult);
+  });
+
+  it('should handle the commentsLoaded action correctly', () => {
+    const fixture = {
+      error: false,
+      fetching: false,
+      comments: [{
+        foo: 'bar',
+      }],
+    };
+
+    const expectedResult = state
+      .set('error', fixture.error)
+      .set('fetching', fixture.fetching)
+      .set('comments', fixture.comments);
+
+    expect(articleReducer(state, commentsLoaded(fixture.comments))).toEqual(expectedResult);
   });
 
   it('should handle the articleLoadingError action correctly', () => {

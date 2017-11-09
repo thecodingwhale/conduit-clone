@@ -26,6 +26,7 @@ function articleReducer(state = initialState, action) {
         .set('article', action.article);
     case COMMENTS_LOADED:
       return state
+        .set('fetching', false)
         .set('comments', action.comments);
     case LOAD_ARTICLE_ERROR:
       return state

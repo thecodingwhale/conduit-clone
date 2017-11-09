@@ -2,6 +2,7 @@ import { fromJS } from 'immutable';
 import {
   selectArticleDomain,
   makeSelectArticle,
+  makeSelectComments,
   makeSelectError,
   makeSelectFetching,
 } from '../selectors';
@@ -29,6 +30,22 @@ describe('makeSelectArticle', () => {
       article: articleStateSelector,
     });
     expect(selectArticle(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectComments', () => {
+  const selectComments = makeSelectComments();
+  it('should select the comments state from initial state', () => {
+    const fixture = [{
+      foo: 'bar',
+    }];
+    const articleStateSelector = fromJS({
+      comments: fixture,
+    });
+    const mockedState = fromJS({
+      article: articleStateSelector,
+    });
+    expect(selectComments(mockedState)).toEqual(fixture);
   });
 });
 

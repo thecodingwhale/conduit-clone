@@ -16,7 +16,7 @@ const makeSelectArticle = () => createSelector(
 
 const makeSelectComments = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('comments')
+  (substate) => substate.get('comments').toJS()
 );
 
 const makeSelectError = () => createSelector(
