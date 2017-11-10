@@ -14,6 +14,7 @@ const author = {
   image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
   username: 'trinhnguyen',
 };
+
 const fixture = {
   author,
   title: 'sample title',
@@ -138,6 +139,11 @@ describe('<Article />', () => {
           fetching: false,
           error: false,
           data: fixture,
+        }}
+        comments={{
+          fetching: false,
+          error: false,
+          data: [],
         }}
       />
     );

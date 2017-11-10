@@ -19,7 +19,11 @@ const initialState = fromJS({
     fetching: true,
     data: {},
   },
-  comments: [],
+  comments: {
+    error: false,
+    fetching: true,
+    data: [],
+  },
 });
 
 function articleReducer(state = initialState, action) {
@@ -32,11 +36,10 @@ function articleReducer(state = initialState, action) {
       return state
         .setIn(['article', 'error'], true)
         .setIn(['article', 'fetching'], false);
-
     case COMMENTS_LOADED:
       return state
-        .set('fetching', false)
-        .set('comments', fromJS(action.comments));
+        .setIn(['comments', 'fetching'], false)
+        .setIn(['comments', 'data'], fromJS(action.comments));
     default:
       return state;
   }

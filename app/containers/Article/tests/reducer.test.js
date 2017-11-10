@@ -18,7 +18,11 @@ describe('articleReducer', () => {
         fetching: true,
         data: {},
       },
-      comments: [],
+      comments: {
+        error: false,
+        fetching: true,
+        data: [],
+      },
     });
   });
 
@@ -46,17 +50,15 @@ describe('articleReducer', () => {
     const fixture = {
       error: false,
       fetching: false,
-      comments: [{
+      data: [{
         foo: 'bar',
       }],
     };
-
     const expectedResult = state
-      .set('error', fixture.error)
-      .set('fetching', fixture.fetching)
-      .set('comments', fromJS(fixture.comments));
-
-    expect(articleReducer(state, commentsLoaded(fixture.comments))).toEqual(expectedResult);
+      .setIn(['comments', 'error'], fixture.error)
+      .setIn(['comments', 'fetching'], fixture.fetching)
+      .setIn(['comments', 'data'], fromJS(fixture.data));
+    expect(articleReducer(state, commentsLoaded(fixture.data))).toEqual(expectedResult);
   });
 
   it('should handle the articleLoadingError action correctly', () => {

@@ -24,15 +24,29 @@ const makeSelectArticleFetching = () => createSelector(
   (substate) => substate.getIn(['article', 'fetching'])
 );
 
-const makeSelectComments = () => createSelector(
+const makeSelectCommentsData = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('comments').toJS()
+  (substate) => substate.getIn(['comments', 'data']).toJS(),
+);
+
+const makeSelectCommentsError = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'error'])
+);
+
+const makeSelectCommentsFetching = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'fetching'])
 );
 
 export {
   selectArticleDomain,
+
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
-  makeSelectComments,
+
+  makeSelectCommentsData,
+  makeSelectCommentsError,
+  makeSelectCommentsFetching,
 };

@@ -4,7 +4,9 @@ import {
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
-  makeSelectComments,
+  makeSelectCommentsData,
+  makeSelectCommentsError,
+  makeSelectCommentsFetching,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -67,18 +69,52 @@ describe('makeSelectArticleFetching', () => {
   });
 });
 
-describe('makeSelectComments', () => {
-  const selectComments = makeSelectComments();
+describe('makeSelectCommentsData', () => {
+  const selectComments = makeSelectCommentsData();
   it('should select the comments state from initial state', () => {
     const fixture = [{
       foo: 'bar',
     }];
     const articleStateSelector = fromJS({
-      comments: fixture,
+      comments: {
+        data: fixture,
+      },
     });
     const mockedState = fromJS({
       article: articleStateSelector,
     });
     expect(selectComments(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsError', () => {
+  const errorSelector = makeSelectCommentsError();
+  it('should select the expected error state from article state', () => {
+    const fixture = false;
+    const articleState = fromJS({
+      comments: {
+        error: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(errorSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsFetching', () => {
+  const fetchingSelector = makeSelectCommentsFetching();
+  it('should select the expected fetching state from article state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      comments: {
+        fetching: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(fetchingSelector(mockedState)).toEqual(fixture);
   });
 });
