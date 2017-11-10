@@ -21,7 +21,14 @@ import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { Comments } from './Comments';
 import { fetchArticle } from './actions';
-import { makeSelectArticle, makeSelectComments, makeSelectError, makeSelectFetching } from './selectors';
+import {
+  makeSelectArticleData,
+  makeSelectArticleError,
+  makeSelectArticleFetching,
+  makeSelectCommentsData,
+  makeSelectCommentsError,
+  makeSelectCommentsFetching,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import { ArticlePropTypes, CommentPropTypes } from '../../PropTypesValues';
@@ -32,8 +39,9 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 
   renderContent() {
-    const { fetching } = this.props;
-    const { title, description, body, tagList, author, createdAt } = this.props.article;
+    const { title, description, body, tagList, author, createdAt } = this.props.article.data;
+    const { fetching, error, data } = this.props.comments;
+
     return (
       <div>
         <h1>{title}</h1>
@@ -46,18 +54,18 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         />
         <hr />
         <div dangerouslySetInnerHTML={{ __html: body }} />
-        <Comments fetching={fetching} comments={this.props.comments} />
+        <Comments error={error} fetching={fetching} comments={data} />
       </div>
     );
   }
 
   render() {
     let content;
-    const { error, fetching, article } = this.props;
+    const { error, fetching, data } = this.props.article;
 
     if (!fetching) {
       if (!error) {
-        if (!isEmpty(article)) {
+        if (!isEmpty(data)) {
           content = this.renderContent();
         } else {
           content = (
@@ -85,23 +93,35 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 }
 
 Article.propTypes = {
-  error: PropTypes.bool,
-  fetching: PropTypes.bool,
   match: PropTypes.shape({
     params: PropTypes.shape({
       slug: PropTypes.string.isRequired,
     }),
   }),
   onFetchArticle: PropTypes.func.isRequired,
-  comments: PropTypes.arrayOf(CommentPropTypes),
-  article: ArticlePropTypes,
+  comments: PropTypes.shape({
+    error: PropTypes.bool,
+    fetching: PropTypes.bool,
+    data: PropTypes.arrayOf(CommentPropTypes),
+  }),
+  article: PropTypes.shape({
+    error: PropTypes.bool,
+    fetching: PropTypes.bool,
+    data: ArticlePropTypes,
+  }),
 };
 
 const mapStateToProps = createStructuredSelector({
-  article: makeSelectArticle(),
-  comments: makeSelectComments(),
-  error: makeSelectError(),
-  fetching: makeSelectFetching(),
+  article: createStructuredSelector({
+    error: makeSelectArticleError(),
+    fetching: makeSelectArticleFetching(),
+    data: makeSelectArticleData(),
+  }),
+  comments: createStructuredSelector({
+    error: makeSelectCommentsError(),
+    fetching: makeSelectCommentsFetching(),
+    data: makeSelectCommentsData(),
+  }),
 });
 
 export function mapDispatchToProps(dispatch) {

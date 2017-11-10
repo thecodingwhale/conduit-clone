@@ -9,30 +9,44 @@ const selectArticleDomain = (state) => state.get('article');
  * Other specific selectors
  */
 
-const makeSelectArticle = () => createSelector(
+const makeSelectArticleData = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('article')
+  (substate) => substate.getIn(['article', 'data']).toJS()
 );
 
-const makeSelectComments = () => createSelector(
+const makeSelectArticleError = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('comments').toJS()
+  (substate) => substate.getIn(['article', 'error'])
 );
 
-const makeSelectError = () => createSelector(
+const makeSelectArticleFetching = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('error')
+  (substate) => substate.getIn(['article', 'fetching'])
 );
 
-const makeSelectFetching = () => createSelector(
+const makeSelectCommentsData = () => createSelector(
   selectArticleDomain,
-  (substate) => substate.get('fetching')
+  (substate) => substate.getIn(['comments', 'data']).toJS(),
+);
+
+const makeSelectCommentsError = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'error'])
+);
+
+const makeSelectCommentsFetching = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'fetching'])
 );
 
 export {
   selectArticleDomain,
-  makeSelectArticle,
-  makeSelectComments,
-  makeSelectError,
-  makeSelectFetching,
+
+  makeSelectArticleData,
+  makeSelectArticleError,
+  makeSelectArticleFetching,
+
+  makeSelectCommentsData,
+  makeSelectCommentsError,
+  makeSelectCommentsFetching,
 };

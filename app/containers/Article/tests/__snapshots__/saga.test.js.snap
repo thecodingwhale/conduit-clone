@@ -18,6 +18,19 @@ Object {
   "@@redux-saga/IO": true,
   "PUT": Object {
     "action": Object {
+      "slug": "sample-slug",
+      "type": "app/Article/GET_ARTICLE_SLUG",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`getArticle should dispatch the articleLoadingError action if api requests failed 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
       "article": undefined,
       "type": "app/Article/ARTICLE_LOADED",
     },

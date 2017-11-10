@@ -4,7 +4,10 @@
 
 /* eslint-disable redux-saga/yield-effects */
 import { takeLatest, put } from 'redux-saga/effects';
-import { FETCH_ARTICLE } from 'containers/Article/constants';
+import {
+  FETCH_ARTICLE,
+  GET_ARTICLE_SLUG,
+} from 'containers/Article/constants';
 
 import {
   articleLoadingError,
@@ -21,20 +24,24 @@ const payload = {
     foo: 'bar',
   }],
 };
+const slug = 'sample-slug';
 
 describe('getArticle', () => {
   let getArticleGenerator;
 
   beforeEach(() => {
     getArticleGenerator = getArticle({
-      slug: 'sample-slug',
+      slug,
     });
 
-    const selectDescriptor = getArticleGenerator.next().value;
-    expect(selectDescriptor).toMatchSnapshot();
-
-    const callDescriptor = getArticleGenerator.next(payload.article).value;
+    const callDescriptor = getArticleGenerator.next().value;
     expect(callDescriptor).toMatchSnapshot();
+
+    let putDescriptor = getArticleGenerator.next(slug).value;
+    expect(putDescriptor).toMatchSnapshot();
+
+    putDescriptor = getArticleGenerator.next(payload.article).value;
+    expect(putDescriptor).toMatchSnapshot();
   });
 
   it('should dispatch the articleLoadingError action if api requests failed', () => {
@@ -48,7 +55,7 @@ describe('getComments', () => {
 
   beforeEach(() => {
     getCommentsGenerator = getComments({
-      slug: 'sample-slug',
+      slug,
     });
 
     const selectDescriptor = getCommentsGenerator.next().value;
@@ -72,8 +79,8 @@ describe('articlesDataSaga Saga', () => {
     expect(takeLatestDescriptor).toEqual(takeLatest(FETCH_ARTICLE, getArticle));
   });
 
-  it('should start task to watch for FETCH_ARTICLES action with getComments', () => {
+  it('should start task to watch for GET_ARTICLE_SLUG action with getComments', () => {
     const takeLatestDescriptor = articleDataSaga.next().value;
-    expect(takeLatestDescriptor).toEqual(takeLatest(FETCH_ARTICLE, getComments));
+    expect(takeLatestDescriptor).toEqual(takeLatest(GET_ARTICLE_SLUG, getComments));
   });
 });

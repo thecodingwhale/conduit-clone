@@ -2,6 +2,7 @@ import {
   defaultAction,
   fetchArticle,
   articleLoaded,
+  getArticleSlug,
   commentsLoaded,
   articleLoadingError,
   commentsLoadingError,
@@ -11,10 +12,13 @@ import {
   DEFAULT_ACTION,
   FETCH_ARTICLE,
   ARTICLE_LOADED,
+  GET_ARTICLE_SLUG,
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
 } from '../constants';
+
+const slug = 'sample-slug';
 
 describe('Article actions', () => {
   describe('Default Action', () => {
@@ -28,7 +32,6 @@ describe('Article actions', () => {
 
   describe('Fetch Article', () => {
     it('has a type of FETCH_ARTICLE', () => {
-      const slug = 'sample-slug';
       const expected = {
         type: FETCH_ARTICLE,
         slug,
@@ -47,6 +50,16 @@ describe('Article actions', () => {
         article,
       };
       expect(articleLoaded(article)).toEqual(expected);
+    });
+  });
+
+  describe('Article Loaded', () => {
+    it('has a type of ARTICLE_LOADED', () => {
+      const expected = {
+        type: GET_ARTICLE_SLUG,
+        slug,
+      };
+      expect(getArticleSlug(slug)).toEqual(expected);
     });
   });
 
