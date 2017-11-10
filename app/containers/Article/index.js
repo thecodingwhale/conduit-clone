@@ -40,7 +40,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 
   renderContent() {
     const { title, description, body, tagList, author, createdAt } = this.props.article.data;
-    const { fetching, data } = this.props.comments;
+    const { fetching, error, data } = this.props.comments;
 
     return (
       <div>
@@ -54,7 +54,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         />
         <hr />
         <div dangerouslySetInnerHTML={{ __html: body }} />
-        <Comments fetching={fetching} comments={data} />
+        <Comments error={error} fetching={fetching} comments={data} />
       </div>
     );
   }

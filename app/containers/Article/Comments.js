@@ -71,7 +71,7 @@ Comments.defaultProps = {
 };
 
 Comments.propTypes = {
-  fetching: PropTypes.bool,
-  error: PropTypes.bool,
+  fetching: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
   comments: PropTypes.arrayOf(CommentPropTypes),
 };
