@@ -27,11 +27,10 @@ export function fetchArticle(slug) {
   };
 }
 
-export function articleLoaded(article, slug) {
+export function articleLoaded(article) {
   return {
     type: ARTICLE_LOADED,
     article,
-    slug,
   };
 }
 

@@ -32,7 +32,6 @@ Object {
   "PUT": Object {
     "action": Object {
       "article": undefined,
-      "slug": undefined,
       "type": "app/Article/ARTICLE_LOADED",
     },
     "channel": null,
