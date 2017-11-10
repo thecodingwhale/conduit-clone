@@ -15,6 +15,14 @@ export class Comments extends React.PureComponent { // eslint-disable-line react
     );
   }
 
+  renderErrorMessage() {
+    return (
+      <Alert color="danger">
+        Something Went Wrong
+      </Alert>
+    );
+  }
+
   renderComments() {
     const { comments } = this.props;
     return comments.map((comment) => (
@@ -33,14 +41,18 @@ export class Comments extends React.PureComponent { // eslint-disable-line react
   }
 
   render() {
-    const { fetching, comments } = this.props;
+    const { fetching, error, comments } = this.props;
     let content = <Loader />;
 
     if (!fetching) {
-      if (comments.length !== 0) {
-        content = this.renderComments();
+      if (!error) {
+        if (comments.length !== 0) {
+          content = this.renderComments();
+        } else {
+          content = this.renderAlertMessage();
+        }
       } else {
-        content = this.renderAlertMessage();
+        content = this.renderErrorMessage();
       }
     }
 
@@ -54,10 +66,12 @@ export class Comments extends React.PureComponent { // eslint-disable-line react
 
 Comments.defaultProps = {
   fetching: true,
+  error: false,
   comments: [],
 };
 
 Comments.propTypes = {
   fetching: PropTypes.bool,
+  error: PropTypes.bool,
   comments: PropTypes.arrayOf(CommentPropTypes),
 };
