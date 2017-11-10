@@ -8,6 +8,7 @@ import {
   DEFAULT_ACTION,
   FETCH_ARTICLE,
   ARTICLE_LOADED,
+  GET_ARTICLE_SLUG,
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
@@ -26,10 +27,18 @@ export function fetchArticle(slug) {
   };
 }
 
-export function articleLoaded(article) {
+export function articleLoaded(article, slug) {
   return {
     type: ARTICLE_LOADED,
     article,
+    slug,
+  };
+}
+
+export function getArticleSlug(slug) {
+  return {
+    type: GET_ARTICLE_SLUG,
+    slug,
   };
 }
 
