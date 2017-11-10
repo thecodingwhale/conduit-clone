@@ -9,6 +9,7 @@ import {
   ARTICLE_LOADED,
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
+  LOAD_COMMENTS_ERROR,
 } from './constants';
 
 const initialState = fromJS({
@@ -40,6 +41,10 @@ function articleReducer(state = initialState, action) {
       return state
         .setIn(['comments', 'fetching'], false)
         .setIn(['comments', 'data'], fromJS(action.comments));
+    case LOAD_COMMENTS_ERROR:
+      return state
+        .setIn(['comments', 'error'], true)
+        .setIn(['comments', 'fetching'], false);
     default:
       return state;
   }

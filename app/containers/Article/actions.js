@@ -33,16 +33,16 @@ export function articleLoaded(article) {
   };
 }
 
+export function articleLoadingError() {
+  return {
+    type: LOAD_ARTICLE_ERROR,
+  };
+}
+
 export function commentsLoaded(comments) {
   return {
     type: COMMENTS_LOADED,
     comments,
-  };
-}
-
-export function articleLoadingError() {
-  return {
-    type: LOAD_ARTICLE_ERROR,
   };
 }
 

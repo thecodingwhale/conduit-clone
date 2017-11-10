@@ -5,6 +5,7 @@ import {
   articleLoaded,
   commentsLoaded,
   articleLoadingError,
+  commentsLoadingError,
 } from '../actions';
 
 describe('articleReducer', () => {
@@ -66,5 +67,12 @@ describe('articleReducer', () => {
       .setIn(['article', 'error'], true)
       .setIn(['article', 'fetching'], false);
     expect(articleReducer(state, articleLoadingError())).toEqual(expectedResult);
+  });
+
+  it('should handle the commentsLoadingError action correctly', () => {
+    const expectedResult = state
+      .setIn(['comments', 'error'], true)
+      .setIn(['comments', 'fetching'], false);
+    expect(articleReducer(state, commentsLoadingError())).toEqual(expectedResult);
   });
 });
