@@ -48,9 +48,11 @@ describe('<Article />', () => {
     const component = shallow(
       <Article
         onFetchArticle={() => {}}
-        article={{}}
-        error={false}
-        fetching
+        article={{
+          error: false,
+          fetching: true,
+          data: {},
+        }}
       />
     );
     const expectedComponent = (
@@ -59,7 +61,11 @@ describe('<Article />', () => {
       </Container>
     );
     expect(component.contains(expectedComponent)).toEqual(true);
-    component.setProps({ fetching: false });
+    component.setProps({
+      article: {
+        fetching: false,
+      },
+    });
     expect(component.find(Loader).length).toEqual(0);
   });
 
@@ -68,8 +74,11 @@ describe('<Article />', () => {
     mount(
       <Article
         onFetchArticle={onFetchArticleSpy}
-        error={false}
-        fetching={false}
+        article={{
+          fetching: false,
+          error: false,
+          data: {},
+        }}
         match={{
           params: {
             slug: 'foo',
@@ -84,8 +93,11 @@ describe('<Article />', () => {
     const component = shallow(
       <Article
         onFetchArticle={() => {}}
-        fetching={false}
-        error
+        article={{
+          fetching: false,
+          error: true,
+          data: {},
+        }}
       />
     );
     const expectedComponent = (
@@ -122,9 +134,11 @@ describe('<Article />', () => {
     const component = shallow(
       <Article
         onFetchArticle={() => {}}
-        fetching={false}
-        error={false}
-        article={fixture}
+        article={{
+          fetching: false,
+          error: false,
+          data: fixture,
+        }}
       />
     );
     const expectedComponent = (

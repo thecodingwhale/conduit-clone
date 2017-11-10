@@ -14,7 +14,11 @@ import {
 const initialState = fromJS({
   error: false,
   fetching: true,
-  article: null,
+  article: {
+    error: false,
+    fetching: true,
+    data: {},
+  },
   comments: [],
 });
 
@@ -22,16 +26,17 @@ function articleReducer(state = initialState, action) {
   switch (action.type) {
     case ARTICLE_LOADED:
       return state
-        .set('fetching', false)
-        .set('article', action.article);
+        .setIn(['article', 'fetching'], false)
+        .setIn(['article', 'data'], fromJS(action.article));
+    case LOAD_ARTICLE_ERROR:
+      return state
+        .setIn(['article', 'error'], true)
+        .setIn(['article', 'fetching'], false);
+
     case COMMENTS_LOADED:
       return state
         .set('fetching', false)
         .set('comments', fromJS(action.comments));
-    case LOAD_ARTICLE_ERROR:
-      return state
-        .set('error', true)
-        .set('fetching', false);
     default:
       return state;
   }

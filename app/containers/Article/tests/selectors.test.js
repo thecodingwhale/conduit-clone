@@ -1,10 +1,10 @@
 import { fromJS } from 'immutable';
 import {
   selectArticleDomain,
-  makeSelectArticle,
+  makeSelectArticleData,
+  makeSelectArticleError,
+  makeSelectArticleFetching,
   makeSelectComments,
-  makeSelectError,
-  makeSelectFetching,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -19,17 +19,51 @@ describe('selectArticleDomain', () => {
   });
 });
 
-describe('makeSelectArticle', () => {
-  const selectArticle = makeSelectArticle();
+describe('makeSelectArticleData', () => {
+  const selectArticle = makeSelectArticleData();
   it('should select the expected state from article state', () => {
-    const fixture = null;
+    const fixture = {};
     const articleStateSelector = fromJS({
-      article: fixture,
+      article: {
+        data: fixture,
+      },
     });
     const mockedState = fromJS({
       article: articleStateSelector,
     });
     expect(selectArticle(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectArticleError', () => {
+  const errorSelector = makeSelectArticleError();
+  it('should select the expected error state from article state', () => {
+    const fixture = false;
+    const articleState = fromJS({
+      article: {
+        error: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(errorSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectArticleFetching', () => {
+  const fetchingSelector = makeSelectArticleFetching();
+  it('should select the expected fetching state from article state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      article: {
+        fetching: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(fetchingSelector(mockedState)).toEqual(fixture);
   });
 });
 
@@ -46,33 +80,5 @@ describe('makeSelectComments', () => {
       article: articleStateSelector,
     });
     expect(selectComments(mockedState)).toEqual(fixture);
-  });
-});
-
-describe('makeSelectError', () => {
-  const errorSelector = makeSelectError();
-  it('should select the expected error state from article state', () => {
-    const fixture = false;
-    const articleState = fromJS({
-      error: fixture,
-    });
-    const mockedState = fromJS({
-      article: articleState,
-    });
-    expect(errorSelector(mockedState)).toEqual(fixture);
-  });
-});
-
-describe('makeSelectFetching', () => {
-  const fetchingSelector = makeSelectFetching();
-  it('should select the expected fetching state from article state', () => {
-    const fixture = true;
-    const articleState = fromJS({
-      fetching: fixture,
-    });
-    const mockedState = fromJS({
-      article: articleState,
-    });
-    expect(fetchingSelector(mockedState)).toEqual(fixture);
   });
 });
