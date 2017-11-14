@@ -47,15 +47,9 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
     let content;
     if (!fetching) {
       if (!error && !isEmpty(data)) {
-        const { bio, following, image, username } = data;
         content = (
           <div>
-            <AuthorBanner
-              bio={bio}
-              following={following}
-              image={image}
-              username={username}
-            />
+            <AuthorBanner author={data} />
           </div>
         );
       } else {
