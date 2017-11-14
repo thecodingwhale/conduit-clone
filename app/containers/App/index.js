@@ -16,6 +16,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import Home from 'containers/Home/Loadable';
 import Article from 'containers/Article/Loadable';
+import Author from 'containers/Author/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 
@@ -26,6 +27,7 @@ export default function App() {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/article/:slug" component={Article} />
+        <Route path="/author/:username" component={Author} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>
