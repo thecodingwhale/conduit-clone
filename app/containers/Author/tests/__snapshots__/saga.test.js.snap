@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defaultSaga Saga should dispatch the authorProfileLoadingError action if it requests throws an error 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "https://conduit.productionready.io/api/profiles/john_doe",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`defaultSaga Saga should dispatch the authorProfileLoadingError action if it requests throws an error 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "profile": undefined,
+      "type": "app/Author/AUTHOR_PROFILE_LOADED",
+    },
+    "channel": null,
+  },
+}
+`;
