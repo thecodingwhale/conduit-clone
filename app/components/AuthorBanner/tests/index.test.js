@@ -16,12 +16,7 @@ const fixture = {
 };
 
 const component = shallow(
-  <AuthorBanner
-    bio={fixture.bio}
-    following={fixture.following}
-    image={fixture.image}
-    username={fixture.username}
-  />
+  <AuthorBanner author={fixture} />
 );
 
 describe('<AuthorBanner />', () => {
@@ -41,18 +36,24 @@ describe('<AuthorBanner />', () => {
 
   it('should should not render bio if its empty or null', () => {
     component.setProps({
-      bio: null,
+      author: {
+        bio: null,
+      },
     });
     expect(component.find('p').length).toEqual(0);
     component.setProps({
-      bio: '',
+      author: {
+        bio: '',
+      },
     });
     expect(component.find('p').length).toEqual(0);
   });
 
   it('should see a Unfollow button when following prop sets to false', () => {
     component.setProps({
-      following: false,
+      author: {
+        following: false,
+      },
     });
     expect(component.contains(<FormattedMessage {...messages.unfollow} />)).toEqual(true);
   });

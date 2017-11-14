@@ -14,7 +14,7 @@ import Wrapper from './Wrapper';
 
 class AuthorBanner extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   render() {
-    const { bio, following, image, username } = this.props;
+    const { bio, following, image, username } = this.props.author;
     const setFollowingText = following ? <FormattedMessage {...messages.follow} /> : <FormattedMessage {...messages.unfollow} />;
     const renderBio = (!bio || bio === '') ? null : (
       <p>{bio}</p>
@@ -32,6 +32,17 @@ class AuthorBanner extends React.PureComponent { // eslint-disable-line react/pr
   }
 }
 
-AuthorBanner.propTypes = AuthorPropTypes;
+AuthorBanner.defaultProps = {
+  author: {
+    bio: null,
+    following: false,
+    image: '',
+    username: '',
+  },
+};
+
+AuthorBanner.propTypes = {
+  author: AuthorPropTypes,
+};
 
 export default AuthorBanner;
