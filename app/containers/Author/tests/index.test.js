@@ -4,11 +4,17 @@ import { shallow, mount } from 'enzyme';
 
 import { Container, Alert } from 'reactstrap';
 import Loader from 'components/Loader';
-
+import AuthorBanner from 'components/AuthorBanner';
 import { Author, mapDispatchToProps } from '../index';
 import { fetchAuthorProfile } from '../actions';
 
 const username = '@john_doe';
+const author = {
+  bio: 'sample biography',
+  following: true,
+  image: 'sample.png',
+  username: '@foobar',
+};
 const renderedComponent = shallow(
   <Author
     onFetchAuthorProfile={() => {}}
@@ -20,12 +26,7 @@ const renderedComponent = shallow(
     author={{
       fetching: true,
       error: false,
-      data: {
-        bio: 'sample biography',
-        following: true,
-        image: 'sample.png',
-        username: '@foobar',
-      },
+      data: author,
     }}
   />
 );
@@ -65,9 +66,8 @@ describe('<Author />', () => {
     expect(renderedComponent.contains(expectedComponent)).toEqual(true);
     renderedComponent.setProps({
       author: {
-        data: {
-          fetching: false,
-        },
+        fetching: false,
+        data: {},
       },
     });
     expect(renderedComponent.find(Loader).length).toEqual(0);
@@ -92,6 +92,19 @@ describe('<Author />', () => {
         error: true,
       },
     });
+    expect(renderedComponent.contains(expectedComponent)).toEqual(true);
+  });
+  it('should render <AuthorBanner /> component', () => {
+    renderedComponent.setProps({
+      author: {
+        fetching: false,
+        error: false,
+        data: author,
+      },
+    });
+    const expectedComponent = (
+      <AuthorBanner author={author} />
+    );
     expect(renderedComponent.contains(expectedComponent)).toEqual(true);
   });
 });

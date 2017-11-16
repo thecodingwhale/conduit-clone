@@ -21,7 +21,11 @@ import { BASE_LIMIT, getUrlParams } from 'utils/url';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
-import { fetchArticles } from './actions';
+import {
+  fetchArticles,
+  fetchArticlesByAuthor,
+  fetchArticlesFavoritedByAuthor,
+  } from './actions';
 import { makeSelectPosts, makeSelectError, makeSelectFetching, makeSelectPageCount } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -33,22 +37,29 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     this.onPageChange = this.onPageChange.bind(this);
   }
   componentDidMount() {
-    const page = getUrlParams(this.props.location.search, 'page');
-    const tag = getUrlParams(this.props.location.search, 'tag');
-    this.props.onFetchArticles(page, tag);
+    this.getArticles();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const page = getUrlParams(nextProps.location.search, 'page');
-      const tag = getUrlParams(nextProps.location.search, 'tag');
-      this.props.onFetchArticles(page, tag);
+      this.getArticles();
     }
   }
   onPageChange(data) {
     const setActivePage = data.selected + 1;
-    const tag = getUrlParams(this.props.location.search, 'tag');
-    this.props.onFetchArticles(setActivePage, tag);
-    this.props.onPageChange(setActivePage, tag);
+    this.props.onPageChange(this.preparePageUrl(setActivePage));
+  }
+  getArticles() {
+    const page = getUrlParams(this.props.location.search, 'page');
+    if (this.props.match.params.username) {
+      if (this.checkFavoritedUrlParams()) {
+        this.props.onFetchArticlesFavoritedByAuthor(page, this.props.match.params.username);
+      } else {
+        this.props.onFetchArticlesByAuthor(page, this.props.match.params.username);
+      }
+    } else {
+      const tag = getUrlParams(this.props.location.search, 'tag');
+      this.props.onFetchArticles(page, tag);
+    }
   }
   getPageCount() {
     const { pageCount } = this.props;
@@ -57,6 +68,24 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
   getForcePage() {
     const setForcePage = getUrlParams(this.props.location.search, 'page');
     return parseInt(setForcePage, 10) - 1;
+  }
+  preparePageUrl(activePage) {
+    const filters = `page=${activePage}`;
+    let pageLink = `/?${filters}`;
+    if (this.props.match.params.username) {
+      pageLink = this.checkFavoritedUrlParams()
+        ? `/author/${this.props.match.params.username}?favorited&${filters}`
+        : `/author/${this.props.match.params.username}?${filters}`;
+    } else {
+      const tag = getUrlParams(this.props.location.search, 'tag');
+      if (tag) {
+        pageLink = `/?tag=${tag}&${filters}`;
+      }
+    }
+    return pageLink;
+  }
+  checkFavoritedUrlParams() {
+    return this.props.location.search && this.props.location.search.match(/\?favorited/g).length === 1;
   }
   renderPost(post, index) {
     const { author, title, description, createdAt, tagList, slug, favoritesCount, favorited } = post;
@@ -171,9 +200,16 @@ Articles.defaultProps = {
 
 Articles.propTypes = {
   onFetchArticles: PropTypes.func.isRequired,
+  onFetchArticlesFavoritedByAuthor: PropTypes.func,
+  onFetchArticlesByAuthor: PropTypes.func,
   onPageChange: PropTypes.func.isRequired,
   location: PropTypes.shape({
     search: PropTypes.string,
+  }),
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      username: PropTypes.string,
+    }),
   }),
   error: PropTypes.bool.isRequired,
   posts: PropTypes.array.isRequired,
@@ -193,10 +229,15 @@ export function mapDispatchToProps(dispatch) {
     onFetchArticles: (page, tag) => {
       dispatch(fetchArticles(page, tag));
     },
-    onPageChange: (page, tag) => {
-      if (page) {
-        const setTag = tag ? `tag=${tag}&` : '';
-        dispatch(push(`/?${setTag}page=${page}`));
+    onFetchArticlesByAuthor: (page, username) => {
+      dispatch(fetchArticlesByAuthor(page, username));
+    },
+    onFetchArticlesFavoritedByAuthor: (page, username) => {
+      dispatch(fetchArticlesFavoritedByAuthor(page, username));
+    },
+    onPageChange: (link) => {
+      if (link) {
+        dispatch(push(link));
       }
     },
   };
