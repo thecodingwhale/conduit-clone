@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getRepos Saga should dispatch the articlesLoaded action if it requests the data successfully 1`] = `
+exports[`getRepos Saga should dispatch the articlesLoadingError action if api request failed 1`] = `
 Object {
   "@@redux-saga/IO": true,
   "CALL": Object {
@@ -13,7 +13,7 @@ Object {
 }
 `;
 
-exports[`getRepos Saga should dispatch the articlesLoaded action if it requests the data successfully 2`] = `
+exports[`getRepos Saga should dispatch the articlesLoadingError action if api request failed 2`] = `
 Object {
   "@@redux-saga/IO": true,
   "PUT": Object {
@@ -23,6 +23,32 @@ Object {
       "type": "app/Articles/ARTICLES_LOADED",
     },
     "channel": null,
+  },
+}
+`;
+
+exports[`getRepos Saga should dispatch the articlesLoadingError action if api request failed 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "https://conduit.productionready.io/api/articles?author=john_doe&limit=10&offset=0",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`getRepos Saga should dispatch the articlesLoadingError action if api request failed 4`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "https://conduit.productionready.io/api/articles?favorited=john_doe&limit=10&offset=0",
+    ],
+    "context": null,
+    "fn": [Function],
   },
 }
 `;

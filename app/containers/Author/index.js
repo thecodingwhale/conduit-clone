@@ -18,6 +18,8 @@ import {
   Alert,
 } from 'reactstrap';
 
+import Articles from 'containers/Articles';
+
 import Loader from 'components/Loader';
 import AuthorBanner from 'components/AuthorBanner';
 
@@ -50,6 +52,7 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
         content = (
           <div>
             <AuthorBanner author={data} />
+            <Articles {...this.props} />
           </div>
         );
       } else {

@@ -8,7 +8,11 @@ import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
 import Wrapper from '../Wrapper';
 import { Articles, mapDispatchToProps } from '../index';
-import { fetchArticles } from '../actions';
+import {
+  fetchArticles,
+  fetchArticlesByAuthor,
+  fetchArticlesFavoritedByAuthor,
+} from '../actions';
 import { BASE_LIMIT } from '../../../utils/url';
 
 const samplePostData = [
@@ -94,6 +98,9 @@ describe('<Articles />', () => {
         location={{
           search: '?page=1',
         }}
+        match={{
+          params: {},
+        }}
         posts={samplePostData}
       />
     );
@@ -156,28 +163,6 @@ describe('<Articles />', () => {
     expect(component.contains(expectedComponent)).toEqual(true);
   });
 
-  it('should call onFetchArticles and onPageChange when <ReactPaginate /> onPageChange triggered', () => {
-    const onFetchArticlesSpy = jest.fn();
-    const onPageChangeSpy = jest.fn();
-
-    const component = shallow(
-      <Articles
-        fetching={false}
-        error={false}
-        onFetchArticles={onFetchArticlesSpy}
-        onPageChange={onPageChangeSpy}
-        location={{
-          search: '?page=100',
-        }}
-        posts={samplePostData}
-      />
-    );
-
-    component.find(ReactPaginate).props().onPageChange({ selected: 1 });
-    expect(onFetchArticlesSpy).toHaveBeenCalled();
-    expect(onPageChangeSpy).toHaveBeenCalled();
-  });
-
   it('should match the fixture for the location.search and forcePage props', () => {
     const searchPageParam = 3;
     const basePageCount = 500;
@@ -189,6 +174,9 @@ describe('<Articles />', () => {
         onPageChange={() => {}}
         location={{
           search: `?page=${searchPageParam}`,
+        }}
+        match={{
+          params: {},
         }}
         pageCount={basePageCount}
         posts={samplePostData}
@@ -204,6 +192,7 @@ describe('<Articles />', () => {
   it('should call componentWillReceiveProps', () => {
     const spy = jest.spyOn(Articles.prototype, 'componentWillReceiveProps');
     const onFetchArticlesSpy = jest.fn();
+
     const component = shallow(
       <Articles
         fetching={false}
@@ -213,6 +202,9 @@ describe('<Articles />', () => {
         location={{
           search: '?page=1',
         }}
+        match={{
+          params: {},
+        }}
         posts={samplePostData}
       />
     );
@@ -220,7 +212,7 @@ describe('<Articles />', () => {
     expect(spy).not.toHaveBeenCalled();
     component.setProps({
       location: {
-        search: '?tag=foo&page=1',
+        search: '?tag=foo&page=2',
       },
     });
     expect(spy).toHaveBeenCalled();
@@ -230,12 +222,144 @@ describe('<Articles />', () => {
     spy.mockRestore();
   });
 
+  it('should call onFetchArticlesFavoritedByAuthor', () => {
+    const onFetchArticlesFavoritedByAuthorSpy = jest.fn();
+    mount(
+      <Articles
+        fetching={false}
+        error={false}
+        onFetchArticles={() => {}}
+        onPageChange={() => {}}
+        onFetchArticlesFavoritedByAuthor={onFetchArticlesFavoritedByAuthorSpy}
+        location={{
+          search: '?favorited',
+        }}
+        match={{
+          params: {
+            username: '@john_doe',
+          },
+        }}
+        posts={samplePostData}
+      />
+    );
+    expect(onFetchArticlesFavoritedByAuthorSpy).toHaveBeenCalled();
+  });
+
+  it('should call onFetchArticlesByAuthor', () => {
+    const onFetchArticlesByAuthorSpy = jest.fn();
+    mount(
+      <Articles
+        fetching={false}
+        error={false}
+        onFetchArticles={() => {}}
+        onPageChange={() => {}}
+        onFetchArticlesByAuthor={onFetchArticlesByAuthorSpy}
+        location={{
+          search: '',
+        }}
+        match={{
+          params: {
+            username: '@john_doe',
+          },
+        }}
+        posts={samplePostData}
+      />
+    );
+    expect(onFetchArticlesByAuthorSpy).toHaveBeenCalled();
+  });
+
+  it('should prepare the page url', () => {
+    const component = shallow(
+      <Articles
+        fetching={false}
+        error={false}
+        onFetchArticles={() => {}}
+        onPageChange={() => {}}
+        onFetchArticlesByAuthor={() => {}}
+        location={{
+          search: '?page=1',
+        }}
+        match={{
+          params: {},
+        }}
+        posts={samplePostData}
+      />
+    );
+    expect(component.instance().preparePageUrl(2)).toEqual('/?page=2');
+
+    component.setProps({
+      location: {
+        search: '?tag=foo',
+      },
+    });
+    expect(component.instance().preparePageUrl(2)).toEqual('/?tag=foo&page=2');
+
+    component.setProps({
+      location: {
+        search: '',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
+      },
+    });
+    expect(component.instance().preparePageUrl(2)).toEqual('/author/@john_doe?page=2');
+
+    component.setProps({
+      location: {
+        search: '?favorited',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
+      },
+    });
+    expect(component.instance().preparePageUrl(2)).toEqual('/author/@john_doe?favorited&page=2');
+  });
+
+  describe('<ReactPaginate />', () => {
+    it('should call onFetchArticles and onPageChange when <ReactPaginate /> onPageChange triggered', () => {
+      const onFetchArticlesSpy = jest.fn();
+      const onPageChangeSpy = jest.fn();
+
+      const component = mount(
+        <Articles
+          fetching={false}
+          error={false}
+          onFetchArticles={onFetchArticlesSpy}
+          onPageChange={onPageChangeSpy}
+          location={{
+            search: '?page=1',
+          }}
+          match={{
+            params: {},
+          }}
+          posts={samplePostData}
+        />
+      );
+
+      component.find(ReactPaginate).props().onPageChange({ selected: 2 });
+      expect(onFetchArticlesSpy).toHaveBeenCalled();
+      expect(onPageChangeSpy).toHaveBeenCalled();
+    });
+  });
+
   describe('mapDispatchToProps', () => {
     describe('onFetchArticles', () => {
       it('should be injected', () => {
         const dispatch = jest.fn();
         const result = mapDispatchToProps(dispatch);
         expect(result.onFetchArticles).toBeDefined();
+      });
+      it('should dispatch fetchArticles when called', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        const page = 1;
+        const tag = 'foo';
+        result.onFetchArticles(page, tag);
+        expect(dispatch).toHaveBeenCalledWith(fetchArticles(page, tag));
       });
     });
 
@@ -245,30 +369,51 @@ describe('<Articles />', () => {
         const result = mapDispatchToProps(dispatch);
         expect(result.onPageChange).toBeDefined();
       });
+      it('should not dispatch onPageChange when called if page param is null', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        result.onPageChange();
+        expect(dispatch).not.toHaveBeenCalled();
+      });
+      it('should dispatch onPageChange when called', () => {
+        const page = 'link';
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        result.onPageChange(page);
+        expect(dispatch).toHaveBeenCalledWith(push(page));
+      });
     });
 
-    it('should dispatch fetchArticles when called', () => {
-      const dispatch = jest.fn();
-      const result = mapDispatchToProps(dispatch);
-      const page = 1;
-      const tag = 'foo';
-      result.onFetchArticles(page, tag);
-      expect(dispatch).toHaveBeenCalledWith(fetchArticles(page, tag));
+    describe('onFetchArticlesByAuthor', () => {
+      it('should be injected', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        expect(result.onFetchArticlesByAuthor).toBeDefined();
+      });
+      it('should dispatch fetchArticlesByAuthor when called', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        const page = 1;
+        const username = '@john_doe';
+        result.onFetchArticlesByAuthor(page, username);
+        expect(dispatch).toHaveBeenCalledWith(fetchArticlesByAuthor(page, username));
+      });
     });
 
-    it('should dispatch onPageChange when called', () => {
-      const page = 1;
-      const dispatch = jest.fn();
-      const result = mapDispatchToProps(dispatch);
-      result.onPageChange(page);
-      expect(dispatch).toHaveBeenCalledWith(push(`/?page=${page}`));
-    });
-
-    it('should not dispatch onPageChange when called if page param is null', () => {
-      const dispatch = jest.fn();
-      const result = mapDispatchToProps(dispatch);
-      result.onPageChange();
-      expect(dispatch).not.toHaveBeenCalled();
+    describe('onFetchArticlesFavoritedByAuthor', () => {
+      it('should be injected', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        expect(result.onFetchArticlesFavoritedByAuthor).toBeDefined();
+      });
+      it('should dispatch fetchArticlesFavoritedByAuthor when called', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        const page = 1;
+        const username = '@john_doe';
+        result.onFetchArticlesFavoritedByAuthor(page, username);
+        expect(dispatch).toHaveBeenCalledWith(fetchArticlesFavoritedByAuthor(page, username));
+      });
     });
   });
 });
