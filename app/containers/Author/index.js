@@ -6,18 +6,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import { isEmpty } from 'lodash';
-
-import {
-  Container,
-  Alert,
-} from 'reactstrap';
-
+import { Container, Alert, TabContent, Nav, NavItem, NavLink } from 'reactstrap';
 import Articles from 'containers/Articles';
 
 import Loader from 'components/Loader';
@@ -25,6 +21,7 @@ import AuthorBanner from 'components/AuthorBanner';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import { checkUrlParams } from 'utils/url';
 import {
   makeSelectAuthorData,
   makeSelectAuthorFetching,
@@ -36,10 +33,81 @@ import { fetchAuthorProfile } from './actions';
 import { AuthorPropTypes } from '../../PropTypesValues';
 
 export class Author extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      activeTab: '',
+    };
+  }
   componentDidMount() {
     this.props.onFetchAuthorProfile(this.props.match.params.username);
+    this.setActiveTab();
   }
-
+  setActiveTab() {
+    if (this.state.activeTab === '' && !checkUrlParams(/\?favorited/g, this.props.location.search)) {
+      this.setState({
+        activeTab: '1',
+      });
+    }
+  }
+  setActiveClass(tab) {
+    if (checkUrlParams(/\?favorited/g, this.props.location.search) && tab === '2') {
+      return 'active';
+    }
+    return this.state.activeTab === tab && tab !== '2' ? 'active' : '';
+  }
+  toggle(tab, callback) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab,
+      }, () => {
+        callback();
+      });
+    }
+  }
+  renderTabs() {
+    return (
+      <Container>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={this.setActiveClass('1')}
+              onClick={() => {
+                this.toggle('1', () => {
+                  this.props.onPageChange(`/author/${this.props.match.params.username}`);
+                });
+              }}
+            >
+              My Articles
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={this.setActiveClass('2')}
+              onClick={() => {
+                this.toggle('2', () => {
+                  this.props.onPageChange(`/author/${this.props.match.params.username}?favorited`);
+                });
+              }}
+            >
+              Favorited Articles
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent>
+          <Articles
+            filters={{
+              search: this.props.location.search,
+              username: this.props.match.params.username,
+            }}
+            {...this.props}
+          />
+        </TabContent>
+      </Container>
+    );
+  }
   render() {
     const {
       fetching,
@@ -52,7 +120,7 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
         content = (
           <div>
             <AuthorBanner author={data} />
-            <Articles {...this.props} />
+            {this.renderTabs()}
           </div>
         );
       } else {
@@ -86,10 +154,14 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
 
 Author.propTypes = {
   onFetchAuthorProfile: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func,
   author: PropTypes.shape({
     fetching: PropTypes.bool,
     error: PropTypes.bool,
     data: AuthorPropTypes,
+  }),
+  location: PropTypes.shape({
+    search: PropTypes.string,
   }),
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -110,6 +182,11 @@ export function mapDispatchToProps(dispatch) {
   return {
     onFetchAuthorProfile: (username) => {
       dispatch(fetchAuthorProfile(username));
+    },
+    onPageChange: (url) => {
+      if (url) {
+        dispatch(push(url));
+      }
     },
   };
 }

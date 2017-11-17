@@ -1,8 +1,9 @@
 import React from 'react';
+import { push } from 'react-router-redux';
 import { Helmet } from 'react-helmet';
 import { shallow, mount } from 'enzyme';
 
-import { Container, Alert } from 'reactstrap';
+import { Container, Alert, NavLink } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorBanner from 'components/AuthorBanner';
 import { Author, mapDispatchToProps } from '../index';
@@ -18,6 +19,9 @@ const author = {
 const renderedComponent = shallow(
   <Author
     onFetchAuthorProfile={() => {}}
+    location={{
+      search: '',
+    }}
     match={{
       params: {
         username,
@@ -37,6 +41,9 @@ describe('<Author />', () => {
     mount(
       <Author
         onFetchAuthorProfile={onFetchAuthorProfileSpy}
+        location={{
+          search: '',
+        }}
         match={{
           params: {
             username,
@@ -107,6 +114,20 @@ describe('<Author />', () => {
     );
     expect(renderedComponent.contains(expectedComponent)).toEqual(true);
   });
+  it('should set it active when user tries to click the corresponding tab', () => {
+    const onPageChangeSpy = jest.fn();
+    renderedComponent.setProps({
+      onPageChange: onPageChangeSpy,
+    });
+
+    expect(renderedComponent.instance().state.activeTab).toEqual('');
+    renderedComponent.find(NavLink).at(0).simulate('click');
+    expect(renderedComponent.instance().state.activeTab).toEqual('1');
+    expect(onPageChangeSpy).toHaveBeenCalled();
+
+    renderedComponent.find(NavLink).at(1).simulate('click');
+    expect(renderedComponent.instance().state.activeTab).toEqual('2');
+  });
 });
 
 describe('mapDispatchToProps', () => {
@@ -121,6 +142,26 @@ describe('mapDispatchToProps', () => {
       const result = mapDispatchToProps(dispatch);
       result.onFetchAuthorProfile(username);
       expect(dispatch).toHaveBeenCalledWith(fetchAuthorProfile(username));
+    });
+  });
+  describe('onPageChange', () => {
+    it('should be injected', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      expect(result.onPageChange).toBeDefined();
+    });
+    it('should not dispatch onPageChange when called if page param is null', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      result.onPageChange();
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+    it('should dispatch onPageChange when called', () => {
+      const page = 'link';
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      result.onPageChange(page);
+      expect(dispatch).toHaveBeenCalledWith(push(page));
     });
   });
 });

@@ -199,6 +199,10 @@ describe('<Articles />', () => {
         error={false}
         onFetchArticles={onFetchArticlesSpy}
         onPageChange={() => {}}
+        filters={{
+          username: '',
+          search: '',
+        }}
         location={{
           search: '?page=1',
         }}
@@ -276,11 +280,17 @@ describe('<Articles />', () => {
         onFetchArticles={() => {}}
         onPageChange={() => {}}
         onFetchArticlesByAuthor={() => {}}
+        filters={{
+          username: '',
+          search: '',
+        }}
         location={{
           search: '?page=1',
         }}
         match={{
-          params: {},
+          params: {
+            username: '',
+          },
         }}
         posts={samplePostData}
       />
