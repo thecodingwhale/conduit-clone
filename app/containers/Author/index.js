@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import styled from 'styled-components';
 
 import { isEmpty } from 'lodash';
 import { Container, Alert, TabContent, Nav, NavItem, NavLink } from 'reactstrap';
@@ -31,6 +32,16 @@ import reducer from './reducer';
 import saga from './saga';
 import { fetchAuthorProfile } from './actions';
 import { AuthorPropTypes } from '../../PropTypesValues';
+
+const BannerWrapper = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const ArticlesWrapper = styled.div`
+  padding: 16px 8px;
+  border: 1px solid #e1e1e1;
+  border-top: 0px;
+`;
 
 export class Author extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -97,13 +108,15 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
           </NavItem>
         </Nav>
         <TabContent>
-          <Articles
-            filters={{
-              search: this.props.location.search,
-              username: this.props.match.params.username,
-            }}
-            {...this.props}
-          />
+          <ArticlesWrapper>
+            <Articles
+              filters={{
+                search: this.props.location.search,
+                username: this.props.match.params.username,
+              }}
+              {...this.props}
+            />
+          </ArticlesWrapper>
         </TabContent>
       </Container>
     );
@@ -119,7 +132,9 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
       if (!error && !isEmpty(data)) {
         content = (
           <div>
-            <AuthorBanner author={data} />
+            <BannerWrapper>
+              <AuthorBanner author={data} />
+            </BannerWrapper>
             {this.renderTabs()}
           </div>
         );

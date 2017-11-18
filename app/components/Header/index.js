@@ -7,7 +7,6 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
-
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);

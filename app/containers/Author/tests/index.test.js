@@ -165,6 +165,17 @@ describe('<Author />', () => {
     component.instance().setActiveTab();
     expect(component.find(NavLink).at(0).hasClass('active')).toEqual(true);
   });
+
+  it('should execute the callback function if the old and new this.state.activeTab doesn\'t match', () => {
+    const callbackSpy = jest.fn();
+    renderedComponent.setState({
+      activeTab: '2',
+    });
+    renderedComponent.instance().toggle('2', callbackSpy);
+    expect(callbackSpy).not.toHaveBeenCalled();
+    renderedComponent.instance().toggle('1', callbackSpy);
+    expect(callbackSpy).toHaveBeenCalled();
+  });
 });
 
 describe('mapDispatchToProps', () => {

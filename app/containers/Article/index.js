@@ -54,6 +54,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         />
         <hr />
         <div dangerouslySetInnerHTML={{ __html: body }} />
+        <hr />
         <Comments error={error} fetching={fetching} comments={data} />
       </div>
     );

@@ -230,6 +230,20 @@ describe('<Articles />', () => {
       },
     });
     expect(onFetchArticlesByAuthorSpy).toHaveBeenCalled();
+    component.setProps({
+      onFetchArticles: onFetchArticlesSpy,
+    });
+    component.instance().componentWillReceiveProps({
+      location: {
+        search: '?page=2',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
+      },
+    });
+    expect(onFetchArticlesSpy).toHaveBeenCalled();
   });
 
   it('should call onFetchArticlesFavoritedByAuthor', () => {

@@ -19,6 +19,7 @@ import Article from 'containers/Article/Loadable';
 import Author from 'containers/Author/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/author/:username" component={Author} />
         <Route component={NotFoundPage} />
       </Switch>
+      <Footer />
     </div>
   );
 }
