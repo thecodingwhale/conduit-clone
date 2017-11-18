@@ -44,8 +44,15 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      const { username, search } = nextProps.filters;
-      this.getArticles(username, search);
+      if (nextProps.filters) {
+        const { username, search } = nextProps.filters;
+        this.getArticles(username, search);
+      } else {
+        this.getArticles(
+          nextProps.match.params.username,
+          nextProps.location.search,
+        );
+      }
     }
   }
   onPageChange(data) {
@@ -216,7 +223,7 @@ Articles.propTypes = {
     }),
   }),
   error: PropTypes.bool.isRequired,
-  posts: PropTypes.array.isRequired,
+  posts: PropTypes.object.isRequired,
   fetching: PropTypes.bool.isRequired,
   pageCount: PropTypes.number.isRequired,
 };

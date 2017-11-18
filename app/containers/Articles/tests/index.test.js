@@ -190,19 +190,18 @@ describe('<Articles />', () => {
   });
 
   it('should call componentWillReceiveProps', () => {
-    const spy = jest.spyOn(Articles.prototype, 'componentWillReceiveProps');
     const onFetchArticlesSpy = jest.fn();
+    const onFetchArticlesFavoritedByAuthorSpy = jest.fn();
+    const onFetchArticlesByAuthorSpy = jest.fn();
 
-    const component = shallow(
+    const component = mount(
       <Articles
         fetching={false}
         error={false}
         onFetchArticles={onFetchArticlesSpy}
+        onFetchArticlesFavoritedByAuthor={onFetchArticlesFavoritedByAuthorSpy}
+        onFetchArticlesByAuthor={onFetchArticlesByAuthorSpy}
         onPageChange={() => {}}
-        filters={{
-          username: '',
-          search: '',
-        }}
         location={{
           search: '?page=1',
         }}
@@ -212,18 +211,24 @@ describe('<Articles />', () => {
         posts={samplePostData}
       />
     );
-
-    expect(spy).not.toHaveBeenCalled();
+    expect(onFetchArticlesSpy).toHaveBeenCalled();
     component.setProps({
       location: {
-        search: '?tag=foo&page=2',
+        search: '?favorited',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
       },
     });
-    expect(spy).toHaveBeenCalled();
-    expect(onFetchArticlesSpy).toHaveBeenCalled();
-
-    spy.mockReset();
-    spy.mockRestore();
+    expect(onFetchArticlesFavoritedByAuthorSpy).toHaveBeenCalled();
+    component.setProps({
+      location: {
+        search: '?page=1',
+      },
+    });
+    expect(onFetchArticlesByAuthorSpy).toHaveBeenCalled();
   });
 
   it('should call onFetchArticlesFavoritedByAuthor', () => {

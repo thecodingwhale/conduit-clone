@@ -127,6 +127,43 @@ describe('<Author />', () => {
 
     renderedComponent.find(NavLink).at(1).simulate('click');
     expect(renderedComponent.instance().state.activeTab).toEqual('2');
+
+    renderedComponent.setProps({
+      location: {
+        search: '?favorited',
+      },
+    });
+    renderedComponent.setState({
+      activeTab: '1',
+    });
+    expect(renderedComponent.find(NavLink).at(0).hasClass('active')).toEqual(true);
+    renderedComponent.setState({
+      activeTab: '2',
+    });
+    expect(renderedComponent.find(NavLink).at(1).hasClass('active')).toEqual(true);
+  });
+
+  it('should set the first tab as active by default', () => {
+    const component = shallow(
+      <Author
+        onFetchAuthorProfile={() => {}}
+        location={{
+          search: '',
+        }}
+        match={{
+          params: {
+            username,
+          },
+        }}
+        author={{
+          fetching: false,
+          error: false,
+          data: author,
+        }}
+      />
+    );
+    component.instance().setActiveTab();
+    expect(component.find(NavLink).at(0).hasClass('active')).toEqual(true);
   });
 });
 
