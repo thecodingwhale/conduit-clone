@@ -4,9 +4,9 @@ import { shallow } from 'enzyme';
 import Avatar from '../index';
 
 describe('<Avatar />', () => {
-  it('foo', () => {
+  it('should return default avatar', () => {
     const renderedComponent = shallow(<Avatar />);
-    expect(renderedComponent.props().src).toEqual('https://static.productionready.io/images/smiley-cyrus.jpg');
+    expect(renderedComponent.props().src).toEqual('//static.productionready.io/images/smiley-cyrus.jpg');
   });
 
   it('should match the expected props', () => {

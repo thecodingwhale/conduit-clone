@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import { Alert, Card, CardBody, CardFooter, CardText } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
-import { Comments } from '../Comments';
+import { Comments, CardWrapper } from '../Comments';
 import { fixture } from './sampleData';
 
 describe('<Comments />', () => {
@@ -51,17 +51,19 @@ describe('<Comments />', () => {
     const expectedComponent = (
       <div>
         {fixture.comments.map((comment) => (
-          <Card key={comment.id}>
-            <CardBody>
-              <CardText>{comment.body}</CardText>
-            </CardBody>
-            <CardFooter>
-              <AuthorCard
-                author={comment.author}
-                createdAt={new Date(comment.createdAt).toDateString()}
-              />
-            </CardFooter>
-          </Card>
+          <CardWrapper key={comment.id}>
+            <Card>
+              <CardBody>
+                <CardText>{comment.body}</CardText>
+              </CardBody>
+              <CardFooter>
+                <AuthorCard
+                  author={comment.author}
+                  createdAt={new Date(comment.createdAt).toDateString()}
+                />
+              </CardFooter>
+            </Card>
+          </CardWrapper>
         ))}
       </div>
     );

@@ -15,7 +15,7 @@ function Avatar(props) {
 }
 
 Avatar.defaultProps = {
-  image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+  image: '//static.productionready.io/images/smiley-cyrus.jpg',
 };
 
 Avatar.propTypes = {
