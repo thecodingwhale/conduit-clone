@@ -8,18 +8,19 @@ const Image = styled.img`
   height: 50px;
 `;
 
+export const avatarImage = '//static.productionready.io/images/smiley-cyrus.jpg';
+
 function Avatar(props) {
+  const { image } = props;
+  const defaultImage = (image && image !== '') ? image : avatarImage;
+
   return (
-    <Image src={props.image} />
+    <Image src={defaultImage} />
   );
 }
 
-Avatar.defaultProps = {
-  image: '//static.productionready.io/images/smiley-cyrus.jpg',
-};
-
 Avatar.propTypes = {
-  image: PropTypes.string.isRequired,
+  image: PropTypes.string,
 };
 
 export default Avatar;

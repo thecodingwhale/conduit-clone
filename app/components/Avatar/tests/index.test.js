@@ -1,12 +1,16 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import Avatar from '../index';
+import Avatar, { avatarImage } from '../index';
 
 describe('<Avatar />', () => {
   it('should return default avatar', () => {
     const renderedComponent = shallow(<Avatar />);
-    expect(renderedComponent.props().src).toEqual('//static.productionready.io/images/smiley-cyrus.jpg');
+    expect(renderedComponent.props().src).toEqual(avatarImage);
+    renderedComponent.setProps({
+      image: '',
+    });
+    expect(renderedComponent.props().src).toEqual(avatarImage);
   });
 
   it('should match the expected props', () => {
