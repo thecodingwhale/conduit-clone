@@ -1,5 +1,6 @@
 import React from 'react';
 import { push } from 'react-router-redux';
+import { Helmet } from 'react-helmet';
 import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
 import { Alert, Card, CardTitle, CardText, CardLink, Row, Col, Button } from 'reactstrap';
@@ -332,6 +333,24 @@ describe('<Articles />', () => {
       },
     });
     expect(component.instance().preparePageUrl(2)).toEqual('/author/@john_doe?favorited&page=2');
+  });
+
+  it('should not render the default <Helmet /> when this.props.filters have value', () => {
+    const component = shallow(
+      <Articles
+        fetching={false}
+        error={false}
+        filters={{
+          username: '@john_doe',
+          search: '?favorited',
+        }}
+        onFetchArticles={() => {}}
+        onPageChange={() => {}}
+        posts={[]}
+      />
+    );
+
+    expect(component.find(Helmet).length).toEqual(0);
   });
 
   describe('<ReactPaginate />', () => {

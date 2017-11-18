@@ -137,7 +137,6 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
       </Wrapper>
     );
   }
-
   renderPosts() {
     return (
       <div>
@@ -166,6 +165,15 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
       </div>
     );
   }
+  renderHelmet() {
+    if (this.props.filters) return null;
+    return (
+      <Helmet>
+        <title>Articles</title>
+        <meta name="description" content="Description of Articles" />
+      </Helmet>
+    );
+  }
   render() {
     const { fetching, error, posts } = this.props;
     let content = <Loader />;
@@ -190,10 +198,7 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     }
     return (
       <div>
-        <Helmet>
-          <title>Articles</title>
-          <meta name="description" content="Description of Articles" />
-        </Helmet>
+        {this.renderHelmet()}
         {content}
       </div>
     );
