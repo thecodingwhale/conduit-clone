@@ -1,5 +1,6 @@
 import React from 'react';
 import { push } from 'react-router-redux';
+import { Helmet } from 'react-helmet';
 import { shallow, mount } from 'enzyme';
 import ReactPaginate from 'react-paginate';
 import { Alert, Card, CardTitle, CardText, CardLink, Row, Col, Button } from 'reactstrap';
@@ -190,14 +191,17 @@ describe('<Articles />', () => {
   });
 
   it('should call componentWillReceiveProps', () => {
-    const spy = jest.spyOn(Articles.prototype, 'componentWillReceiveProps');
     const onFetchArticlesSpy = jest.fn();
+    const onFetchArticlesFavoritedByAuthorSpy = jest.fn();
+    const onFetchArticlesByAuthorSpy = jest.fn();
 
-    const component = shallow(
+    const component = mount(
       <Articles
         fetching={false}
         error={false}
         onFetchArticles={onFetchArticlesSpy}
+        onFetchArticlesFavoritedByAuthor={onFetchArticlesFavoritedByAuthorSpy}
+        onFetchArticlesByAuthor={onFetchArticlesByAuthorSpy}
         onPageChange={() => {}}
         location={{
           search: '?page=1',
@@ -208,18 +212,38 @@ describe('<Articles />', () => {
         posts={samplePostData}
       />
     );
-
-    expect(spy).not.toHaveBeenCalled();
+    expect(onFetchArticlesSpy).toHaveBeenCalled();
     component.setProps({
       location: {
-        search: '?tag=foo&page=2',
+        search: '?favorited',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
       },
     });
-    expect(spy).toHaveBeenCalled();
+    expect(onFetchArticlesFavoritedByAuthorSpy).toHaveBeenCalled();
+    component.setProps({
+      location: {
+        search: '?page=1',
+      },
+    });
+    expect(onFetchArticlesByAuthorSpy).toHaveBeenCalled();
+    component.setProps({
+      onFetchArticles: onFetchArticlesSpy,
+    });
+    component.instance().componentWillReceiveProps({
+      location: {
+        search: '?page=2',
+      },
+      match: {
+        params: {
+          username: '@john_doe',
+        },
+      },
+    });
     expect(onFetchArticlesSpy).toHaveBeenCalled();
-
-    spy.mockReset();
-    spy.mockRestore();
   });
 
   it('should call onFetchArticlesFavoritedByAuthor', () => {
@@ -276,11 +300,17 @@ describe('<Articles />', () => {
         onFetchArticles={() => {}}
         onPageChange={() => {}}
         onFetchArticlesByAuthor={() => {}}
+        filters={{
+          username: '',
+          search: '',
+        }}
         location={{
           search: '?page=1',
         }}
         match={{
-          params: {},
+          params: {
+            username: '',
+          },
         }}
         posts={samplePostData}
       />
@@ -317,6 +347,24 @@ describe('<Articles />', () => {
       },
     });
     expect(component.instance().preparePageUrl(2)).toEqual('/author/@john_doe?favorited&page=2');
+  });
+
+  it('should not render the default <Helmet /> when this.props.filters have value', () => {
+    const component = shallow(
+      <Articles
+        fetching={false}
+        error={false}
+        filters={{
+          username: '@john_doe',
+          search: '?favorited',
+        }}
+        onFetchArticles={() => {}}
+        onPageChange={() => {}}
+        posts={[]}
+      />
+    );
+
+    expect(component.find(Helmet).length).toEqual(0);
   });
 
   describe('<ReactPaginate />', () => {

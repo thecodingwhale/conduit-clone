@@ -17,7 +17,7 @@ import { Alert, Card, CardTitle, CardText, CardLink, Button, Row, Col } from 're
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { BASE_LIMIT, getUrlParams } from 'utils/url';
+import { BASE_LIMIT, getUrlParams, checkUrlParams } from 'utils/url';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
@@ -37,27 +37,38 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     this.onPageChange = this.onPageChange.bind(this);
   }
   componentDidMount() {
-    this.getArticles();
+    this.getArticles(
+      this.props.match.params.username,
+      this.props.location.search,
+    );
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location.search !== this.props.location.search) {
-      this.getArticles();
+      if (nextProps.filters) {
+        const { username, search } = nextProps.filters;
+        this.getArticles(username, search);
+      } else {
+        this.getArticles(
+          nextProps.match.params.username,
+          nextProps.location.search,
+        );
+      }
     }
   }
   onPageChange(data) {
     const setActivePage = data.selected + 1;
     this.props.onPageChange(this.preparePageUrl(setActivePage));
   }
-  getArticles() {
-    const page = getUrlParams(this.props.location.search, 'page');
-    if (this.props.match.params.username) {
-      if (this.checkFavoritedUrlParams()) {
-        this.props.onFetchArticlesFavoritedByAuthor(page, this.props.match.params.username);
+  getArticles(username, search) {
+    const page = getUrlParams(search, 'page');
+    if (username) {
+      if (checkUrlParams(/\?favorited/g, search)) {
+        this.props.onFetchArticlesFavoritedByAuthor(page, username);
       } else {
-        this.props.onFetchArticlesByAuthor(page, this.props.match.params.username);
+        this.props.onFetchArticlesByAuthor(page, username);
       }
     } else {
-      const tag = getUrlParams(this.props.location.search, 'tag');
+      const tag = getUrlParams(search, 'tag');
       this.props.onFetchArticles(page, tag);
     }
   }
@@ -73,7 +84,7 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     const filters = `page=${activePage}`;
     let pageLink = `/?${filters}`;
     if (this.props.match.params.username) {
-      pageLink = this.checkFavoritedUrlParams()
+      pageLink = checkUrlParams(/\?favorited/g, this.props.location.search)
         ? `/author/${this.props.match.params.username}?favorited&${filters}`
         : `/author/${this.props.match.params.username}?${filters}`;
     } else {
@@ -84,12 +95,8 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     }
     return pageLink;
   }
-  checkFavoritedUrlParams() {
-    return this.props.location.search && this.props.location.search.match(/\?favorited/g).length === 1;
-  }
   renderPost(post, index) {
     const { author, title, description, createdAt, tagList, slug, favoritesCount, favorited } = post;
-
     return (
       <Wrapper key={index}>
         <Card body>
@@ -130,7 +137,6 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
       </Wrapper>
     );
   }
-
   renderPosts() {
     return (
       <div>
@@ -159,6 +165,15 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
       </div>
     );
   }
+  renderHelmet() {
+    if (this.props.filters) return null;
+    return (
+      <Helmet>
+        <title>Articles</title>
+        <meta name="description" content="Description of Articles" />
+      </Helmet>
+    );
+  }
   render() {
     const { fetching, error, posts } = this.props;
     let content = <Loader />;
@@ -183,10 +198,7 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
     }
     return (
       <div>
-        <Helmet>
-          <title>Articles</title>
-          <meta name="description" content="Description of Articles" />
-        </Helmet>
+        {this.renderHelmet()}
         {content}
       </div>
     );
@@ -203,6 +215,10 @@ Articles.propTypes = {
   onFetchArticlesFavoritedByAuthor: PropTypes.func,
   onFetchArticlesByAuthor: PropTypes.func,
   onPageChange: PropTypes.func.isRequired,
+  filters: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }),
   location: PropTypes.shape({
     search: PropTypes.string,
   }),
@@ -212,7 +228,7 @@ Articles.propTypes = {
     }),
   }),
   error: PropTypes.bool.isRequired,
-  posts: PropTypes.array.isRequired,
+  posts: PropTypes.object.isRequired,
   fetching: PropTypes.bool.isRequired,
   pageCount: PropTypes.number.isRequired,
 };

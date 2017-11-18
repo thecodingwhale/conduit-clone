@@ -125,6 +125,7 @@ describe('<Article />', () => {
           />
           <hr />
           <div dangerouslySetInnerHTML={{ __html: fixture.body }} />
+          <hr />
           <Comments fetching={false} comments={[]} />
         </div>
       </Container>

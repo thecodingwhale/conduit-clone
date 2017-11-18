@@ -19,3 +19,8 @@ export const getKeyNameParam = (params, key) => {
   const getKey = params[key] ? `${key}=${params[key]}&` : '';
   return getKey;
 };
+
+export const checkUrlParams = (regexParam, search) => {
+  const checkParams = search && search.match(/\?favorited/g) && search.match(/\?favorited/g).length === 1;
+  return checkParams;
+};
