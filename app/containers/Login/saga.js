@@ -1,28 +1,19 @@
-import { takeLatest, call } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
+import { ON_LOGIN_SUBMIT } from 'containers/Login/constants';
 import {
-  ON_LOGIN_SUBMIT,
-} from 'containers/Login/constants';
-import request from 'utils/request';
+  authenticationRequesting,
+  authenticationLoaded,
+  authenticationLoadingError,
+} from 'containers/Login/actions';
+import api from '../../api';
 
-const API_DOMAIN = 'https://conduit.productionready.io/api';
-
-export function* onLoginSubmit({ email, password }) {
+export function* onLoginSubmit(params) {
+  yield put(authenticationRequesting());
   try {
-    const payload = yield call(request, `${API_DOMAIN}/users/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: {
-          email,
-          password,
-        },
-      }),
-    });
-    console.log(payload.user);
+    const payload = yield call(api.Auth.login, params);
+    yield put(authenticationLoaded(payload.user));
   } catch (err) {
-    console.log(err);
+    yield put(authenticationLoadingError('incorrect email/password'));
   }
 }
 

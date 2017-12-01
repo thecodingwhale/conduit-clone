@@ -14,12 +14,24 @@ const selectLoginDomain = (state) => state.get('login');
  * Default selector used by Login
  */
 
-const makeSelectLogin = () => createSelector(
+const makeSelectLoginUser = () => createSelector(
   selectLoginDomain,
-  (substate) => substate.toJS()
+  (substate) => substate.getIn(['user', 'data'])
 );
 
-export default makeSelectLogin;
+const makeSelectLoginUserFetching = () => createSelector(
+  selectLoginDomain,
+  (substate) => substate.getIn(['user', 'fetching'])
+);
+
+const makeSelectLoginUserError = () => createSelector(
+  selectLoginDomain,
+  (substate) => substate.getIn(['user', 'error'])
+);
+
 export {
   selectLoginDomain,
+  makeSelectLoginUser,
+  makeSelectLoginUserFetching,
+  makeSelectLoginUserError,
 };

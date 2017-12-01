@@ -6,32 +6,47 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
-import { Container } from 'reactstrap';
+import { Container, Alert } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import makeSelectLogin from './selectors';
+import LoginForm from 'components/LoginForm';
+import { makeSelectLoginUser, makeSelectLoginUserFetching, makeSelectLoginUserError } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 import { loginSubmit } from './actions';
-import LoginForm from './LoginForm';
+import { isAppValid } from '../../auth';
 
 export class Login extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
     this.onsubmit = this.onsubmit.bind(this);
   }
-  onsubmit(values) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user && isAppValid()) {
+      this.props.redirectTo('/');
+    }
+  }
+  onsubmit(form) {
     this.props.onLoginSubmit(
-      values.get('email'),
-      values.get('password')
+      form.get('email'),
+      form.get('password')
+    );
+  }
+  renderError() {
+    if (!this.props.error) return null;
+    return (
+      <Alert color="danger">
+        {this.props.error}
+      </Alert>
     );
   }
   render() {
@@ -39,10 +54,13 @@ export class Login extends React.PureComponent { // eslint-disable-line react/pr
       <Container>
         <Helmet>
           <title>Login</title>
-          <meta name="description" content="Description of Login" />
         </Helmet>
         <FormattedMessage {...messages.header} />
-        <LoginForm onSubmit={this.onsubmit} />
+        {this.renderError()}
+        <LoginForm
+          onSubmit={this.onsubmit}
+          fetching={this.props.fetching}
+        />
       </Container>
     );
   }
@@ -50,16 +68,28 @@ export class Login extends React.PureComponent { // eslint-disable-line react/pr
 
 Login.propTypes = {
   onLoginSubmit: PropTypes.func,
+  redirectTo: PropTypes.func,
+  user: PropTypes.object,
+  fetching: PropTypes.bool,
+  error: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+  ]),
 };
 
 const mapStateToProps = createStructuredSelector({
-  login: makeSelectLogin(),
+  user: makeSelectLoginUser(),
+  fetching: makeSelectLoginUserFetching(),
+  error: makeSelectLoginUserError(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onLoginSubmit: (email, password) => {
       dispatch(loginSubmit(email, password));
+    },
+    redirectTo: (url) => {
+      dispatch(push(url));
     },
   };
 }

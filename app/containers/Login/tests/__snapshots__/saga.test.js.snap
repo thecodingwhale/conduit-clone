@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defaultSaga Saga should dispatch the authenticationLoadingError action if it requests throws an error 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Login/AUTHENTICATION_REQUESTING",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`defaultSaga Saga should dispatch the authenticationLoadingError action if it requests throws an error 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "email": "email@web.com",
+        "password": "sample password",
+      },
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`defaultSaga Saga should dispatch the authenticationLoadingError action if it requests throws an error 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Login/AUTHENTICATION_LOADED",
+      "user": undefined,
+    },
+    "channel": null,
+  },
+}
+`;
