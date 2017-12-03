@@ -228,7 +228,7 @@ Articles.propTypes = {
     }),
   }),
   error: PropTypes.bool.isRequired,
-  posts: PropTypes.object.isRequired,
+  posts: PropTypes.array.isRequired,
   fetching: PropTypes.bool.isRequired,
   pageCount: PropTypes.number.isRequired,
 };
