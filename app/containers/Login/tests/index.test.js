@@ -14,8 +14,8 @@ import {
 import LoginForm from 'components/LoginForm';
 import { Login, mapDispatchToProps } from '../index';
 // import messages from '../messages';
-import { setLocalStorage, destroy } from '../../../auth';
 import { loginSubmit } from '../actions';
+import { setLocalStorage, destroy } from '../../../auth';
 
 describe('<Login />', () => {
   it('should render <LoginForm /> by default', () => {
