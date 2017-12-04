@@ -13,22 +13,32 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import Home from 'containers/Home/Loadable';
 import Article from 'containers/Article/Loadable';
 import Author from 'containers/Author/Loadable';
+import Login from 'containers/Login/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import Editor from 'components/Editor';
+import Settings from 'components/Settings';
+import {
+  getCurrentUser,
+  userIsAuthenticated,
+  userIsNotAuthenticated,
+} from '../../auth';
 
 export default function App() {
   return (
     <div>
-      <Header />
+      <Header currentUser={getCurrentUser()} />
       <Switch>
         <Route exact path="/" component={Home} />
         <Route path="/article/:slug" component={Article} />
         <Route path="/author/:username" component={Author} />
+        <Route path="/login" component={userIsNotAuthenticated(Login)} />
+        <Route path="/editor" component={userIsAuthenticated(Editor)} />
+        <Route path="/settings" component={userIsAuthenticated(Settings)} />
         <Route component={NotFoundPage} />
       </Switch>
       <Footer />

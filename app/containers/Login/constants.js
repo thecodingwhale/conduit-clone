@@ -1,0 +1,11 @@
+/*
+ *
+ * Login constants
+ *
+ */
+
+export const DEFAULT_ACTION = 'app/Login/DEFAULT_ACTION';
+export const ON_LOGIN_SUBMIT = 'app/Login/ON_LOGIN_SUBMIT';
+export const AUTHENTICATION_REQUESTING = 'app/Login/AUTHENTICATION_REQUESTING';
+export const AUTHENTICATION_LOADED = 'app/Login/AUTHENTICATION_LOADED';
+export const AUTHENTICATION_LOADING_ERROR = 'app/Login/AUTHENTICATION_LOADING_ERROR';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Collapse, NavbarToggler } from 'reactstrap';
+import { Collapse, NavbarToggler, Nav, NavLink, NavItem } from 'reactstrap';
 import Header from '../index';
 
 describe('<Header />', () => {
@@ -29,5 +29,42 @@ describe('<Header />', () => {
     navbarTogglerComponent.simulate('click');
 
     expect(collapseComponent.props().isOpen).toEqual(!fixture);
+  });
+
+  it('should have to 2 <NavItem /> component by default', () => {
+    const component = shallow(<Header />);
+    expect(component.find(NavItem).length).toEqual(2);
+  });
+
+  it('should render expected navigation if currentUser is given', () => {
+    const currentUser = {
+      username: 'john_doe',
+      image: 'image.jpeg',
+    };
+    const component = shallow(<Header currentUser={currentUser} />);
+    const expectedComponent = (
+      <Nav className="ml-auto" navbar>
+        <NavItem>
+          <NavLink href="/">Home</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/editor">
+            <i className="ion-compose"></i>&nbsp;New Post
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/settings">
+            <i className="ion-gear-a"></i>&nbsp;Settings
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href={`/author/@${currentUser.username}`}>
+            <img src={currentUser.image} className="user-pic" alt={currentUser.username} />
+            {currentUser.username}
+          </NavLink>
+        </NavItem>
+      </Nav>
+    );
+    expect(component.contains(expectedComponent)).toEqual(true);
   });
 });
