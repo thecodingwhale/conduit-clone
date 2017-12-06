@@ -17,11 +17,11 @@ import Home from 'containers/Home/Loadable';
 import Article from 'containers/Article/Loadable';
 import Author from 'containers/Author/Loadable';
 import Login from 'containers/Login/Loadable';
+import Settings from 'containers/Settings';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Editor from 'components/Editor';
-import Settings from 'components/Settings';
 import {
   getCurrentUser,
   userIsAuthenticated,
