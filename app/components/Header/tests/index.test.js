@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { Collapse, NavbarToggler, Nav, NavLink, NavItem } from 'reactstrap';
+import Avatar from 'components/Avatar';
 import Header from '../index';
 
 describe('<Header />', () => {
@@ -59,7 +60,12 @@ describe('<Header />', () => {
         </NavItem>
         <NavItem>
           <NavLink href={`/author/@${currentUser.username}`}>
-            <img src={currentUser.image} className="user-pic" alt={currentUser.username} />
+            <span style={{ marginRight: '10px' }}>
+              <Avatar
+                size="small"
+                image={currentUser.image}
+              />
+            </span>
             {currentUser.username}
           </NavLink>
         </NavItem>

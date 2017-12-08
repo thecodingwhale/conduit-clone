@@ -18,4 +18,15 @@ describe('<Avatar />', () => {
     const renderedComponent = shallow(<Avatar image={fixture} />);
     expect(renderedComponent.props().src).toEqual(fixture);
   });
+
+  it('default prop size should be equal to medium', () => {
+    const component = shallow(<Avatar />);
+    expect(component.props().size).toEqual('medium');
+  });
+
+  it('prop size should be equal to small', () => {
+    const size = 'small';
+    const component = shallow(<Avatar size={size} />);
+    expect(component.props().size).toEqual(size);
+  });
 });
