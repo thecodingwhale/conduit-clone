@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Field, reduxForm } from 'redux-form/immutable';
-import Input from 'components/Input';
 import { Button } from 'reactstrap';
-
-const required = (value) => (value ? undefined : 'Required');
-const email = (value) =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? 'Invalid email address'
-    : undefined;
+import { Form, Field, reduxForm } from 'redux-form/immutable';
+import validator from 'utils/validator';
+import Input from 'components/Input';
 
 let LoginForm = (props) => { // eslint-disable-line import/no-mutable-exports
   const { handleSubmit, pristine, reset, submitting, fetching } = props;
@@ -21,7 +16,7 @@ let LoginForm = (props) => { // eslint-disable-line import/no-mutable-exports
             name="email"
             component={Input}
             type="text"
-            validate={[required, email]}
+            validate={[validator.required, validator.email]}
           />
         </div>
         <div>
@@ -30,7 +25,7 @@ let LoginForm = (props) => { // eslint-disable-line import/no-mutable-exports
             name="password"
             component={Input}
             type="password"
-            validate={[required]}
+            validate={[validator.required]}
           />
         </div>
         <Button type="submit" outline color="primary" disabled={submitting}>
