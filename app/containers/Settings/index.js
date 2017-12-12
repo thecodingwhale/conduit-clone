@@ -17,29 +17,42 @@ import { Container, Button } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import makeSelectSettings from './selectors';
+import SettingsForm from 'components/SettingsForm';
+import { makeSelectFetching, makeSelectSuccess } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
-
-import { destroy } from '../../auth';
+import { updateSettings } from './actions';
+import { destroy, getCurrentUser } from '../../auth';
 
 export class Settings extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
     this.onLogout = this.onLogout.bind(this);
+    this.onSettingsUpdate = this.onSettingsUpdate.bind(this);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.success) this.onLogout();
   }
   onLogout() {
     destroy();
     this.props.onLogout();
+  }
+  onSettingsUpdate(form) {
+    this.props.updateSettings(form.toJS());
   }
   render() {
     return (
       <Container>
         <Helmet>
           <title>Settings</title>
-          <meta name="description" content="Description of Settings" />
         </Helmet>
+        <SettingsForm
+          fetching={this.props.fetching}
+          initialValues={getCurrentUser()}
+          onSubmit={this.onSettingsUpdate}
+        />
+        <hr />
         <Button outline color="primary" onClick={this.onLogout}>
           <FormattedMessage {...messages.logout} />
         </Button>
@@ -49,15 +62,20 @@ export class Settings extends React.PureComponent { // eslint-disable-line react
 }
 
 Settings.propTypes = {
+  updateSettings: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  fetching: PropTypes.bool.isRequired,
+  success: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  settings: makeSelectSettings(),
+  fetching: makeSelectFetching(),
+  success: makeSelectSuccess(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
+    updateSettings: (form) => dispatch(updateSettings(form)),
     onLogout: () => dispatch(push('/')),
   };
 }

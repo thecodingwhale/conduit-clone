@@ -1,18 +1,43 @@
 
 import {
-  defaultAction,
+  updateSettings,
+  updateFetching,
+  updateUserError,
 } from '../actions';
+
 import {
-  DEFAULT_ACTION,
+  UPDATE_SETTINGS,
+  UPDATE_FETCHING,
+  UPDATE_USER_ERROR,
 } from '../constants';
 
 describe('Settings actions', () => {
-  describe('Default Action', () => {
-    it('has a type of DEFAULT_ACTION', () => {
-      const expected = {
-        type: DEFAULT_ACTION,
+  describe('Update Settings Action', () => {
+    it('has a type of UPDATE_SETTINGS', () => {
+      const form = {
+        foo: 'bar',
       };
-      expect(defaultAction()).toEqual(expected);
+      const expected = {
+        type: UPDATE_SETTINGS,
+        form,
+      };
+      expect(updateSettings(form)).toEqual(expected);
+    });
+  });
+  describe('Update Fetching Action', () => {
+    it('has a type of UPDATE_FETCHING', () => {
+      const expected = {
+        type: UPDATE_FETCHING,
+      };
+      expect(updateFetching()).toEqual(expected);
+    });
+  });
+  describe('Update User Error Action', () => {
+    it('has a type of UPDATE_USER_ERROR', () => {
+      const expected = {
+        type: UPDATE_USER_ERROR,
+      };
+      expect(updateUserError()).toEqual(expected);
     });
   });
 });

@@ -5,11 +5,35 @@
  */
 
 import {
-  DEFAULT_ACTION,
+  UPDATE_SETTINGS,
+  UPDATE_FETCHING,
+  UPDATE_USER_LOADED,
+  UPDATE_USER_ERROR,
 } from './constants';
 
-export function defaultAction() {
+export function updateSettings(form) {
   return {
-    type: DEFAULT_ACTION,
+    type: UPDATE_SETTINGS,
+    form,
+  };
+}
+
+export function updateFetching() {
+  return {
+    type: UPDATE_FETCHING,
+  };
+}
+
+export function updateUserLoaded(user) {
+  return {
+    type: UPDATE_USER_LOADED,
+    user,
+  };
+}
+
+export function updateUserError(err) {
+  return {
+    type: UPDATE_USER_ERROR,
+    err,
   };
 }

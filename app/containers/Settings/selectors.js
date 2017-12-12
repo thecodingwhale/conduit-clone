@@ -3,23 +3,23 @@ import { createSelector } from 'reselect';
 /**
  * Direct selector to the settings state domain
  */
-const selectSettingsDomain = (state) => state.get('settings');
-
-/**
- * Other specific selectors
- */
-
+const makeSelectSettingsDomain = (state) => state.get('settings');
 
 /**
  * Default selector used by Settings
  */
-
-const makeSelectSettings = () => createSelector(
-  selectSettingsDomain,
-  (substate) => substate.toJS()
+const makeSelectFetching = () => createSelector(
+  makeSelectSettingsDomain,
+  (substate) => substate.get('fetching')
 );
 
-export default makeSelectSettings;
+const makeSelectSuccess = () => createSelector(
+  makeSelectSettingsDomain,
+  (substate) => substate.get('success')
+);
+
 export {
-  selectSettingsDomain,
+  makeSelectSettingsDomain,
+  makeSelectFetching,
+  makeSelectSuccess,
 };

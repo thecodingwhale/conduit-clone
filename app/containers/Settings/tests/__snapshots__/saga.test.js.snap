@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defaultSaga Saga should dispatch the updateUserError action if it requests throws an error 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Settings/UPDATE_FETCHING",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`defaultSaga Saga should dispatch the updateUserError action if it requests throws an error 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "email": "email@web.com",
+        "password": "sample password",
+        "username": "ausername",
+      },
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`defaultSaga Saga should dispatch the updateUserError action if it requests throws an error 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Settings/UPDATE_USER_LOADED",
+      "user": Object {
+        "email": "email@web.com",
+        "password": "sample password",
+        "username": "ausername",
+      },
+    },
+    "channel": null,
+  },
+}
+`;
