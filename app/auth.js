@@ -35,6 +35,11 @@ export const getCurrentUser = () => {
   return null;
 };
 
+export const getToken = () => {
+  const { token } = getApp();
+  return `Token ${token}`;
+};
+
 export const userIsAuthenticated = connectedRouterRedirect({
   redirectPath: '/login',
   authenticatedSelector: () => isAppValid(),
