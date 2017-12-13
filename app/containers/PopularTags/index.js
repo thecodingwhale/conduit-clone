@@ -81,7 +81,10 @@ PopularTags.defaultProps = {
 PopularTags.propTypes = {
   fetching: PropTypes.bool.isRequired,
   error: PropTypes.bool.isRequired,
-  tags: PropTypes.array.isRequired,
+  tags: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired,
   getTags: PropTypes.func.isRequired,
   onTagSelect: PropTypes.func,
   location: PropTypes.shape({

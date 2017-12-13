@@ -1,15 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
 import { Form, Field, reduxForm } from 'redux-form/immutable';
 import validator from 'utils/validator';
 import Input from 'components/Input';
+import { Button } from 'reactstrap';
 
-let LoginForm = (props) => { // eslint-disable-line import/no-mutable-exports
-  const { handleSubmit, pristine, reset, submitting, fetching } = props;
+let SettingsForm = (props) => { // eslint-disable-line import/no-mutable-exports
+  const { handleSubmit, submitting, fetching } = props;
   return (
     <Form onSubmit={handleSubmit}>
+      <h3>Your Settings</h3>
       <fieldset disabled={fetching}>
+        <div>
+          <label htmlFor="image">Image</label>
+          <Field
+            name="image"
+            component={Input}
+            type="text"
+          />
+        </div>
+        <div>
+          <label htmlFor="username">Username</label>
+          <Field
+            name="username"
+            component={Input}
+            type="text"
+            validate={[validator.required]}
+          />
+        </div>
+        <div>
+          <label htmlFor="bio">Bio</label>
+          <Field
+            name="bio"
+            component={Input}
+            type="text"
+          />
+        </div>
         <div>
           <label htmlFor="email">Email</label>
           <Field
@@ -29,27 +55,22 @@ let LoginForm = (props) => { // eslint-disable-line import/no-mutable-exports
           />
         </div>
         <Button type="submit" outline color="primary" disabled={submitting}>
-          Submit
-        </Button>{' '}
-        <Button outline color="primary" disabled={pristine || submitting} onClick={reset}>
-          Clear Values
+          Update Settings
         </Button>
       </fieldset>
     </Form>
   );
 };
 
-LoginForm.propTypes = {
+SettingsForm.propTypes = {
   handleSubmit: PropTypes.func,
-  reset: PropTypes.func,
-  pristine: PropTypes.bool,
   submitting: PropTypes.bool,
   fetching: PropTypes.bool,
 };
 
-LoginForm = reduxForm({
+SettingsForm = reduxForm({
   // a unique name for the form
-  form: 'login',
-})(LoginForm);
+  form: 'settings',
+})(SettingsForm);
 
-export default LoginForm;
+export default SettingsForm;

@@ -18,6 +18,8 @@ const dummyData = fromJS({
         password: 'password',
         username: 'username',
         image: 'image.jpg',
+        bio: 'sample bio',
+        id: 1,
       },
     },
   },
@@ -58,8 +60,11 @@ describe('auth', () => {
     it('should return expected username and image from the localStorage', () => {
       setLocalStorage(dummyData);
       expect(getCurrentUser()).toEqual({
+        email: 'email@web.com',
         username: 'username',
         image: 'image.jpg',
+        bio: 'sample bio',
+        id: 1,
       });
       localStorage.clear();
     });

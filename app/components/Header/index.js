@@ -8,6 +8,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { isEmpty } from 'lodash';
+import Avatar from 'components/Avatar';
 
 class Header extends React.Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -17,6 +18,16 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
     this.state = {
       isOpen: false,
     };
+  }
+  getAvatar() {
+    return (
+      <span style={{ marginRight: '10px' }}>
+        <Avatar
+          size="small"
+          image={this.props.currentUser.image}
+        />
+      </span>
+    );
   }
   toggle() {
     this.setState({
@@ -53,7 +64,7 @@ class Header extends React.Component { // eslint-disable-line react/prefer-state
         </NavItem>
         <NavItem>
           <NavLink href={`/author/@${this.props.currentUser.username}`}>
-            <img src={this.props.currentUser.image} className="user-pic" alt={this.props.currentUser.username} />
+            {this.getAvatar()}
             {this.props.currentUser.username}
           </NavLink>
         </NavItem>

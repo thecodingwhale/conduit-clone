@@ -23,13 +23,21 @@ export const setLocalStorage = (state) => {
 
 export const getCurrentUser = () => {
   if (isAppValid()) {
-    const { username, image } = getApp();
+    const { id, image, username, email, bio } = getApp();
     return {
-      username,
+      id,
       image,
+      username,
+      email,
+      bio,
     };
   }
   return null;
+};
+
+export const getToken = () => {
+  const { token } = getApp();
+  return `Token ${token}`;
 };
 
 export const userIsAuthenticated = connectedRouterRedirect({
