@@ -31,6 +31,7 @@ export class Login extends React.PureComponent { // eslint-disable-line react/pr
     this.onsubmit = this.onsubmit.bind(this);
   }
   componentWillReceiveProps(nextProps) {
+    /* istanbul ignore else  */
     if (nextProps.user && isAppValid()) {
       this.props.redirectTo('/');
     }

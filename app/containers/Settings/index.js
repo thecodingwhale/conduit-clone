@@ -32,7 +32,10 @@ export class Settings extends React.PureComponent { // eslint-disable-line react
     this.onSettingsUpdate = this.onSettingsUpdate.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.success) this.onLogout();
+    /* istanbul ignore else  */
+    if (nextProps.success) {
+      this.onLogout();
+    }
   }
   onLogout() {
     destroy();

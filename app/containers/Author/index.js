@@ -57,6 +57,7 @@ export class Author extends React.PureComponent { // eslint-disable-line react/p
     this.setActiveTab();
   }
   setActiveTab() {
+    /* istanbul ignore else  */
     if (this.state.activeTab === '' && !checkUrlParams(/\?favorited/g, this.props.location.search)) {
       this.setState({
         activeTab: '1',
