@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Input, Badge } from 'reactstrap';
+import { Input, Badge, FormFeedback } from 'reactstrap';
 import { findIndex } from 'lodash';
 
 const StyledInput = styled(Input)`
@@ -35,6 +35,7 @@ class TaggedInput extends React.Component {
     this.state = {
       value: '',
       tags: this.props.tags,
+      error: false,
     };
   }
 
@@ -53,6 +54,10 @@ class TaggedInput extends React.Component {
         if (this.props.onUpdate) {
           this.props.onUpdate(tags);
         }
+      } else {
+        this.setState({
+          error: true,
+        });
       }
     }
   }
@@ -60,12 +65,17 @@ class TaggedInput extends React.Component {
   onChange(event) {
     this.setState({
       value: event.target.value,
+      error: false,
     });
   }
 
-  deleteTabButton(key) {
+  deleteTabButton(key, value) {
+    const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === value);
+    const isInputTargetIndexExists = (inputTargetIndex !== -1);
+
     this.setState({
       tags: this.state.tags.filter((x, i) => i !== key),
+      error: isInputTargetIndexExists ? false : null,
     }, () => {
       /* istanbul ignore next */
       if (this.props.onUpdate) {
@@ -81,7 +91,7 @@ class TaggedInput extends React.Component {
         key={`${tag}`}
         color="primary"
         onClick={() => {
-          this.deleteTabButton(index);
+          this.deleteTabButton(index, tag);
         }}
         pill
       >
@@ -92,6 +102,10 @@ class TaggedInput extends React.Component {
   }
 
   render() {
+    const renderFormFeedback = this.state.error ? (
+      <FormFeedback>{this.props.errorText}</FormFeedback>
+    ) : null;
+    const setValid = this.state.error ? false : null;
     return (
       <div>
         <StyledInput
@@ -100,7 +114,12 @@ class TaggedInput extends React.Component {
           onKeyPress={this.onKeyPress}
           onChange={this.onChange}
           value={this.state.value}
+          valid={setValid}
+          ref={(ref) => {
+            this.input = ref;
+          }}
         />
+        {renderFormFeedback}
         {this.renderTaggedButtons()}
       </div>
     );
@@ -109,11 +128,13 @@ class TaggedInput extends React.Component {
 
 TaggedInput.defaultProps = {
   placeholder: 'Enter Tags',
+  errorText: 'Value is already taken',
   tags: [],
 };
 
 TaggedInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
+  errorText: PropTypes.string,
   tags: PropTypes.array.isRequired,
   onUpdate: PropTypes.func,
 };

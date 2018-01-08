@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Badge } from 'reactstrap';
+import { Input, Badge, FormFeedback } from 'reactstrap';
 import { shallow, mount } from 'enzyme';
 
 import TaggedInput from '../index';
@@ -71,5 +71,23 @@ describe('<TaggedInput />', () => {
       placeholder: 'A New Place Holder',
     });
     expect(component.find('[placeholder]').prop('placeholder')).toEqual('A New Place Holder');
+  });
+
+  it('should throw an error message if the entered component is already added', () => {
+    const tags = ['foo', 'bar', 'baz'];
+    const component = mount(
+      <TaggedInput
+        onUpdate={() => {}}
+        tags={tags}
+      />
+    );
+
+    const input = component.find('input');
+    input.simulate('change', { target: { value: 'foo' } });
+    input.simulate('keypress', { key: 'Enter' });
+
+    const feeback = component.find(FormFeedback);
+    expect(feeback.length).toEqual(1);
+    expect(feeback.text()).toEqual('Value is already taken');
   });
 });
