@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Input, Badge, FormFeedback } from 'reactstrap';
+import { Input, Badge, FormFeedback, FormGroup } from 'reactstrap';
 import { findIndex } from 'lodash';
 
 const StyledInput = styled(Input)`
@@ -36,7 +36,16 @@ class TaggedInput extends React.Component {
       value: '',
       tags: this.props.tags,
       error: false,
+      errorText: this.setErrorText(this.props.errorText),
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errorText) {
+      this.setState({
+        errorText: this.setErrorText(nextProps.errorText),
+      });
+    }
   }
 
   onKeyPress(event) {
@@ -49,6 +58,8 @@ class TaggedInput extends React.Component {
         this.setState({
           value: '',
           tags,
+          error: false,
+          errorText: '',
         });
         /* istanbul ignore next */
         if (this.props.onUpdate) {
@@ -57,6 +68,7 @@ class TaggedInput extends React.Component {
       } else {
         this.setState({
           error: true,
+          errorText: `${event.target.value} is already taken`,
         });
       }
     }
@@ -69,19 +81,28 @@ class TaggedInput extends React.Component {
     });
   }
 
+  setErrorText(errorText) {
+    if (this.props.required && errorText === '') return 'Required';
+    return errorText;
+  }
+
   deleteTabButton(key, value) {
     const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === value);
     const isInputTargetIndexExists = (inputTargetIndex !== -1);
 
     this.setState({
       tags: this.state.tags.filter((x, i) => i !== key),
-      error: isInputTargetIndexExists ? false : null,
+      error: !isInputTargetIndexExists,
     }, () => {
       /* istanbul ignore next */
       if (this.props.onUpdate) {
         this.props.onUpdate(this.state.tags);
       }
     });
+  }
+
+  isInvalid() {
+    return this.state.error || (this.props.required && this.state.tags.length === 0);
   }
 
   renderTaggedButtons() {
@@ -101,13 +122,16 @@ class TaggedInput extends React.Component {
     ));
   }
 
-  render() {
-    const renderFormFeedback = this.state.error ? (
-      <FormFeedback>{this.props.errorText}</FormFeedback>
+  renderFormFeedback() {
+    return this.isInvalid() ? (
+      <FormFeedback>{this.state.errorText}</FormFeedback>
     ) : null;
-    const setValid = this.state.error ? false : null;
+  }
+
+  render() {
+    const setValid = this.isInvalid() ? false : null;
     return (
-      <div>
+      <FormGroup>
         <StyledInput
           placeholder={this.props.placeholder}
           type="text"
@@ -119,20 +143,22 @@ class TaggedInput extends React.Component {
             this.input = ref;
           }}
         />
-        {renderFormFeedback}
+        {this.renderFormFeedback()}
         {this.renderTaggedButtons()}
-      </div>
+      </FormGroup>
     );
   }
 }
 
 TaggedInput.defaultProps = {
-  placeholder: 'Enter Tags',
-  errorText: 'Value is already taken',
+  required: false,
+  placeholder: '',
+  errorText: '',
   tags: [],
 };
 
 TaggedInput.propTypes = {
+  required: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   errorText: PropTypes.string,
   tags: PropTypes.array.isRequired,

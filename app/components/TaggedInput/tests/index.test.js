@@ -61,11 +61,11 @@ describe('<TaggedInput />', () => {
     expect(onUpdateSpy).toHaveBeenCalled();
   });
 
-  it('should have default placeholder', () => {
+  it('should accept a placeholder prop', () => {
     const component = shallow(<TaggedInput />);
     const placeholder = component.find('[placeholder]');
     expect(placeholder.length).toEqual(1);
-    expect(placeholder.prop('placeholder')).toEqual('Enter Tags');
+    expect(placeholder.prop('placeholder')).toEqual('');
 
     component.setProps({
       placeholder: 'A New Place Holder',
@@ -88,6 +88,22 @@ describe('<TaggedInput />', () => {
 
     const feeback = component.find(FormFeedback);
     expect(feeback.length).toEqual(1);
-    expect(feeback.text()).toEqual('Value is already taken');
+    expect(feeback.text()).toEqual('foo is already taken');
+  });
+
+  it('should throw an error if prop required is set to true', () => {
+    const component = mount(
+      <TaggedInput required />
+    );
+
+    const feeback = component.find(FormFeedback);
+    expect(feeback.length).toEqual(1);
+    expect(feeback.text()).toEqual('Required');
+
+    const setErrorText = 'Custom required error message';
+    component.setProps({
+      errorText: setErrorText,
+    });
+    expect(feeback.text()).toEqual(setErrorText);
   });
 });
