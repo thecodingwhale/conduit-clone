@@ -6,15 +6,25 @@
 
 import { fromJS } from 'immutable';
 import {
-  DEFAULT_ACTION,
+  ADDING_NEW_POST,
+  ADD_NEW_POST_COMPLETED
 } from './constants';
 
-const initialState = fromJS({});
+const initialState = fromJS({
+  fetching: false,
+  success: false,
+  slug: null,
+});
 
 function editorReducer(state = initialState, action) {
   switch (action.type) {
-    case DEFAULT_ACTION:
-      return state;
+    case ADDING_NEW_POST:
+      return state.set('fetching', true);
+    case ADD_NEW_POST_COMPLETED:
+      return state
+        .set('fetching', false)
+        .set('success', true)
+        .set('slug', action.article.slug);
     default:
       return state;
   }

@@ -50,14 +50,15 @@ class TaggedInput extends React.Component {
 
   onKeyPress(event) {
     /* istanbul ignore next */
-    if (event.key === 'Enter' && event.target.value !== '') {
+    if (event.key === 'Enter' && event.target.value !== '' && !this.props.disabled) {
+      event.preventDefault();
       const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === event.target.value);
       const isInputTargetIndexExists = (inputTargetIndex !== -1);
       if (!isInputTargetIndexExists) {
         const tags = [...this.state.tags, event.target.value];
         this.setState({
-          value: '',
           tags,
+          value: '',
           error: false,
           errorText: '',
         });
@@ -90,15 +91,18 @@ class TaggedInput extends React.Component {
     const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === value);
     const isInputTargetIndexExists = (inputTargetIndex !== -1);
 
-    this.setState({
-      tags: this.state.tags.filter((x, i) => i !== key),
-      error: !isInputTargetIndexExists,
-    }, () => {
-      /* istanbul ignore next */
-      if (this.props.onUpdate) {
-        this.props.onUpdate(this.state.tags);
-      }
-    });
+    /* istanbul ignore next */
+    if (!this.props.disabled) {
+      this.setState({
+        tags: this.state.tags.filter((x, i) => i !== key),
+        error: !isInputTargetIndexExists,
+      }, () => {
+        /* istanbul ignore next */
+        if (this.props.onUpdate) {
+          this.props.onUpdate(this.state.tags);
+        }
+      });
+    }
   }
 
   isInvalid() {
@@ -152,6 +156,7 @@ class TaggedInput extends React.Component {
 
 TaggedInput.defaultProps = {
   required: false,
+  disabled: false,
   placeholder: '',
   errorText: '',
   tags: [],
@@ -159,6 +164,7 @@ TaggedInput.defaultProps = {
 
 TaggedInput.propTypes = {
   required: PropTypes.bool,
+  disabled: PropTypes.bool,
   placeholder: PropTypes.string.isRequired,
   errorText: PropTypes.string,
   tags: PropTypes.array.isRequired,

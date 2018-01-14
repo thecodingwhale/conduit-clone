@@ -6,6 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
@@ -17,18 +18,24 @@ import PostForm from 'components/PostForm';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import makeSelectEditor from './selectors';
+import { makeSelectFetching, makeSelectSuccess, makeSelectSlug } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
+import { addNewPost } from './actions';
 
 export class Editor extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
     this.onSubmit = this.onSubmit.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.success && nextProps.slug !== null) {
+      this.props.redirectToSlug(nextProps.slug);
+    }
+  }
   onSubmit(form) {
-    console.log(form);
+    this.props.addNewPost(form.toJS());
   }
   render() {
     return (
@@ -40,6 +47,7 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
         <Container>
           <FormattedMessage {...messages.header} />
           <PostForm
+            fetching={this.props.fetching}
             onSubmit={this.onSubmit}
           />
         </Container>
@@ -49,16 +57,19 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
 }
 
 Editor.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  addNewPost: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  editor: makeSelectEditor(),
+  fetching: makeSelectFetching(),
+  success: makeSelectSuccess(),
+  slug: makeSelectSlug(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    addNewPost: (form) => dispatch(addNewPost(form)),
+    redirectToSlug: (slug) => dispatch(push(`/article/${slug}`)),
   };
 }
 

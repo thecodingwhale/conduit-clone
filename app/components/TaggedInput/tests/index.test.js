@@ -106,4 +106,23 @@ describe('<TaggedInput />', () => {
     });
     expect(feeback.text()).toEqual(setErrorText);
   });
+
+  it('should not delete of add new value if delete prop is set to true', () => {
+    const tags = ['foo', 'bar', 'baz'];
+    const component = mount(
+      <TaggedInput
+        disabled
+        tags={tags}
+      />
+    );
+
+    const badgeComponent = component.find(Badge);
+    badgeComponent.at(1).simulate('click');
+    expect(component.instance().state.tags.length).toEqual(tags.length);
+
+    const input = component.find('input');
+    input.simulate('change', { target: { value: 'bax' } });
+    input.simulate('keypress', { key: 'Enter' });
+    expect(component.instance().state.tags.length).toEqual(tags.length);
+  });
 });

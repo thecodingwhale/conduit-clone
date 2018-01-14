@@ -1,6 +1,22 @@
-// import { take, call, put, select } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
+import { ADD_NEW_POST } from 'containers/Editor/constants';
 
-// Individual exports for testing
-export default function* defaultSaga() {
-  // See example in containers/HomePage/saga.js
+import {
+  addingNewPost,
+  addNewPostCompleted,
+} from 'containers/Editor/actions';
+import api from '../../utils/api';
+
+export function* addNewPost(params) {
+  yield put(addingNewPost());
+  try {
+    const payload = yield call(api.Article.add, params.form);
+    yield put(addNewPostCompleted(payload.article));
+  } catch (err) {
+
+  }
+}
+
+export default function* onAddNewPost() {
+  yield takeLatest(ADD_NEW_POST, addNewPost);
 }

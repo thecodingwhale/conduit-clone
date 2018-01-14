@@ -6,20 +6,26 @@ import { createSelector } from 'reselect';
 const selectEditorDomain = (state) => state.get('editor');
 
 /**
- * Other specific selectors
+ * Default selector used by Settings
  */
-
-
-/**
- * Default selector used by Editor
- */
-
-const makeSelectEditor = () => createSelector(
+const makeSelectFetching = () => createSelector(
   selectEditorDomain,
-  (substate) => substate.toJS()
+  (substate) => substate.get('fetching')
 );
 
-export default makeSelectEditor;
+const makeSelectSuccess = () => createSelector(
+  selectEditorDomain,
+  (substate) => substate.get('success')
+);
+
+const makeSelectSlug = () => createSelector(
+  selectEditorDomain,
+  (substate) => substate.get('slug')
+);
+
 export {
   selectEditorDomain,
+  makeSelectFetching,
+  makeSelectSuccess,
+  makeSelectSlug,
 };
