@@ -31,6 +31,7 @@ class TaggedInput extends React.Component {
 
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
 
     this.state = {
       value: '',
@@ -80,6 +81,15 @@ class TaggedInput extends React.Component {
       value: event.target.value,
       error: false,
     });
+  }
+
+  onBlur() {
+    if (this.isInvalid()) {
+      this.setState({
+        error: true,
+        errorText: this.setErrorText(this.props.errorText),
+      });
+    }
   }
 
   setErrorText(errorText) {
@@ -138,9 +148,11 @@ class TaggedInput extends React.Component {
       <FormGroup>
         <StyledInput
           placeholder={this.props.placeholder}
+          name={this.props.name}
           type="text"
           onKeyPress={this.onKeyPress}
           onChange={this.onChange}
+          onBlur={this.onBlur}
           value={this.state.value}
           valid={setValid}
           ref={(ref) => {
@@ -163,9 +175,10 @@ TaggedInput.defaultProps = {
 };
 
 TaggedInput.propTypes = {
+  name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
   required: PropTypes.bool,
   disabled: PropTypes.bool,
-  placeholder: PropTypes.string.isRequired,
   errorText: PropTypes.string,
   tags: PropTypes.array.isRequired,
   onUpdate: PropTypes.func,

@@ -6,19 +6,22 @@ import TaggedInput from '../index';
 
 describe('<TaggedInput />', () => {
   it('should have a <Input /> component', () => {
-    const component = mount(<TaggedInput />);
+    const component = mount(<TaggedInput name="custom-name" />);
     expect(component.find(Input).length).toEqual(1);
   });
 
   it('should have a prop tags by default with empty value', () => {
-    const component = shallow(<TaggedInput />);
+    const component = shallow(<TaggedInput name="custom-name" />);
     expect(component.instance().props.tags).toEqual([]);
   });
 
   it('should accept and tags tags data by default', () => {
     const tags = ['foo', 'bar', 'baz'];
     const component = mount(
-      <TaggedInput tags={tags} />
+      <TaggedInput
+        name="custom-name"
+        tags={tags}
+      />
     );
     expect(component.find(Badge).length).toEqual(tags.length);
     expect(component.find(Badge).at(0).find('.tag-name').length);
@@ -30,6 +33,7 @@ describe('<TaggedInput />', () => {
     const expectedValue = 'foo';
     const component = mount(
       <TaggedInput
+        name="custom-name"
         onUpdate={onUpdateSpy}
       />
     );
@@ -48,6 +52,7 @@ describe('<TaggedInput />', () => {
     const tags = ['foo', 'bar', 'baz'];
     const component = mount(
       <TaggedInput
+        name="custom-name"
         onUpdate={onUpdateSpy}
         tags={tags}
       />
@@ -62,7 +67,7 @@ describe('<TaggedInput />', () => {
   });
 
   it('should accept a placeholder prop', () => {
-    const component = shallow(<TaggedInput />);
+    const component = shallow(<TaggedInput name="custom-name" />);
     const placeholder = component.find('[placeholder]');
     expect(placeholder.length).toEqual(1);
     expect(placeholder.prop('placeholder')).toEqual('');
@@ -77,6 +82,7 @@ describe('<TaggedInput />', () => {
     const tags = ['foo', 'bar', 'baz'];
     const component = mount(
       <TaggedInput
+        name="custom-name"
         onUpdate={() => {}}
         tags={tags}
       />
@@ -93,7 +99,10 @@ describe('<TaggedInput />', () => {
 
   it('should throw an error if prop required is set to true', () => {
     const component = mount(
-      <TaggedInput required />
+      <TaggedInput
+        name="custom-name"
+        required
+      />
     );
 
     const feeback = component.find(FormFeedback);
@@ -111,8 +120,9 @@ describe('<TaggedInput />', () => {
     const tags = ['foo', 'bar', 'baz'];
     const component = mount(
       <TaggedInput
-        disabled
+        name="custom-name"
         tags={tags}
+        disabled
       />
     );
 
@@ -124,5 +134,15 @@ describe('<TaggedInput />', () => {
     input.simulate('change', { target: { value: 'bax' } });
     input.simulate('keypress', { key: 'Enter' });
     expect(component.instance().state.tags.length).toEqual(tags.length);
+  });
+
+  it('should throw an error message if on blur if props required is set to true and state tags length is equal to 0', () => {
+    const component = mount(<TaggedInput required name="custom-name" />);
+    const input = component.find('input');
+    input.simulate('blur');
+
+    const feeback = component.find(FormFeedback);
+    expect(feeback.length).toEqual(1);
+    expect(feeback.text()).toEqual('Required');
   });
 });
