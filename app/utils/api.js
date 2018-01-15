@@ -58,7 +58,7 @@ const Article = {
     return reqX.post('/articles', {
       article: form,
     });
-  }
+  },
 };
 
 export default {
