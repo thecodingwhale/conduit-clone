@@ -31,7 +31,6 @@ export default class Input extends React.PureComponent {
       success: touched && !error,
       danger: touched && error,
     });
-
     const state = (touched && error) ? false : null;
     let defaultComponent = (
       <FormGroup color={classes}>
@@ -43,7 +42,9 @@ export default class Input extends React.PureComponent {
     if (type === 'lists') {
       defaultComponent = (
         <TaggedInput
-          required={touched && !isUndefined(error)}
+          {...input}
+          required
+          error={touched && !isUndefined(error)}
           errorText={error}
           placeholder={placeholder}
           onUpdate={(tags) => {

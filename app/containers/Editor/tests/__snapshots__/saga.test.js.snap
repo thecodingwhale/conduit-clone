@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`addNewPost Saga should dispatch the addNewPostError action if it requests throws an error 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Editor/ADDING_NEW_POST",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`addNewPost Saga should dispatch the addNewPostError action if it requests throws an error 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "foo": "bar",
+      },
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`addNewPost Saga should dispatch the addNewPostError action if it requests throws an error 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "article": Object {
+        "foo": "bar",
+      },
+      "type": "app/Editor/ADD_NEW_POST_COMPLETED",
+    },
+    "channel": null,
+  },
+}
+`;

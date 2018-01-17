@@ -4,6 +4,7 @@ import { ADD_NEW_POST } from 'containers/Editor/constants';
 import {
   addingNewPost,
   addNewPostCompleted,
+  addNewPostError,
 } from 'containers/Editor/actions';
 import api from '../../utils/api';
 
@@ -13,7 +14,7 @@ export function* addNewPost(params) {
     const payload = yield call(api.Article.add, params.form);
     yield put(addNewPostCompleted(payload.article));
   } catch (err) {
-
+    yield put(addNewPostError(err));
   }
 }
 
