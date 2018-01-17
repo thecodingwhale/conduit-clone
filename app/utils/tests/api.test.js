@@ -56,4 +56,30 @@ describe('api', () => {
       destroy();
     });
   });
+
+  describe('Article', () => {
+    it('should match the post request for adding new article', () => {
+      const article = {
+        title: 'sample title',
+        description: 'sample description',
+        body: 'sameple body',
+        tagLists: ['foo', 'bar', 'baz'],
+      };
+      const url = `${API_DOMAIN}/articles`;
+      fetchMock.post(url, {
+        status: 200,
+        body: {
+          article,
+        },
+      });
+      api.Article.add(article);
+      expect(fetchMock.called()).toEqual(true);
+      expect(fetchMock.lastUrl()).toEqual(url);
+      expect(fetchMock.lastOptions()).toEqual({
+        method: 'POST',
+        body: JSON.stringify({ article }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+  });
 });

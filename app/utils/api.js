@@ -53,6 +53,15 @@ const Auth = {
   },
 };
 
+const Article = {
+  add: (form) => {
+    return reqX.post('/articles', {
+      article: form,
+    });
+  },
+};
+
 export default {
   Auth,
+  Article,
 };

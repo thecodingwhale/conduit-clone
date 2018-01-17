@@ -44,7 +44,8 @@
     "test": "cross-env NODE_ENV=test jest --coverage",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "lint-staged": {
     "*.js": "lint:eslint"
@@ -258,6 +259,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
+    "@storybook/react": "^3.2.17",
     "add-asset-html-webpack-plugin": "2.0.1",
     "babel-cli": "6.24.1",
     "babel-core": "6.24.1",
