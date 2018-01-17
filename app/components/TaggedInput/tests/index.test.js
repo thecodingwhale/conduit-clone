@@ -92,28 +92,9 @@ describe('<TaggedInput />', () => {
     input.simulate('change', { target: { value: 'foo' } });
     input.simulate('keypress', { key: 'Enter' });
 
-    const feeback = component.find(FormFeedback);
-    expect(feeback.length).toEqual(1);
-    expect(feeback.text()).toEqual('foo is already taken');
-  });
-
-  it('should throw an error if prop required is set to true', () => {
-    const component = mount(
-      <TaggedInput
-        name="custom-name"
-        required
-      />
-    );
-
-    const feeback = component.find(FormFeedback);
-    expect(feeback.length).toEqual(1);
-    expect(feeback.text()).toEqual('Required');
-
-    const setErrorText = 'Custom required error message';
-    component.setProps({
-      errorText: setErrorText,
-    });
-    expect(feeback.text()).toEqual(setErrorText);
+    const feedback = component.find(FormFeedback);
+    expect(feedback.length).toEqual(1);
+    expect(feedback.text()).toEqual('foo is already taken');
   });
 
   it('should not delete of add new value if delete prop is set to true', () => {
@@ -141,8 +122,38 @@ describe('<TaggedInput />', () => {
     const input = component.find('input');
     input.simulate('blur');
 
-    const feeback = component.find(FormFeedback);
-    expect(feeback.length).toEqual(1);
-    expect(feeback.text()).toEqual('Required');
+    const feedback = component.find(FormFeedback);
+    expect(feedback.length).toEqual(1);
+    expect(feedback.text()).toEqual('Required');
+  });
+
+  it('should throw an error if prop required is set to true', () => {
+    const component = mount(
+      <TaggedInput
+        required
+        name="custom-name"
+      />
+    );
+
+    const input = component.find('input');
+    input.simulate('blur');
+
+    const feedback = component.find(FormFeedback);
+    expect(feedback.length).toEqual(1);
+    expect(feedback.text()).toEqual('Required');
+  });
+
+  it('should have a state error set false by default and can be update by passing also an error prop', () => {
+    const component = mount(
+      <TaggedInput
+        name="custom-name"
+      />
+    );
+    expect(component.instance().props.error).toEqual(false);
+    expect(component.instance().state.error).toEqual(false);
+
+    component.setProps({ error: true });
+    expect(component.instance().props.error).toEqual(true);
+    expect(component.instance().state.error).toEqual(true);
   });
 });

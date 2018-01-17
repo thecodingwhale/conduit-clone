@@ -36,7 +36,7 @@ class TaggedInput extends React.Component {
     this.state = {
       value: '',
       tags: this.props.tags,
-      error: false,
+      error: this.props.error,
       errorText: this.setErrorText(this.props.errorText),
     };
   }
@@ -47,15 +47,18 @@ class TaggedInput extends React.Component {
         errorText: this.setErrorText(nextProps.errorText),
       });
     }
+    if (nextProps.error) {
+      this.setState({
+        error: true,
+      });
+    }
   }
 
   onKeyPress(event) {
     /* istanbul ignore next */
     if (event.key === 'Enter' && event.target.value !== '' && !this.props.disabled) {
       event.preventDefault();
-      const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === event.target.value);
-      const isInputTargetIndexExists = (inputTargetIndex !== -1);
-      if (!isInputTargetIndexExists) {
+      if (!this.isInputTargetIndexExists(event.target.value)) {
         const tags = [...this.state.tags, event.target.value];
         this.setState({
           tags,
@@ -84,7 +87,8 @@ class TaggedInput extends React.Component {
   }
 
   onBlur() {
-    if (this.isInvalid()) {
+    /* istanbul ignore next */
+    if (this.props.required && this.state.tags.length === 0) {
       this.setState({
         error: true,
         errorText: this.setErrorText(this.props.errorText),
@@ -98,14 +102,11 @@ class TaggedInput extends React.Component {
   }
 
   deleteTabButton(key, value) {
-    const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === value);
-    const isInputTargetIndexExists = (inputTargetIndex !== -1);
-
     /* istanbul ignore next */
     if (!this.props.disabled) {
       this.setState({
         tags: this.state.tags.filter((x, i) => i !== key),
-        error: !isInputTargetIndexExists,
+        error: !this.isInputTargetIndexExists(value),
       }, () => {
         /* istanbul ignore next */
         if (this.props.onUpdate) {
@@ -116,7 +117,13 @@ class TaggedInput extends React.Component {
   }
 
   isInvalid() {
-    return this.state.error || (this.props.required && this.state.tags.length === 0);
+    return (this.state.error && this.props.required)
+    || this.isInputTargetIndexExists(this.state.value);
+  }
+
+  isInputTargetIndexExists(value) {
+    const inputTargetIndex = findIndex(this.state.tags, (tag) => tag === value);
+    return inputTargetIndex !== -1;
   }
 
   renderTaggedButtons() {
@@ -167,6 +174,7 @@ class TaggedInput extends React.Component {
 }
 
 TaggedInput.defaultProps = {
+  error: false,
   required: false,
   disabled: false,
   placeholder: '',
@@ -175,6 +183,7 @@ TaggedInput.defaultProps = {
 };
 
 TaggedInput.propTypes = {
+  error: PropTypes.bool,
   name: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   required: PropTypes.bool,
