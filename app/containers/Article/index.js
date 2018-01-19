@@ -6,6 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
 import { createStructuredSelector } from 'reselect';
@@ -13,7 +14,7 @@ import { compose } from 'redux';
 
 import { isEmpty } from 'lodash';
 
-import { Container, Alert } from 'reactstrap';
+import { Container, Alert, Button } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
@@ -32,16 +33,45 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import { ArticlePropTypes, CommentPropTypes } from '../../PropTypesValues';
+import {
+  getCurrentUser,
+} from '../../auth';
 
 export class Article extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+  constructor(props) {
+    super(props);
+
+    this.onEditArticle = this.onEditArticle.bind(this);
+  }
+
   componentDidMount() {
     this.props.onFetchArticle(this.props.match.params.slug);
+  }
+
+  onEditArticle() {
+    this.props.editArticle(this.props.article.data.slug);
+  }
+
+  renderArticleButtonActions() {
+    if (getCurrentUser() !== null) {
+      return (
+        <div>
+          <Button name="edit-article" type="button" outline color="primary" size="sm" onClick={this.onEditArticle}>
+            Edit Article
+          </Button>{' '}
+          <Button name="delete-article" type="button" outline color="danger" size="sm">
+            Delete Article
+          </Button>
+          <hr />
+        </div>
+      );
+    }
+    return null;
   }
 
   renderContent() {
     const { title, description, body, tagList, author, createdAt } = this.props.article.data;
     const { fetching, error, data } = this.props.comments;
-
     return (
       <div>
         <h1>{title}</h1>
@@ -53,6 +83,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
           createdAt={new Date(createdAt).toDateString()}
         />
         <hr />
+        {this.renderArticleButtonActions()}
         <div dangerouslySetInnerHTML={{ __html: body }} />
         <hr />
         <Comments error={error} fetching={fetching} comments={data} />
@@ -100,6 +131,7 @@ Article.propTypes = {
     }),
   }),
   onFetchArticle: PropTypes.func.isRequired,
+  editArticle: PropTypes.func,
   comments: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
@@ -127,9 +159,8 @@ const mapStateToProps = createStructuredSelector({
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onFetchArticle: (slug) => {
-      dispatch(fetchArticle(slug));
-    },
+    onFetchArticle: (slug) => dispatch(fetchArticle(slug)),
+    editArticle: (slug) => dispatch(push(`/editor/${slug}`)),
   };
 }
 

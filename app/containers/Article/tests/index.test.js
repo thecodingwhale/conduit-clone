@@ -1,4 +1,5 @@
 import React from 'react';
+import { push } from 'react-router-redux';
 import { shallow, mount } from 'enzyme';
 import { Container, Alert } from 'reactstrap';
 import Loader from 'components/Loader';
@@ -8,6 +9,8 @@ import { Article, mapDispatchToProps } from '../index';
 import { Comments } from '../Comments';
 import { fetchArticle } from '../actions';
 import { fixture } from './sampleData';
+import { setLocalStorage } from '../../../auth';
+import { userData } from '../../../utils/tests/auth.test';
 
 describe('<Article />', () => {
   it('should display a <Loader /> component first', () => {
@@ -132,6 +135,51 @@ describe('<Article />', () => {
     );
     expect(component.contains(expectedComponent)).toEqual(true);
   });
+
+  describe('Authenticated', () => {
+    let component;
+    beforeEach(() => {
+      setLocalStorage(userData);
+      component = mount(
+        <Article
+          onFetchArticle={() => {}}
+          article={{
+            fetching: false,
+            error: false,
+            data: fixture,
+          }}
+          comments={{
+            fetching: false,
+            error: false,
+            data: [],
+          }}
+          match={{
+            params: {
+              slug: 'foo',
+            },
+          }}
+        />
+      );
+    });
+    afterEach(() => {
+      localStorage.clear();
+    });
+    it('should render edit and delete article if the user is authenticated', () => {
+      expect(component.find('button[name="edit-article"]').length).toEqual(1);
+      expect(component.find('button[name="delete-article"]').length).toEqual(1);
+    });
+
+    it('when the user click the edit button it should call this.props.editArticle', () => {
+      const editArticle = jest.fn();
+      component.setProps({
+        editArticle,
+      });
+
+      component.find('button[name="edit-article"]').simulate('click');
+
+      expect(editArticle).toHaveBeenCalled();
+    });
+  });
 });
 
 describe('mapDispatchToProps', () => {
@@ -147,6 +195,20 @@ describe('mapDispatchToProps', () => {
       const slug = 'sample-slug';
       result.onFetchArticle(slug);
       expect(dispatch).toHaveBeenCalledWith(fetchArticle(slug));
+    });
+  });
+  describe('editArticle', () => {
+    it('should be injected', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      expect(result.editArticle).toBeDefined();
+    });
+    it('should dispatch fetchArticle when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      const slug = 'sample-slug';
+      result.editArticle(slug);
+      expect(dispatch).toHaveBeenCalledWith(push(`/editor/${slug}`));
     });
   });
 });
