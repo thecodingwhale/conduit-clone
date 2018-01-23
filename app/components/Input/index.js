@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { isUndefined } from 'lodash';
+import { isUndefined, isEmpty } from 'lodash';
 import { FormGroup, Input as ReactstrapInput, FormFeedback } from 'reactstrap';
 import TaggedInput from 'components/TaggedInput';
 
@@ -40,15 +40,17 @@ export default class Input extends React.PureComponent {
     );
 
     if (type === 'lists') {
+      const tags = !isEmpty(input.value) ? input.value || input.value.toJS() : [];
       defaultComponent = (
         <TaggedInput
           {...input}
+          tags={tags}
           required
           error={touched && !isUndefined(error)}
           errorText={error}
           placeholder={placeholder}
-          onUpdate={(tags) => {
-            this.props.input.onChange(tags);
+          onUpdate={(values) => {
+            this.props.input.onChange(values);
           }}
         />
       );

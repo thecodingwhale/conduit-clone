@@ -61,8 +61,8 @@ PostForm.propTypes = {
 };
 
 PostForm = reduxForm({
-  // a unique name for the form
   form: 'post',
+  enableReinitialize: true,
 })(PostForm);
 
 export default PostForm;

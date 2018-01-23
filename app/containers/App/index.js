@@ -38,6 +38,7 @@ export default function App() {
         <Route path="/article/:slug" component={Article} />
         <Route path="/author/:username" component={Author} />
         <Route path="/login" component={userIsNotAuthenticated(Login)} />
+        <Route path="/editor/:slug" component={userIsAuthenticated(Editor)} />
         <Route path="/editor" component={userIsAuthenticated(Editor)} />
         <Route path="/settings" component={userIsAuthenticated(Settings)} />
         <Route component={NotFoundPage} />

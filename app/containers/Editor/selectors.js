@@ -23,9 +23,21 @@ const makeSelectSlug = () => createSelector(
   (substate) => substate.get('slug')
 );
 
+const makeSelectError = () => createSelector(
+  selectEditorDomain,
+  (substate) => substate.get('error')
+);
+
+const makeSelectArticle = () => createSelector(
+  selectEditorDomain,
+  (substate) => substate.get('article')
+);
+
 export {
   selectEditorDomain,
   makeSelectFetching,
   makeSelectSuccess,
   makeSelectSlug,
+  makeSelectError,
+  makeSelectArticle,
 };

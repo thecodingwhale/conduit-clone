@@ -58,6 +58,28 @@ describe('api', () => {
   });
 
   describe('Article', () => {
+    it('should match the get request for an article', () => {
+      const slug = 'sample-slug';
+      const article = {
+        title: 'sample title',
+        description: 'sample description',
+        body: 'sameple body',
+        tagLists: ['foo', 'bar', 'baz'],
+      };
+      const url = `${API_DOMAIN}/articles/${slug}`;
+      fetchMock.get(url, {
+        status: 200,
+        response: article,
+      });
+      api.Article.get(slug);
+      expect(fetchMock.called()).toEqual(true);
+      expect(fetchMock.lastUrl()).toEqual(url);
+      expect(fetchMock.routes[2].response.response).toEqual(article);
+      expect(fetchMock.lastOptions()).toEqual({
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
     it('should match the post request for adding new article', () => {
       const article = {
         title: 'sample title',

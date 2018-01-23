@@ -21,6 +21,12 @@ const requestHeader = () => {
 };
 
 const reqX = {
+  get: (url, body) => {
+    return request(`${API_DOMAIN}${url}`, assign({
+      method: 'GET',
+      body: JSON.stringify(body),
+    }, requestHeader()));
+  },
   post: (url, body) => {
     return request(`${API_DOMAIN}${url}`, assign({
       method: 'POST',
@@ -54,6 +60,9 @@ const Auth = {
 };
 
 const Article = {
+  get: (slug) => {
+    return reqX.get(`/articles/${slug}`);
+  },
   add: (form) => {
     return reqX.post('/articles', {
       article: form,
