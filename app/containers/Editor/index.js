@@ -47,19 +47,23 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
     this.props.addNewPost(form);
   }
 
+  isValidLocationState() {
+    /* istanbul ignore next */
+    return (this.props.location && this.props.location.state && this.props.location.state.article);
+  }
+
   isValidSlug() {
-    if (this.props.match && this.props.match.params.slug) {
-      return true;
-    }
-    return false;
+    /* istanbul ignore next */
+    return (this.props.match && this.props.match.params.slug);
   }
 
   renderForm() {
+    const setIntialValues = this.isValidLocationState() ? this.props.location.state.article : this.props.article;
     return (
       <PostForm
         fetching={this.props.fetching}
         onSubmit={this.onSubmit}
-        initialValues={this.props.article}
+        initialValues={setIntialValues}
       />
     );
   }
@@ -67,7 +71,7 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
   render() {
     let content = <Loader />;
     if (!this.props.error) {
-      if (this.isValidSlug() && this.props.fetching === false) {
+      if (this.props.fetching === false) {
         content = this.renderForm();
       }
     } else {
@@ -97,6 +101,7 @@ Editor.defaultProps = {
   success: false,
   slug: null,
   error: false,
+  article: null,
 };
 
 Editor.propTypes = {
@@ -111,6 +116,11 @@ Editor.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       slug: PropTypes.string,
+    }),
+  }),
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      article: PropTypes.object,
     }),
   }),
 };

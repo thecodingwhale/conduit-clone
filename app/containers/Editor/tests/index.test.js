@@ -61,9 +61,10 @@ describe('<Editor />', () => {
     );
   });
 
-  it('should display the <Loader /> on first load', () => {
+  it('should display the <Loader /> if this.props.fetching ste to true', () => {
     const component = shallow(
       <Editor
+        fetching
         addNewPost={() => {}}
         redirectToSlug={() => {}}
       />
@@ -173,6 +174,25 @@ describe('<Editor />', () => {
     );
     expect(store.getState().form.post.values).toEqual(data);
     expect(store.getState().form.post.initial).toEqual(data);
+  });
+
+  it('should load the initial values in the rendered form if this.props.location.state.article have data', () => {
+    const component = shallow(
+      <Editor
+        fetching
+        addNewPost={() => {}}
+        redirectToSlug={() => {}}
+      />
+    );
+    expect(component.instance().renderForm().props.initialValues).toEqual(null);
+    component.setProps({
+      location: {
+        state: {
+          article: data,
+        },
+      },
+    });
+    expect(component.instance().renderForm().props.initialValues).toEqual(data);
   });
 
   describe('mapDispatchToProps', () => {
