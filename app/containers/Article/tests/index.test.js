@@ -161,9 +161,11 @@ describe('<Article />', () => {
         />
       );
     });
+
     afterEach(() => {
       localStorage.clear();
     });
+
     it('should render edit and delete article if the user is authenticated', () => {
       expect(component.find('button[name="edit-article"]').length).toEqual(1);
       expect(component.find('button[name="delete-article"]').length).toEqual(1);
@@ -174,9 +176,7 @@ describe('<Article />', () => {
       component.setProps({
         editArticle,
       });
-
       component.find('button[name="edit-article"]').simulate('click');
-
       expect(editArticle).toHaveBeenCalled();
     });
   });
@@ -203,12 +203,15 @@ describe('mapDispatchToProps', () => {
       const result = mapDispatchToProps(dispatch);
       expect(result.editArticle).toBeDefined();
     });
-    it('should dispatch fetchArticle when called', () => {
+    it('should dispatch editArticle when called', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
       const slug = 'sample-slug';
-      result.editArticle(slug);
-      expect(dispatch).toHaveBeenCalledWith(push(`/editor/${slug}`));
+      const article = {
+        foo: 'bar',
+      };
+      result.editArticle(slug, { article });
+      expect(dispatch).toHaveBeenCalledWith(push(`/editor/${slug}`, { article }));
     });
   });
 });

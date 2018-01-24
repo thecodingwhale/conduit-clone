@@ -49,7 +49,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 
   onEditArticle() {
-    this.props.editArticle(this.props.article.data.slug);
+    this.props.editArticle(this.props.article.data.slug, { article: this.props.article.data });
   }
 
   renderArticleButtonActions() {
@@ -160,7 +160,7 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     onFetchArticle: (slug) => dispatch(fetchArticle(slug)),
-    editArticle: (slug) => dispatch(push(`/editor/${slug}`)),
+    editArticle: (slug, article) => dispatch(push(`/editor/${slug}`, article)),
   };
 }
 
