@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
+import { isEmpty } from 'lodash';
 import { Form, Field, reduxForm } from 'redux-form/immutable';
 import validator from 'utils/validator';
 import Input from 'components/Input';
 
 let PostForm = (props) => { // eslint-disable-line import/no-mutable-exports
-  const { handleSubmit, submitting, fetching } = props;
+  const { handleSubmit, submitting, fetching, initialValues } = props;
+  const setSubmitButtonText = isEmpty(initialValues) ? 'Publish Article' : 'Update Article';
   return (
     <Form onSubmit={handleSubmit}>
       <fieldset disabled={fetching}>
@@ -47,7 +49,7 @@ let PostForm = (props) => { // eslint-disable-line import/no-mutable-exports
           />
         </div>
         <Button type="submit" outline color="primary" disabled={submitting}>
-          Publish Article
+          {setSubmitButtonText}
         </Button>
       </fieldset>
     </Form>
@@ -58,6 +60,7 @@ PostForm.propTypes = {
   handleSubmit: PropTypes.func,
   submitting: PropTypes.bool,
   fetching: PropTypes.bool,
+  initialValues: PropTypes.object,
 };
 
 PostForm = reduxForm({

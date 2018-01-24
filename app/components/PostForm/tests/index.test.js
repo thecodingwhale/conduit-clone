@@ -56,4 +56,19 @@ describe('<PostForm />', () => {
     expect(helpBlock.length).toEqual(1);
     expect(helpBlock.text()).toEqual('Required');
   });
+
+  it('should set the button submit to "Update Article" if props.initialValues is not empty', () => {
+    const component = mount(
+      <Provider store={store}>
+        <PostForm
+          initialValues={{
+            foo: 'bar',
+          }}
+        />
+      </Provider>
+    );
+    const button = component.find('button[type="submit"]');
+    expect(button.length).toEqual(1);
+    expect(button.text()).toEqual('Update Article');
+  });
 });
