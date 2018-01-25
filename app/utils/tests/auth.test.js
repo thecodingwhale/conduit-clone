@@ -10,7 +10,7 @@ import {
   getCurrentUser,
 } from '../../auth';
 
-const dummyData = fromJS({
+export const userData = fromJS({
   login: {
     user: {
       data: {
@@ -28,23 +28,23 @@ const dummyData = fromJS({
 describe('auth', () => {
   describe('isAppValid()', () => {
     it('should return false if localStorage is invalid', () => {
-      const expectedData = dummyData.getIn(['login', 'user', 'data']);
+      const expectedData = userData.getIn(['login', 'user', 'data']);
       setApp(expectedData);
-      expect(setLocalStorage(dummyData)).toEqual(false);
+      expect(setLocalStorage(userData)).toEqual(false);
       localStorage.clear();
     });
 
     it('should return null if expect stated are invalid', () => {
       setApp({});
-      expect(setLocalStorage(dummyData)).toEqual(false);
+      expect(setLocalStorage(userData)).toEqual(false);
       localStorage.clear();
     });
 
     it('should passed the expected test output', () => {
       expect(isAppValid()).toEqual(false);
-      setLocalStorage(dummyData);
+      setLocalStorage(userData);
       expect(localStorage.setItem).toHaveBeenCalled();
-      expect(localStorage.setItem).toHaveBeenLastCalledWith(APP_NAME, JSON.stringify(dummyData.getIn(['login', 'user', 'data'])));
+      expect(localStorage.setItem).toHaveBeenLastCalledWith(APP_NAME, JSON.stringify(userData.getIn(['login', 'user', 'data'])));
       expect(isAppValid()).toEqual(true);
       localStorage.clear();
     });
@@ -58,7 +58,7 @@ describe('auth', () => {
     });
 
     it('should return expected username and image from the localStorage', () => {
-      setLocalStorage(dummyData);
+      setLocalStorage(userData);
       expect(getCurrentUser()).toEqual({
         email: 'email@web.com',
         username: 'username',
@@ -71,20 +71,20 @@ describe('auth', () => {
   });
 
   it('should test setApp()', () => {
-    const expectedData = dummyData.getIn(['login', 'user', 'data']);
+    const expectedData = userData.getIn(['login', 'user', 'data']);
     setApp(expectedData);
     expect(localStorage.getItem(APP_NAME)).toEqual(JSON.stringify(expectedData));
     localStorage.clear();
   });
 
   it('should test getApp()', () => {
-    setLocalStorage(dummyData);
+    setLocalStorage(userData);
     expect(JSON.parse(localStorage.getItem(APP_NAME))).toEqual(getApp());
     localStorage.clear();
   });
 
   it('should test destroy()', () => {
-    setLocalStorage(dummyData);
+    setLocalStorage(userData);
     destroy();
     expect(localStorage.clear).toHaveBeenCalled();
     localStorage.clear();
