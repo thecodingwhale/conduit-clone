@@ -63,10 +63,11 @@ const Article = {
   get: (slug) => {
     return reqX.get(`/articles/${slug}`);
   },
-  add: (form) => {
-    return reqX.post('/articles', {
-      article: form,
-    });
+  add: (article) => {
+    return reqX.post('/articles', { article });
+  },
+  update: (slug, article) => {
+    return reqX.put(`/articles/${slug}`, { article });
   },
 };
 
