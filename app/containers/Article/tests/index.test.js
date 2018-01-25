@@ -1,13 +1,16 @@
 import React from 'react';
 import { push } from 'react-router-redux';
 import { shallow, mount } from 'enzyme';
+
 import { Container, Alert } from 'reactstrap';
+
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
+
 import { Article, mapDispatchToProps } from '../index';
 import { Comments } from '../Comments';
-import { fetchArticle } from '../actions';
+import { fetchArticle, deleteArticle } from '../actions';
 import { fixture } from './sampleData';
 import { setLocalStorage } from '../../../auth';
 import { userData } from '../../../utils/tests/auth.test';
@@ -144,6 +147,7 @@ describe('<Article />', () => {
         <Article
           onFetchArticle={() => {}}
           article={{
+            deleting: false,
             fetching: false,
             error: false,
             data: fixture,
@@ -179,6 +183,42 @@ describe('<Article />', () => {
       component.find('button[name="edit-article"]').simulate('click');
       expect(editArticle).toHaveBeenCalled();
     });
+
+    it('when the user click the delete button it should call this.props.deleteArticle', () => {
+      const deleteArticleSpy = jest.fn();
+      component.setProps({
+        deleteArticle: deleteArticleSpy,
+      });
+      component.find('button[name="delete-article"]').simulate('click');
+      expect(deleteArticleSpy).toHaveBeenCalled();
+    });
+
+    it('should set the edit and delete button disabled if this.props.deleting set to true', () => {
+      component = mount(
+        <Article
+          onFetchArticle={() => {}}
+          article={{
+            deleting: true,
+            fetching: false,
+            error: false,
+            data: fixture,
+          }}
+          comments={{
+            fetching: false,
+            error: false,
+            data: [],
+          }}
+          match={{
+            params: {
+              slug: 'foo',
+            },
+          }}
+        />
+      );
+      expect(component.find('button[name="edit-article"][disabled]').length).toEqual(1);
+      expect(component.find('button[name="delete-article"][disabled]').length).toEqual(1);
+      expect(component.find('button[name="delete-article"]').text()).toEqual('Deleting Article...');
+    });
   });
 });
 
@@ -189,6 +229,7 @@ describe('mapDispatchToProps', () => {
       const result = mapDispatchToProps(dispatch);
       expect(result.onFetchArticle).toBeDefined();
     });
+
     it('should dispatch fetchArticle when called', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
@@ -197,12 +238,14 @@ describe('mapDispatchToProps', () => {
       expect(dispatch).toHaveBeenCalledWith(fetchArticle(slug));
     });
   });
+
   describe('editArticle', () => {
     it('should be injected', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
       expect(result.editArticle).toBeDefined();
     });
+
     it('should dispatch editArticle when called', () => {
       const dispatch = jest.fn();
       const result = mapDispatchToProps(dispatch);
@@ -212,6 +255,22 @@ describe('mapDispatchToProps', () => {
       };
       result.editArticle(slug, { article });
       expect(dispatch).toHaveBeenCalledWith(push(`/editor/${slug}`, { article }));
+    });
+  });
+
+  describe('deleteArticle', () => {
+    it('should be injected', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      expect(result.deleteArticle).toBeDefined();
+    });
+
+    it('should dispatch deleteArticle when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      const slug = 'sample-slug';
+      result.deleteArticle(slug);
+      expect(dispatch).toHaveBeenCalledWith(deleteArticle(slug));
     });
   });
 });

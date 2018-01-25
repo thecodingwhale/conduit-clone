@@ -24,6 +24,12 @@ const makeSelectArticleFetching = () => createSelector(
   (substate) => substate.getIn(['article', 'fetching'])
 );
 
+const makeSelectArticleDeleting = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['article', 'deleting'])
+);
+
+
 const makeSelectCommentsData = () => createSelector(
   selectArticleDomain,
   (substate) => substate.getIn(['comments', 'data']).toJS(),
@@ -45,6 +51,7 @@ export {
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
+  makeSelectArticleDeleting,
 
   makeSelectCommentsData,
   makeSelectCommentsError,

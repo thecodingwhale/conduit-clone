@@ -11,3 +11,4 @@ export const GET_ARTICLE_SLUG = 'app/Article/GET_ARTICLE_SLUG';
 export const COMMENTS_LOADED = 'app/Article/COMMENTS_LOADED';
 export const LOAD_ARTICLE_ERROR = 'app/Article/LOAD_ARTICLE_ERROR';
 export const LOAD_COMMENTS_ERROR = 'app/Article/LOAD_COMMENTS_ERROR';
+export const DELETE_ARTICLE = 'app/Article/DELETE_ARTICLE';

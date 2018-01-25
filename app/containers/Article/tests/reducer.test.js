@@ -6,6 +6,7 @@ import {
   commentsLoaded,
   articleLoadingError,
   commentsLoadingError,
+  deleteArticle,
 } from '../actions';
 
 describe('articleReducer', () => {
@@ -17,6 +18,7 @@ describe('articleReducer', () => {
       article: {
         error: false,
         fetching: true,
+        deleting: false,
         data: {},
       },
       comments: {
@@ -74,5 +76,11 @@ describe('articleReducer', () => {
       .setIn(['comments', 'error'], true)
       .setIn(['comments', 'fetching'], false);
     expect(articleReducer(state, commentsLoadingError())).toEqual(expectedResult);
+  });
+
+  it('should handle the deleteArticle action correctly', () => {
+    const expectedResult = state
+      .setIn(['article', 'deleting'], true);
+    expect(articleReducer(state, deleteArticle())).toEqual(expectedResult);
   });
 });

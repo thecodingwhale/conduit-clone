@@ -7,6 +7,7 @@ import {
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
+  makeSelectArticleDeleting,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -116,5 +117,21 @@ describe('makeSelectCommentsFetching', () => {
       article: articleState,
     });
     expect(fetchingSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectArticleDeleting', () => {
+  const deletingSelector = makeSelectArticleDeleting();
+  it('should select the expected deleting state from article state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      article: {
+        deleting: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(deletingSelector(mockedState)).toEqual(fixture);
   });
 });

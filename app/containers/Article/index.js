@@ -21,7 +21,10 @@ import ArticleTags from 'components/ArticleTags';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { Comments } from './Comments';
-import { fetchArticle } from './actions';
+import {
+  fetchArticle,
+  deleteArticle,
+} from './actions';
 import {
   makeSelectArticleData,
   makeSelectArticleError,
@@ -29,6 +32,7 @@ import {
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
+  makeSelectArticleDeleting,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -42,6 +46,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
     super(props);
 
     this.onEditArticle = this.onEditArticle.bind(this);
+    this.onDeleteArticle = this.onDeleteArticle.bind(this);
   }
 
   componentDidMount() {
@@ -52,15 +57,20 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
     this.props.editArticle(this.props.article.data.slug, { article: this.props.article.data });
   }
 
+  onDeleteArticle() {
+    this.props.deleteArticle(this.props.article.data.slug);
+  }
+
   renderArticleButtonActions() {
     if (getCurrentUser() !== null) {
+      const setDeleteButtonText = this.props.article.deleting ? 'Deleting Article...' : 'Delete Article';
       return (
         <div>
-          <Button name="edit-article" type="button" outline color="primary" size="sm" onClick={this.onEditArticle}>
+          <Button disabled={this.props.article.deleting} name="edit-article" type="button" outline color="primary" size="sm" onClick={this.onEditArticle}>
             Edit Article
           </Button>{' '}
-          <Button name="delete-article" type="button" outline color="danger" size="sm">
-            Delete Article
+          <Button disabled={this.props.article.deleting} name="delete-article" type="button" outline color="danger" size="sm" onClick={this.onDeleteArticle}>
+            {setDeleteButtonText}
           </Button>
           <hr />
         </div>
@@ -132,6 +142,7 @@ Article.propTypes = {
   }),
   onFetchArticle: PropTypes.func.isRequired,
   editArticle: PropTypes.func,
+  deleteArticle: PropTypes.func,
   comments: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
@@ -140,12 +151,14 @@ Article.propTypes = {
   article: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
+    deleting: PropTypes.bool,
     data: ArticlePropTypes,
   }),
 };
 
 const mapStateToProps = createStructuredSelector({
   article: createStructuredSelector({
+    deleting: makeSelectArticleDeleting(),
     error: makeSelectArticleError(),
     fetching: makeSelectArticleFetching(),
     data: makeSelectArticleData(),
@@ -161,6 +174,7 @@ export function mapDispatchToProps(dispatch) {
   return {
     onFetchArticle: (slug) => dispatch(fetchArticle(slug)),
     editArticle: (slug, article) => dispatch(push(`/editor/${slug}`, article)),
+    deleteArticle: (slug) => dispatch(deleteArticle(slug)),
   };
 }
 

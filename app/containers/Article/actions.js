@@ -12,6 +12,7 @@ import {
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
+  DELETE_ARTICLE,
 } from './constants';
 
 export function defaultAction() {
@@ -60,3 +61,9 @@ export function commentsLoadingError() {
   };
 }
 
+export function deleteArticle(slug) {
+  return {
+    type: DELETE_ARTICLE,
+    slug,
+  };
+}
