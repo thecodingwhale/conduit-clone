@@ -7,6 +7,9 @@ import {
   fetchingArticle,
   fetchArticleCompleted,
   fetchArticleError,
+  updatingArticle,
+  updateArticleCompleted,
+  updateArticleError,
 } from '../actions';
 import {
   ADD_NEW_POST,
@@ -16,6 +19,9 @@ import {
   FETCHING_ARTICLE,
   FETCH_ARTICLE_COMPLETED,
   FETCH_ARTICLE_ERROR,
+  UPDATING_ARTICLE,
+  UPDATE_ARTICLE_COMPLETED,
+  UPDATE_ARTICLE_ERROR,
 } from '../constants';
 
 describe('Editor actions', () => {
@@ -93,6 +99,39 @@ describe('Editor actions', () => {
         err,
       };
       expect(fetchArticleError(err)).toEqual(expected);
+    });
+  });
+
+  describe('Updating article', () => {
+    it('has a type of UPDATING_ARTICLE', () => {
+      const expected = {
+        type: UPDATING_ARTICLE,
+      };
+      expect(updatingArticle()).toEqual(expected);
+    });
+  });
+
+  describe('Update article completed', () => {
+    it('has a type of UPDATE_ARTICLE_COMPLETED', () => {
+      const article = {
+        title: 'sample title',
+      };
+      const expected = {
+        type: UPDATE_ARTICLE_COMPLETED,
+        article,
+      };
+      expect(updateArticleCompleted(article)).toEqual(expected);
+    });
+  });
+
+  describe('Update article error', () => {
+    it('has a type of UPDATE_ARTICLE_ERROR', () => {
+      const err = 'sample error';
+      const expected = {
+        type: UPDATE_ARTICLE_ERROR,
+        err,
+      };
+      expect(updateArticleError(err)).toEqual(expected);
     });
   });
 });

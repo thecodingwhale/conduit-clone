@@ -15,6 +15,7 @@ import { Editor, mapDispatchToProps } from '../index';
 import {
   addNewPost as addNewPostAction,
   fetchArticle as fetchArticleAction,
+  updateArticle as updateArticleAction,
 } from '../actions';
 
 const data = fromJS({
@@ -33,6 +34,7 @@ describe('<Editor />', () => {
   let addNewPost;
   let redirectToSlug;
   let fetchArticle;
+  let updateArticle;
   let subject;
 
   beforeEach(() => {
@@ -40,18 +42,15 @@ describe('<Editor />', () => {
     addNewPost = jest.fn().mockReturnValue(Promise.resolve());
     redirectToSlug = jest.fn().mockReturnValue(Promise.resolve());
     fetchArticle = jest.fn().mockReturnValue(Promise.resolve());
+    updateArticle = jest.fn().mockReturnValue(Promise.resolve());
     const props = {
       addNewPost,
       redirectToSlug,
       fetchArticle,
+      updateArticle,
       success: false,
       error: false,
       slug: null,
-      match: {
-        params: {
-          slug: 'sample-slug',
-        },
-      },
     };
 
     subject = mount(
@@ -137,10 +136,11 @@ describe('<Editor />', () => {
   });
 
   it('should call fetchArticle base on the current slug', () => {
+    const fetchArticleSpy = jest.fn();
     const props = {
       addNewPost: () => {},
       redirectToSlug: () => {},
-      fetchArticle: jest.fn(),
+      fetchArticle: fetchArticleSpy,
       match: {
         params: {
           slug: 'sample-slug',
@@ -152,7 +152,7 @@ describe('<Editor />', () => {
         <Editor {...props} />
       </Provider>,
     );
-    expect(fetchArticle).toHaveBeenCalled();
+    expect(fetchArticleSpy).toHaveBeenCalled();
   });
 
   it('should fill all the form inputs if this.match.params.slug and this.props.article are not empty.', () => {
@@ -193,6 +193,30 @@ describe('<Editor />', () => {
       },
     });
     expect(component.instance().renderForm().props.initialValues).toEqual(data);
+  });
+
+  it('should call updateArticle if required slug and expected location state are valid', () => {
+    const updateArticleSpy = jest.fn();
+    const props = {
+      addNewPost: () => {},
+      redirectToSlug: () => {},
+      fetchArticle: () => {},
+      updateArticle: updateArticleSpy,
+      article: data,
+      match: {
+        params: {
+          slug: 'sample-slug',
+        },
+      },
+    };
+    const component = mount(
+      <Provider store={store}>
+        <Editor {...props} />
+      </Provider>,
+    );
+
+    component.find('form').simulate('submit');
+    expect(updateArticleSpy).toHaveBeenCalled();
   });
 
   describe('mapDispatchToProps', () => {
@@ -239,6 +263,23 @@ describe('<Editor />', () => {
         const result = mapDispatchToProps(dispatch);
         result.fetchArticle(data);
         expect(dispatch).toHaveBeenCalledWith(fetchArticleAction(data));
+      });
+    });
+
+    describe('updateArticle', () => {
+      it('should be injected', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        expect(result.updateArticle).toBeDefined();
+      });
+
+      it('should dispatch push when called', () => {
+        const dispatch = jest.fn();
+        const result = mapDispatchToProps(dispatch);
+        const slug = 'sample-slug';
+        const article = { foo: 'bar' };
+        result.updateArticle(slug, article);
+        expect(dispatch).toHaveBeenCalledWith(updateArticleAction(slug, article));
       });
     });
   });

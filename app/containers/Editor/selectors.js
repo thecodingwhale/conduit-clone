@@ -33,6 +33,11 @@ const makeSelectArticle = () => createSelector(
   (substate) => substate.get('article')
 );
 
+const makeSelectUpdating = () => createSelector(
+  selectEditorDomain,
+  (substate) => substate.get('updating')
+);
+
 export {
   selectEditorDomain,
   makeSelectFetching,
@@ -40,4 +45,5 @@ export {
   makeSelectSlug,
   makeSelectError,
   makeSelectArticle,
+  makeSelectUpdating,
 };

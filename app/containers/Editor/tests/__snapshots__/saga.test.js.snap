@@ -81,3 +81,46 @@ Object {
   },
 }
 `;
+
+exports[`updateArticle Saga should dispatch the updateArticleError action if it requests throws an error 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Editor/UPDATING_ARTICLE",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`updateArticle Saga should dispatch the updateArticleError action if it requests throws an error 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "sample-slug",
+      Object {
+        "foo": "bar",
+      },
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`updateArticle Saga should dispatch the updateArticleError action if it requests throws an error 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "article": Object {
+        "foo": "bar",
+      },
+      "type": "app/Editor/UPDATE_ARTICLE_COMPLETED",
+    },
+    "channel": null,
+  },
+}
+`;

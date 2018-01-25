@@ -12,4 +12,7 @@ export const FETCH_ARTICLE = 'app/Editor/FETCH_ARTICLE';
 export const FETCHING_ARTICLE = 'app/Editor/FETCHING_ARTICLE';
 export const FETCH_ARTICLE_COMPLETED = 'app/Editor/FETCH_ARTICLE_COMPLETED';
 export const FETCH_ARTICLE_ERROR = 'app/Editor/FETCH_ARTICLE_ERROR';
-
+export const UPDATING_ARTICLE = 'app/Editor/UPDATING_ARTICLE';
+export const UPDATE_ARTICLE = 'app/Editor/UPDATE_ARTICLE';
+export const UPDATE_ARTICLE_COMPLETED = 'app/Editor/UPDATE_ARTICLE_COMPLETED';
+export const UPDATE_ARTICLE_ERROR = 'app/Editor/UPDATE_ARTICLE_ERROR';

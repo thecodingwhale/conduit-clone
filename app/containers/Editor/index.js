@@ -18,10 +18,14 @@ import PostForm from 'components/PostForm';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { makeSelectFetching, makeSelectSuccess, makeSelectSlug, makeSelectError, makeSelectArticle } from './selectors';
+import { makeSelectFetching, makeSelectSuccess, makeSelectSlug, makeSelectError, makeSelectArticle, makeSelectUpdating } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { addNewPost, fetchArticle } from './actions';
+import {
+  addNewPost,
+  updateArticle,
+  fetchArticle,
+  } from './actions';
 
 export class Editor extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor() {
@@ -31,20 +35,24 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
 
   componentDidMount() {
     /* istanbul ignore next */
-    if (this.isValidSlug()) {
+    if (this.isValidSlug() && !this.isValidLocationState()) {
       this.props.fetchArticle(this.props.match.params.slug);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     /* istanbul ignore next */
-    if (nextProps.success && nextProps.slug !== null && nextProps.slug !== '') {
-      this.props.redirectToSlug(nextProps.slug);
+    if (nextProps.success && nextProps.slug !== null && nextProps.slug !== '' && !nextProps.updating) {
+      this.props.redirectToSlug(nextProps.slug, nextProps.article);
     }
   }
 
   onSubmit(form) {
-    this.props.addNewPost(form);
+    if (this.isValidSlug() || this.isValidLocationState()) {
+      this.props.updateArticle(this.props.match.params.slug, form);
+    } else {
+      this.props.addNewPost(form);
+    }
   }
 
   isValidLocationState() {
@@ -61,7 +69,7 @@ export class Editor extends React.PureComponent { // eslint-disable-line react/p
     const setIntialValues = this.isValidLocationState() ? this.props.location.state.article : this.props.article;
     return (
       <PostForm
-        fetching={this.props.fetching}
+        fetching={this.props.fetching || this.props.updating}
         onSubmit={this.onSubmit}
         initialValues={setIntialValues}
       />
@@ -108,7 +116,9 @@ Editor.propTypes = {
   addNewPost: PropTypes.func.isRequired,
   redirectToSlug: PropTypes.func.isRequired,
   fetchArticle: PropTypes.func,
+  updateArticle: PropTypes.func,
   fetching: PropTypes.bool.isRequired,
+  updating: PropTypes.bool,
   success: PropTypes.bool,
   slug: PropTypes.string,
   error: PropTypes.bool,
@@ -127,6 +137,7 @@ Editor.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   fetching: makeSelectFetching(),
+  updating: makeSelectUpdating(),
   success: makeSelectSuccess(),
   error: makeSelectError(),
   slug: makeSelectSlug(),
@@ -136,6 +147,7 @@ const mapStateToProps = createStructuredSelector({
 export function mapDispatchToProps(dispatch) {
   return {
     addNewPost: (form) => dispatch(addNewPost(form)),
+    updateArticle: (slug, article) => dispatch(updateArticle(slug, article)),
     redirectToSlug: (slug) => dispatch(push(`/article/${slug}`)),
     fetchArticle: (slug) => dispatch(fetchArticle(slug)),
   };

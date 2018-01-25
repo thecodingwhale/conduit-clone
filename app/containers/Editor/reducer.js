@@ -12,10 +12,14 @@ import {
   FETCHING_ARTICLE,
   FETCH_ARTICLE_COMPLETED,
   FETCH_ARTICLE_ERROR,
+  UPDATING_ARTICLE,
+  UPDATE_ARTICLE_COMPLETED,
+  UPDATE_ARTICLE_ERROR,
 } from './constants';
 
 const initialState = fromJS({
   fetching: false,
+  updating: false,
   success: false,
   error: false,
   slug: null,
@@ -45,6 +49,19 @@ function editorReducer(state = initialState, action) {
     case FETCH_ARTICLE_ERROR:
       return state
         .set('fetching', false)
+        .set('error', true);
+    case UPDATING_ARTICLE:
+      return state
+        .set('updating', true);
+    case UPDATE_ARTICLE_COMPLETED:
+      return state
+        .set('updating', false)
+        .set('success', true)
+        .set('article', action.article)
+        .set('slug', action.article.slug);
+    case UPDATE_ARTICLE_ERROR:
+      return state
+        .set('updating', false)
         .set('error', true);
     default:
       return state;

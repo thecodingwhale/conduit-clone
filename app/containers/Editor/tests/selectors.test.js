@@ -6,6 +6,7 @@ import {
   makeSelectSlug,
   makeSelectError,
   makeSelectArticle,
+  makeSelectUpdating,
 } from '../selectors';
 
 describe('selectEditorDomain', () => {
@@ -87,5 +88,19 @@ describe('makeSelectArticle', () => {
       editor: editorState,
     });
     expect(selectArticle(mockedState)).toEqual(fromJS(expectedState));
+  });
+});
+
+describe('makeSelectUpdating', () => {
+  const selectUpdating = makeSelectUpdating();
+  it('should match updating from the selectors', () => {
+    const expectedState = false;
+    const editorState = fromJS({
+      updating: expectedState,
+    });
+    const mockedState = fromJS({
+      editor: editorState,
+    });
+    expect(selectUpdating(mockedState)).toEqual(fromJS(expectedState));
   });
 });
