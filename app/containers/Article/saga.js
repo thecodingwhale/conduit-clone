@@ -2,6 +2,7 @@ import { takeLatest, call, put } from 'redux-saga/effects';
 import {
   FETCH_ARTICLE,
   GET_ARTICLE_SLUG,
+  DELETE_ARTICLE,
 } from 'containers/Article/constants';
 import {
   getArticleSlug,
@@ -9,9 +10,13 @@ import {
   articleLoadingError,
   commentsLoaded,
   commentsLoadingError,
+  deletingArticle,
+  deleteArticleCompleted,
+  deleteArticleError,
 } from 'containers/Article/actions';
 
 import request from 'utils/request';
+import api from '../../utils/api';
 
 const API_DOMAIN = 'https://conduit.productionready.io/api';
 const ARTICLE_ENDPOINT = `${API_DOMAIN}/articles`;
@@ -41,7 +46,18 @@ export function* getComments(param) {
   }
 }
 
+export function* deleteArticle({ slug }) {
+  yield put(deletingArticle());
+  try {
+    yield call(api.Article.delete, slug);
+    yield put(deleteArticleCompleted());
+  } catch (err) {
+    yield put(deleteArticleError(err));
+  }
+}
+
 export default function* articleData() {
   yield takeLatest(FETCH_ARTICLE, getArticle);
   yield takeLatest(GET_ARTICLE_SLUG, getComments);
+  yield takeLatest(DELETE_ARTICLE, deleteArticle);
 }

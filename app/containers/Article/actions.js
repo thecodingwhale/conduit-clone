@@ -12,7 +12,10 @@ import {
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
+  DELETING_ARTICLE,
   DELETE_ARTICLE,
+  DELETE_ARTICLE_COMPLETED,
+  DELETE_ARTICLE_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -61,9 +64,28 @@ export function commentsLoadingError() {
   };
 }
 
+export function deletingArticle() {
+  return {
+    type: DELETING_ARTICLE,
+  };
+}
+
 export function deleteArticle(slug) {
   return {
     type: DELETE_ARTICLE,
     slug,
+  };
+}
+
+export function deleteArticleCompleted() {
+  return {
+    type: DELETE_ARTICLE_COMPLETED,
+  };
+}
+
+export function deleteArticleError(err) {
+  return {
+    type: DELETE_ARTICLE_ERROR,
+    err,
   };
 }

@@ -26,6 +26,7 @@ import {
   deleteArticle,
 } from './actions';
 import {
+  makeSelectError,
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
@@ -33,6 +34,7 @@ import {
   makeSelectCommentsError,
   makeSelectCommentsFetching,
   makeSelectArticleDeleting,
+  makeSelectArticleDeleted,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -51,6 +53,12 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 
   componentDidMount() {
     this.props.onFetchArticle(this.props.match.params.slug);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.article.deleted) {
+      nextProps.history.goBack();
+    }
   }
 
   onEditArticle() {
@@ -82,8 +90,14 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   renderContent() {
     const { title, description, body, tagList, author, createdAt } = this.props.article.data;
     const { fetching, error, data } = this.props.comments;
+    const renderAlertError = this.props.error ? (
+      <Alert color="danger">
+        Something went wrong.
+      </Alert>
+    ) : null;
     return (
       <div>
+        {renderAlertError}
         <h1>{title}</h1>
         <p>{description}</p>
         <ArticleTags tagList={tagList} />
@@ -140,9 +154,13 @@ Article.propTypes = {
       slug: PropTypes.string.isRequired,
     }),
   }),
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
+  }),
   onFetchArticle: PropTypes.func.isRequired,
   editArticle: PropTypes.func,
   deleteArticle: PropTypes.func,
+  error: PropTypes.bool,
   comments: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
@@ -152,13 +170,16 @@ Article.propTypes = {
     error: PropTypes.bool,
     fetching: PropTypes.bool,
     deleting: PropTypes.bool,
+    deleted: PropTypes.bool,
     data: ArticlePropTypes,
   }),
 };
 
 const mapStateToProps = createStructuredSelector({
+  error: makeSelectError(),
   article: createStructuredSelector({
     deleting: makeSelectArticleDeleting(),
+    deleted: makeSelectArticleDeleted(),
     error: makeSelectArticleError(),
     fetching: makeSelectArticleFetching(),
     data: makeSelectArticleData(),

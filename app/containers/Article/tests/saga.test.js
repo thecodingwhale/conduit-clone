@@ -7,14 +7,16 @@ import { takeLatest, put } from 'redux-saga/effects';
 import {
   FETCH_ARTICLE,
   GET_ARTICLE_SLUG,
+  DELETE_ARTICLE,
 } from 'containers/Article/constants';
 
 import {
   articleLoadingError,
   commentsLoadingError,
+  deleteArticleError,
 } from 'containers/Article/actions';
 
-import articleData, { getArticle, getComments } from '../saga';
+import articleData, { getArticle, getComments, deleteArticle } from '../saga';
 
 const payload = {
   article: {
@@ -71,6 +73,30 @@ describe('getComments', () => {
   });
 });
 
+describe('deleteArticle', () => {
+  let deleteArticleGenerator;
+
+  beforeEach(() => {
+    deleteArticleGenerator = deleteArticle({
+      slug,
+    });
+
+    let putDescriptor = deleteArticleGenerator.next().value;
+    expect(putDescriptor).toMatchSnapshot();
+
+    const callDescriptor = deleteArticleGenerator.next().value;
+    expect(callDescriptor).toMatchSnapshot();
+
+    putDescriptor = deleteArticleGenerator.next().value;
+    expect(putDescriptor).toMatchSnapshot();
+  });
+
+  it('should dispatch the deleteArticleError action if api requests failed', () => {
+    const putDescriptor = deleteArticleGenerator.throw().value;
+    expect(putDescriptor).toEqual(put(deleteArticleError()));
+  });
+});
+
 describe('articlesDataSaga Saga', () => {
   const articleDataSaga = articleData();
 
@@ -82,5 +108,10 @@ describe('articlesDataSaga Saga', () => {
   it('should start task to watch for GET_ARTICLE_SLUG action with getComments', () => {
     const takeLatestDescriptor = articleDataSaga.next().value;
     expect(takeLatestDescriptor).toEqual(takeLatest(GET_ARTICLE_SLUG, getComments));
+  });
+
+  it('should start task to watch for GET_ARTICLE_SLUG action with getComments', () => {
+    const takeLatestDescriptor = articleDataSaga.next().value;
+    expect(takeLatestDescriptor).toEqual(takeLatest(DELETE_ARTICLE, deleteArticle));
   });
 });

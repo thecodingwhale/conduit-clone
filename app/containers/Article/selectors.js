@@ -9,6 +9,11 @@ const selectArticleDomain = (state) => state.get('article');
  * Other specific selectors
  */
 
+const makeSelectError = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.get('error')
+);
+
 const makeSelectArticleData = () => createSelector(
   selectArticleDomain,
   (substate) => substate.getIn(['article', 'data']).toJS()
@@ -29,6 +34,10 @@ const makeSelectArticleDeleting = () => createSelector(
   (substate) => substate.getIn(['article', 'deleting'])
 );
 
+const makeSelectArticleDeleted = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['article', 'deleted'])
+);
 
 const makeSelectCommentsData = () => createSelector(
   selectArticleDomain,
@@ -48,10 +57,13 @@ const makeSelectCommentsFetching = () => createSelector(
 export {
   selectArticleDomain,
 
+  makeSelectError,
+
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
   makeSelectArticleDeleting,
+  makeSelectArticleDeleted,
 
   makeSelectCommentsData,
   makeSelectCommentsError,

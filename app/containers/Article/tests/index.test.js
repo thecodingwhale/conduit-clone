@@ -139,6 +139,53 @@ describe('<Article />', () => {
     expect(component.contains(expectedComponent)).toEqual(true);
   });
 
+  it('should call history.goBack() if this.props.article.deleted', () => {
+    const goBackSpy = jest.fn();
+    const component = shallow(
+      <Article
+        onFetchArticle={() => {}}
+        history={{
+          goBack: goBackSpy,
+        }}
+        article={{
+          error: false,
+          deleted: false,
+        }}
+      />
+    );
+    component.setProps({
+      article: {
+        deleted: true,
+      },
+    });
+    expect(goBackSpy).toHaveBeenCalled();
+  });
+
+  it('should display <Alert /> error message if this.props.error set to true', () => {
+    const component = shallow(
+      <Article
+        onFetchArticle={() => {}}
+        error
+        article={{
+          fetching: false,
+          error: false,
+          data: fixture,
+        }}
+        comments={{
+          fetching: false,
+          error: false,
+          data: [],
+        }}
+      />
+    );
+    const expectedComponent = (
+      <Alert color="danger">
+        Something went wrong.
+      </Alert>
+    );
+    expect(component.contains(expectedComponent)).toEqual(true);
+  });
+
   describe('Authenticated', () => {
     let component;
     beforeEach(() => {

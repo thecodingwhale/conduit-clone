@@ -6,6 +6,7 @@ import {
   commentsLoaded,
   articleLoadingError,
   commentsLoadingError,
+  deleteArticleError,
 } from '../actions';
 
 import {
@@ -16,6 +17,7 @@ import {
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
+  DELETE_ARTICLE_ERROR,
 } from '../constants';
 
 const slug = 'sample-slug';
@@ -91,6 +93,15 @@ describe('Article actions', () => {
         type: LOAD_COMMENTS_ERROR,
       };
       expect(commentsLoadingError()).toEqual(expected);
+    });
+  });
+
+  describe('Delete Article Error', () => {
+    it('has a type of DELETE_ARTICLE_ERROR', () => {
+      const expected = {
+        type: DELETE_ARTICLE_ERROR,
+      };
+      expect(deleteArticleError()).toEqual(expected);
     });
   });
 });

@@ -6,7 +6,9 @@ import {
   commentsLoaded,
   articleLoadingError,
   commentsLoadingError,
-  deleteArticle,
+  deletingArticle,
+  deleteArticleCompleted,
+  deleteArticleError,
 } from '../actions';
 
 describe('articleReducer', () => {
@@ -19,6 +21,7 @@ describe('articleReducer', () => {
         error: false,
         fetching: true,
         deleting: false,
+        deleted: false,
         data: {},
       },
       comments: {
@@ -78,9 +81,23 @@ describe('articleReducer', () => {
     expect(articleReducer(state, commentsLoadingError())).toEqual(expectedResult);
   });
 
-  it('should handle the deleteArticle action correctly', () => {
+  it('should handle the deletingArticle action correctly', () => {
     const expectedResult = state
       .setIn(['article', 'deleting'], true);
-    expect(articleReducer(state, deleteArticle())).toEqual(expectedResult);
+    expect(articleReducer(state, deletingArticle())).toEqual(expectedResult);
+  });
+
+  it('should handle the deleteArticleCompleted correctly', () => {
+    const expectedResult = state
+      .setIn(['article', 'deleting'], false)
+      .setIn(['article', 'deleted'], true);
+    expect(articleReducer(state, deleteArticleCompleted())).toEqual(expectedResult);
+  });
+  it('should handle the deleteArticleError correctly', () => {
+    const expectedResult = state
+      .set('error', true)
+      .setIn(['article', 'deleting'], false)
+      .setIn(['article', 'deleted'], false);
+    expect(articleReducer(state, deleteArticleError())).toEqual(expectedResult);
   });
 });
