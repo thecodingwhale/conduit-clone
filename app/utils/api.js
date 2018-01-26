@@ -39,6 +39,12 @@ const reqX = {
       body: JSON.stringify(body),
     }, requestHeader()));
   },
+  delete: (url, body) => {
+    return request(`${API_DOMAIN}${url}`, assign({
+      method: 'DELETE',
+      body: JSON.stringify(body),
+    }, requestHeader()));
+  },
 };
 
 const Auth = {
@@ -68,6 +74,9 @@ const Article = {
   },
   update: (slug, article) => {
     return reqX.put(`/articles/${slug}`, { article });
+  },
+  delete: (slug) => {
+    return reqX.delete(`/articles/${slug}`);
   },
 };
 
