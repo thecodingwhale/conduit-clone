@@ -35,6 +35,8 @@ export const getCurrentUser = () => {
   return null;
 };
 
+export const isEditableByAuthorUsername = (username) => getCurrentUser().username === username;
+
 export const getToken = () => {
   const { token } = getApp();
   return `Token ${token}`;

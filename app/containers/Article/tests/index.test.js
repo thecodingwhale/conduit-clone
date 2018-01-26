@@ -102,43 +102,6 @@ describe('<Article />', () => {
     expect(component.contains(expectedComponent)).toEqual(true);
   });
 
-  it('should render an article', () => {
-    const component = shallow(
-      <Article
-        onFetchArticle={() => {}}
-        article={{
-          fetching: false,
-          error: false,
-          data: fixture,
-        }}
-        comments={{
-          fetching: false,
-          error: false,
-          data: [],
-        }}
-      />
-    );
-    const expectedComponent = (
-      <Container>
-        <div>
-          <h1>{fixture.title}</h1>
-          <p>{fixture.description}</p>
-          <ArticleTags tagList={fixture.tagList} />
-          <hr />
-          <AuthorCard
-            author={fixture.author}
-            createdAt={new Date(fixture.createdAt).toDateString()}
-          />
-          <hr />
-          <div dangerouslySetInnerHTML={{ __html: fixture.body }} />
-          <hr />
-          <Comments fetching={false} comments={[]} />
-        </div>
-      </Container>
-    );
-    expect(component.contains(expectedComponent)).toEqual(true);
-  });
-
   it('should call history.goBack() if this.props.article.deleted', () => {
     const goBackSpy = jest.fn();
     const component = shallow(
@@ -161,12 +124,14 @@ describe('<Article />', () => {
     expect(goBackSpy).toHaveBeenCalled();
   });
 
-  it('should display <Alert /> error message if this.props.error set to true', () => {
-    const component = shallow(
+  it('should render the edit and delete button if author username is not the same', () => {
+    const newUserData = userData.setIn(['login', 'user', 'data', 'username'], 'foo');
+    setLocalStorage(newUserData);
+    const component = mount(
       <Article
         onFetchArticle={() => {}}
-        error
         article={{
+          deleting: false,
           fetching: false,
           error: false,
           data: fixture,
@@ -176,14 +141,16 @@ describe('<Article />', () => {
           error: false,
           data: [],
         }}
+        match={{
+          params: {
+            slug: 'foo',
+          },
+        }}
       />
     );
-    const expectedComponent = (
-      <Alert color="danger">
-        Something went wrong.
-      </Alert>
-    );
-    expect(component.contains(expectedComponent)).toEqual(true);
+    expect(component.find('button[name="edit-article"]').length).toEqual(0);
+    expect(component.find('button[name="delete-article"]').length).toEqual(0);
+    localStorage.clear();
   });
 
   describe('Authenticated', () => {
@@ -215,6 +182,68 @@ describe('<Article />', () => {
 
     afterEach(() => {
       localStorage.clear();
+    });
+
+    it('should display <Alert /> error message if this.props.error set to true', () => {
+      component = mount(
+        <Article
+          onFetchArticle={() => {}}
+          error
+          article={{
+            fetching: false,
+            error: true,
+            deleting: false,
+            data: fixture,
+          }}
+          comments={{
+            fetching: false,
+            error: false,
+            data: [],
+          }}
+          match={{
+            params: {
+              slug: 'foo',
+            },
+          }}
+        />
+      );
+      const expectedComponent = (
+        <Alert color="danger">
+          Something went wrong.
+        </Alert>
+      );
+      expect(component.contains(expectedComponent)).toEqual(true);
+    });
+
+    it('should render an article', () => {
+      component = mount(
+        <Article
+          onFetchArticle={() => {}}
+          article={{
+            fetching: false,
+            error: false,
+            deleting: false,
+            data: fixture,
+          }}
+          comments={{
+            fetching: false,
+            error: false,
+            data: [],
+          }}
+          match={{
+            params: {
+              slug: 'foo',
+            },
+          }}
+        />
+      );
+
+      expect(component.find(Container).length).toEqual(1);
+      expect(component.find(ArticleTags).length).toEqual(1);
+      expect(component.find(AuthorCard).length).toEqual(1);
+      expect(component.find(Comments).length).toEqual(1);
+      expect(component.find('button[name="edit-article"]').length).toEqual(1);
+      expect(component.find('button[name="delete-article"]').length).toEqual(1);
     });
 
     it('should render edit and delete article if the user is authenticated', () => {

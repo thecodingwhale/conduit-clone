@@ -39,9 +39,7 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import { ArticlePropTypes, CommentPropTypes } from '../../PropTypesValues';
-import {
-  getCurrentUser,
-} from '../../auth';
+import { isEditableByAuthorUsername } from '../../auth';
 
 export class Article extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -70,7 +68,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   }
 
   renderArticleButtonActions() {
-    if (getCurrentUser() !== null) {
+    if (isEditableByAuthorUsername(this.props.article.data.author.username)) {
       const setDeleteButtonText = this.props.article.deleting ? 'Deleting Article...' : 'Delete Article';
       return (
         <div>
@@ -90,6 +88,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
   renderContent() {
     const { title, description, body, tagList, author, createdAt } = this.props.article.data;
     const { fetching, error, data } = this.props.comments;
+    /* istanbul ignore next */
     const renderAlertError = this.props.error ? (
       <Alert color="danger">
         Something went wrong.
