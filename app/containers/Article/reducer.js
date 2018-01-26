@@ -10,6 +10,9 @@ import {
   COMMENTS_LOADED,
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
+  DELETING_ARTICLE,
+  DELETE_ARTICLE_COMPLETED,
+  DELETE_ARTICLE_ERROR,
 } from './constants';
 
 const initialState = fromJS({
@@ -18,6 +21,8 @@ const initialState = fromJS({
   article: {
     error: false,
     fetching: true,
+    deleting: false,
+    deleted: false,
     data: {},
   },
   comments: {
@@ -29,6 +34,20 @@ const initialState = fromJS({
 
 function articleReducer(state = initialState, action) {
   switch (action.type) {
+    case DELETING_ARTICLE:
+      return state
+        .set('error', false)
+        .setIn(['article', 'deleting'], true);
+    case DELETE_ARTICLE_COMPLETED:
+      return state
+        .setIn(['article', 'deleting'], false)
+        .setIn(['article', 'deleted'], true);
+    case DELETE_ARTICLE_ERROR:
+      return state
+        .set('error', true)
+        .setIn(['article', 'deleting'], false)
+        .setIn(['article', 'deleted'], false);
+
     case ARTICLE_LOADED:
       return state
         .setIn(['article', 'fetching'], false)

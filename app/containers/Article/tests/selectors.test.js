@@ -1,12 +1,15 @@
 import { fromJS } from 'immutable';
 import {
   selectArticleDomain,
+  makeSelectError,
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
+  makeSelectArticleDeleting,
+  makeSelectArticleDeleted,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -116,5 +119,51 @@ describe('makeSelectCommentsFetching', () => {
       article: articleState,
     });
     expect(fetchingSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectArticleDeleting', () => {
+  const deletingSelector = makeSelectArticleDeleting();
+  it('should select the expected deleting state from article state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      article: {
+        deleting: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(deletingSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectArticleDeleted', () => {
+  const deletedSelector = makeSelectArticleDeleted();
+  it('should select the expected deleted state from article state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      article: {
+        deleted: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(deletedSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectError', () => {
+  const errorSelector = makeSelectError();
+  it('should select the expected error state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      error: fixture,
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(errorSelector(mockedState)).toEqual(fixture);
   });
 });

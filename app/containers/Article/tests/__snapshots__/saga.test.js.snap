@@ -1,5 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`deleteArticle should dispatch the deleteArticleError action if api requests failed 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Article/DELETING_ARTICLE",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`deleteArticle should dispatch the deleteArticleError action if api requests failed 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "sample-slug",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`deleteArticle should dispatch the deleteArticleError action if api requests failed 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Article/DELETE_ARTICLE_COMPLETED",
+    },
+    "channel": null,
+  },
+}
+`;
+
 exports[`getArticle should dispatch the articleLoadingError action if api requests failed 1`] = `
 Object {
   "@@redux-saga/IO": true,
