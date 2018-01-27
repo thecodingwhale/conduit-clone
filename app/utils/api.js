@@ -80,7 +80,18 @@ const Article = {
   },
 };
 
+const Comments = {
+  add: (slug, comment) => {
+    return reqX.post(`/articles/${slug}/comments`, {
+      comment: {
+        body: comment,
+      },
+    });
+  },
+};
+
 export default {
   Auth,
   Article,
+  Comments,
 };

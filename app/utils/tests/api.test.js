@@ -144,4 +144,23 @@ describe('api', () => {
       });
     });
   });
+
+  describe('Comments', () => {
+    it('should match the post request for posting a comment', () => {
+      const slug = 'sample-slug';
+      const url = `${API_DOMAIN}/articles/${slug}/comments`;
+      const comment = 'sample-comment';
+      fetchMock.post(url, {
+        status: 200,
+      });
+      api.Comments.add(slug, comment);
+      expect(fetchMock.called()).toEqual(true);
+      expect(fetchMock.lastUrl()).toEqual(url);
+      expect(fetchMock.lastOptions()).toEqual({
+        method: 'POST',
+        body: JSON.stringify({ comment: { body: comment } }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+  });
 });
