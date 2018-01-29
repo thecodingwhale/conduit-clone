@@ -40,6 +40,7 @@ export default class Input extends React.PureComponent {
     );
 
     if (type === 'lists') {
+      /* istanbul ignore next */
       const tags = !isEmpty(input.value) ? input.value || input.value.toJS() : [];
       defaultComponent = (
         <TaggedInput

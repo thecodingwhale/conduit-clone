@@ -16,8 +16,8 @@ export const userData = fromJS({
       data: {
         email: 'email@web.com',
         password: 'password',
-        username: 'username',
-        image: 'image.jpg',
+        username: 'trinhnguyen',
+        image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
         bio: 'sample bio',
         id: 1,
       },
@@ -61,8 +61,8 @@ describe('auth', () => {
       setLocalStorage(userData);
       expect(getCurrentUser()).toEqual({
         email: 'email@web.com',
-        username: 'username',
-        image: 'image.jpg',
+        username: 'trinhnguyen',
+        image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
         bio: 'sample bio',
         id: 1,
       });

@@ -13,6 +13,9 @@ import {
   DELETING_ARTICLE,
   DELETE_ARTICLE_COMPLETED,
   DELETE_ARTICLE_ERROR,
+  POSTING_COMMENT,
+  POST_COMMENT_COMPLETED,
+  POST_COMMENT_ERROR,
 } from './constants';
 
 const initialState = fromJS({
@@ -28,6 +31,9 @@ const initialState = fromJS({
   comments: {
     error: false,
     fetching: true,
+    posting: false,
+    postingError: false,
+    postingCompleted: false,
     data: [],
   },
 });
@@ -64,6 +70,20 @@ function articleReducer(state = initialState, action) {
       return state
         .setIn(['comments', 'error'], true)
         .setIn(['comments', 'fetching'], false);
+    case POSTING_COMMENT:
+      return state
+        .setIn(['comments', 'posting'], true)
+        .setIn(['comments', 'postingCompleted'], false)
+        .setIn(['comments', 'postingError'], false);
+    case POST_COMMENT_COMPLETED:
+      return state
+        .updateIn(['comments', 'data'], (data) => data.unshift(action.comment))
+        .setIn(['comments', 'posting'], false)
+        .setIn(['comments', 'postingCompleted'], true);
+    case POST_COMMENT_ERROR:
+      return state
+        .setIn(['comments', 'posting'], false)
+        .setIn(['comments', 'postingError'], true);
     default:
       return state;
   }

@@ -9,6 +9,9 @@ import {
   deletingArticle,
   deleteArticleCompleted,
   deleteArticleError,
+  postingComment,
+  postCommentCompleted,
+  postCommentError,
 } from '../actions';
 
 describe('articleReducer', () => {
@@ -27,6 +30,9 @@ describe('articleReducer', () => {
       comments: {
         error: false,
         fetching: true,
+        posting: false,
+        postingError: false,
+        postingCompleted: false,
         data: [],
       },
     });
@@ -93,11 +99,38 @@ describe('articleReducer', () => {
       .setIn(['article', 'deleted'], true);
     expect(articleReducer(state, deleteArticleCompleted())).toEqual(expectedResult);
   });
+
   it('should handle the deleteArticleError correctly', () => {
     const expectedResult = state
       .set('error', true)
       .setIn(['article', 'deleting'], false)
       .setIn(['article', 'deleted'], false);
     expect(articleReducer(state, deleteArticleError())).toEqual(expectedResult);
+  });
+
+  it('should handle the postingComment correctly', () => {
+    const expectedResult = state
+      .setIn(['comments', 'posting'], true)
+      .setIn(['comments', 'postingCompleted'], false)
+      .setIn(['comments', 'postingError'], false);
+    expect(articleReducer(state, postingComment())).toEqual(expectedResult);
+  });
+
+  it('should handle the postCommentError correctly', () => {
+    const expectedResult = state
+      .setIn(['comments', 'posting'], false)
+      .setIn(['comments', 'postingError'], true);
+    expect(articleReducer(state, postCommentError())).toEqual(expectedResult);
+  });
+
+  it('should handle the postCommentCompleted correctly', () => {
+    const comment = {
+      foo: 'bar',
+    };
+    const expectedResult = state
+      .updateIn(['comments', 'data'], (data) => data.unshift(comment))
+      .setIn(['comments', 'posting'], false)
+      .setIn(['comments', 'postingCompleted'], true);
+    expect(articleReducer(state, postCommentCompleted({ comment }))).toEqual(expectedResult);
   });
 });

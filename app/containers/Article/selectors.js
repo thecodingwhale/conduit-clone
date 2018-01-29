@@ -54,6 +54,21 @@ const makeSelectCommentsFetching = () => createSelector(
   (substate) => substate.getIn(['comments', 'fetching'])
 );
 
+const makeSelectCommentsPosting = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'posting'])
+);
+
+const makeSelectCommentsPostingCompleted = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'postingCompleted'])
+);
+
+const makeSelectCommentsPostingError = () => createSelector(
+  selectArticleDomain,
+  (substate) => substate.getIn(['comments', 'postingError'])
+);
+
 export {
   selectArticleDomain,
 
@@ -68,4 +83,7 @@ export {
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
+  makeSelectCommentsPosting,
+  makeSelectCommentsPostingError,
+  makeSelectCommentsPostingCompleted,
 };

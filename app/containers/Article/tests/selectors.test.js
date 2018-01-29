@@ -10,6 +10,9 @@ import {
   makeSelectCommentsFetching,
   makeSelectArticleDeleting,
   makeSelectArticleDeleted,
+  makeSelectCommentsPosting,
+  makeSelectCommentsPostingCompleted,
+  makeSelectCommentsPostingError,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -165,5 +168,53 @@ describe('makeSelectError', () => {
       article: articleState,
     });
     expect(errorSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsPosting', () => {
+  const commentsPostingSelector = makeSelectCommentsPosting();
+  it('should select the expected error state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      comments: {
+        posting: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(commentsPostingSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsPostingCompleted', () => {
+  const commentsPostingCompletedSelector = makeSelectCommentsPostingCompleted();
+  it('should select the expected error state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      comments: {
+        postingCompleted: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(commentsPostingCompletedSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsPostingError', () => {
+  const commentsPostingErrorSelector = makeSelectCommentsPostingError();
+  it('should select the expected error state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      comments: {
+        postingError: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(commentsPostingErrorSelector(mockedState)).toEqual(fixture);
   });
 });
