@@ -8,15 +8,17 @@ import {
   FETCH_ARTICLE,
   GET_ARTICLE_SLUG,
   DELETE_ARTICLE,
+  POST_COMMENT,
 } from 'containers/Article/constants';
 
 import {
   articleLoadingError,
   commentsLoadingError,
   deleteArticleError,
+  postCommentError,
 } from 'containers/Article/actions';
 
-import articleData, { getArticle, getComments, deleteArticle } from '../saga';
+import articleData, { getArticle, getComments, deleteArticle, postComment } from '../saga';
 
 const payload = {
   article: {
@@ -27,6 +29,7 @@ const payload = {
   }],
 };
 const slug = 'sample-slug';
+const comment = 'sample-comment';
 
 describe('getArticle', () => {
   let getArticleGenerator;
@@ -97,6 +100,29 @@ describe('deleteArticle', () => {
   });
 });
 
+describe('postComment', () => {
+  let postCommentGenerator;
+
+  beforeEach(() => {
+    postCommentGenerator = postComment({ slug, comment });
+
+    let putDescriptor = postCommentGenerator.next().value;
+    expect(putDescriptor).toMatchSnapshot();
+
+    const callDescriptor = postCommentGenerator.next().value;
+    expect(callDescriptor).toMatchSnapshot();
+
+    putDescriptor = postCommentGenerator.next({ comment }).value;
+    expect(putDescriptor).toMatchSnapshot();
+  });
+
+  it('should dispatch the postCommentError action if api requests failed', () => {
+    const err = 'Error';
+    const putDescriptor = postCommentGenerator.throw(err).value;
+    expect(putDescriptor).toEqual(put(postCommentError(err)));
+  });
+});
+
 describe('articlesDataSaga Saga', () => {
   const articleDataSaga = articleData();
 
@@ -110,8 +136,13 @@ describe('articlesDataSaga Saga', () => {
     expect(takeLatestDescriptor).toEqual(takeLatest(GET_ARTICLE_SLUG, getComments));
   });
 
-  it('should start task to watch for GET_ARTICLE_SLUG action with getComments', () => {
+  it('should start task to watch for DELETE_ARTICLE action with getComments', () => {
     const takeLatestDescriptor = articleDataSaga.next().value;
     expect(takeLatestDescriptor).toEqual(takeLatest(DELETE_ARTICLE, deleteArticle));
+  });
+
+  it('should start task to watch for POST_COMMENT action with getComments', () => {
+    const takeLatestDescriptor = articleDataSaga.next().value;
+    expect(takeLatestDescriptor).toEqual(takeLatest(POST_COMMENT, postComment));
   });
 });

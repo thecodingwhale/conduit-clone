@@ -15,3 +15,7 @@ export const DELETING_ARTICLE = 'app/Article/DELETING_ARTICLE';
 export const DELETE_ARTICLE = 'app/Article/DELETE_ARTICLE';
 export const DELETE_ARTICLE_COMPLETED = 'app/Article/DELETE_ARTICLE_COMPLETED';
 export const DELETE_ARTICLE_ERROR = 'app/Article/DELETE_ARTICLE_ERROR';
+export const POST_COMMENT = 'app/Article/POST_COMMENT';
+export const POSTING_COMMENT = 'app/Article/POSTING_COMMENT';
+export const POST_COMMENT_COMPLETED = 'app/Article/POST_COMMENT_COMPLETED';
+export const POST_COMMENT_ERROR = 'app/Article/POST_COMMENT_ERROR';

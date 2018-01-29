@@ -18,12 +18,14 @@ import { Container, Alert, Button } from 'reactstrap';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
+import CommentForm from 'components/CommentForm';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { Comments } from './Comments';
 import {
   fetchArticle,
   deleteArticle,
+  postComment,
 } from './actions';
 import {
   makeSelectError,
@@ -33,6 +35,9 @@ import {
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
+  makeSelectCommentsPosting,
+  makeSelectCommentsPostingError,
+  makeSelectCommentsPostingCompleted,
   makeSelectArticleDeleting,
   makeSelectArticleDeleted,
 } from './selectors';
@@ -47,6 +52,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 
     this.onEditArticle = this.onEditArticle.bind(this);
     this.onDeleteArticle = this.onDeleteArticle.bind(this);
+    this.onCommentFormSubmit = this.onCommentFormSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -65,6 +71,12 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 
   onDeleteArticle() {
     this.props.deleteArticle(this.props.article.data.slug);
+  }
+
+  onCommentFormSubmit(comment) {
+    /* istanbul ignore next */
+    const getComment = comment.comment || comment.get('comment');
+    this.props.postComment(this.props.article.data.slug, getComment);
   }
 
   renderArticleButtonActions() {
@@ -94,6 +106,16 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         Something went wrong.
       </Alert>
     ) : null;
+    const renderAlertPostingError = this.props.comments.postingError ? (
+      <Alert color="danger">
+        Failed posting your comment.
+      </Alert>
+    ) : null;
+    const renderAlertPostingCompleted = this.props.comments.postingCompleted ? (
+      <Alert color="success">
+        Success posting your comment.
+      </Alert>
+    ) : null;
     return (
       <div>
         {renderAlertError}
@@ -110,6 +132,12 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         <div dangerouslySetInnerHTML={{ __html: body }} />
         <hr />
         <Comments error={error} fetching={fetching} comments={data} />
+        {renderAlertPostingCompleted}
+        {renderAlertPostingError}
+        <CommentForm
+          onSubmit={this.onCommentFormSubmit}
+          posting={this.props.comments.posting}
+        />
       </div>
     );
   }
@@ -159,10 +187,14 @@ Article.propTypes = {
   onFetchArticle: PropTypes.func.isRequired,
   editArticle: PropTypes.func,
   deleteArticle: PropTypes.func,
+  postComment: PropTypes.func,
   error: PropTypes.bool,
   comments: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
+    posting: PropTypes.bool,
+    postingError: PropTypes.bool,
+    postingCompleted: PropTypes.bool,
     data: PropTypes.arrayOf(CommentPropTypes),
   }),
   article: PropTypes.shape({
@@ -186,6 +218,9 @@ const mapStateToProps = createStructuredSelector({
   comments: createStructuredSelector({
     error: makeSelectCommentsError(),
     fetching: makeSelectCommentsFetching(),
+    posting: makeSelectCommentsPosting(),
+    postingError: makeSelectCommentsPostingError(),
+    postingCompleted: makeSelectCommentsPostingCompleted(),
     data: makeSelectCommentsData(),
   }),
 });
@@ -195,6 +230,7 @@ export function mapDispatchToProps(dispatch) {
     onFetchArticle: (slug) => dispatch(fetchArticle(slug)),
     editArticle: (slug, article) => dispatch(push(`/editor/${slug}`, article)),
     deleteArticle: (slug) => dispatch(deleteArticle(slug)),
+    postComment: (slug, comment) => dispatch(postComment(slug, comment)),
   };
 }
 

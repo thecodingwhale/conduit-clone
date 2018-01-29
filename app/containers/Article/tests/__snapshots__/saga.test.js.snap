@@ -101,3 +101,42 @@ Object {
   },
 }
 `;
+
+exports[`postComment should dispatch the postCommentError action if api requests failed 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Article/POSTING_COMMENT",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`postComment should dispatch the postCommentError action if api requests failed 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "sample-slug",
+      "sample-comment",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`postComment should dispatch the postCommentError action if api requests failed 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "comment": "sample-comment",
+      "type": "app/Article/POST_COMMENT_COMPLETED",
+    },
+    "channel": null,
+  },
+}
+`;

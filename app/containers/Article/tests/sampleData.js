@@ -11,6 +11,7 @@ export const fixture = {
   body: '<h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</h1> ↵↵<h2>Praesentium blanditiis architecto aperiam porro, voluptates fugiat ullam</h2> ↵↵<h3>Odio rerum earum libero deserunt voluptas, repellat iste mollitia, aliquam</h3>',
   description: 'sample description',
   createdAt: '2017-10-18T11:27:14.109Z',
+  slug: 'sample-slug',
   tagList: [
     'foo',
     'bar',

@@ -7,6 +7,9 @@ import {
   articleLoadingError,
   commentsLoadingError,
   deleteArticleError,
+  postingComment,
+  postCommentCompleted,
+  postCommentError,
 } from '../actions';
 
 import {
@@ -18,6 +21,9 @@ import {
   LOAD_ARTICLE_ERROR,
   LOAD_COMMENTS_ERROR,
   DELETE_ARTICLE_ERROR,
+  POSTING_COMMENT,
+  POST_COMMENT_COMPLETED,
+  POST_COMMENT_ERROR,
 } from '../constants';
 
 const slug = 'sample-slug';
@@ -102,6 +108,37 @@ describe('Article actions', () => {
         type: DELETE_ARTICLE_ERROR,
       };
       expect(deleteArticleError()).toEqual(expected);
+    });
+  });
+
+  describe('Posting Coment', () => {
+    it('has a type of POSTING_COMMENT', () => {
+      const expected = {
+        type: POSTING_COMMENT,
+      };
+      expect(postingComment()).toEqual(expected);
+    });
+  });
+
+  describe('Post Coment Completed', () => {
+    it('has a type of POST_COMMENT_COMPLETED', () => {
+      const comment = 'sample-comment';
+      const expected = {
+        type: POST_COMMENT_COMPLETED,
+        comment,
+      };
+      expect(postCommentCompleted({ comment })).toEqual(expected);
+    });
+  });
+
+  describe('Post Coment Error', () => {
+    it('has a type of POST_COMMENT_ERROR', () => {
+      const err = 'error';
+      const expected = {
+        type: POST_COMMENT_ERROR,
+        err,
+      };
+      expect(postCommentError(err)).toEqual(expected);
     });
   });
 });

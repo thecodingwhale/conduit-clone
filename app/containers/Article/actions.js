@@ -16,6 +16,10 @@ import {
   DELETE_ARTICLE,
   DELETE_ARTICLE_COMPLETED,
   DELETE_ARTICLE_ERROR,
+  POST_COMMENT,
+  POSTING_COMMENT,
+  POST_COMMENT_COMPLETED,
+  POST_COMMENT_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -86,6 +90,34 @@ export function deleteArticleCompleted() {
 export function deleteArticleError(err) {
   return {
     type: DELETE_ARTICLE_ERROR,
+    err,
+  };
+}
+
+export function postComment(slug, comment) {
+  return {
+    type: POST_COMMENT,
+    slug,
+    comment,
+  };
+}
+
+export function postingComment() {
+  return {
+    type: POSTING_COMMENT,
+  };
+}
+
+export function postCommentCompleted({ comment }) {
+  return {
+    type: POST_COMMENT_COMPLETED,
+    comment,
+  };
+}
+
+export function postCommentError(err) {
+  return {
+    type: POST_COMMENT_ERROR,
     err,
   };
 }

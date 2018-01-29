@@ -3,6 +3,7 @@ import {
   FETCH_ARTICLE,
   GET_ARTICLE_SLUG,
   DELETE_ARTICLE,
+  POST_COMMENT,
 } from 'containers/Article/constants';
 import {
   getArticleSlug,
@@ -13,6 +14,9 @@ import {
   deletingArticle,
   deleteArticleCompleted,
   deleteArticleError,
+  postingComment,
+  postCommentCompleted,
+  postCommentError,
 } from 'containers/Article/actions';
 
 import request from 'utils/request';
@@ -56,8 +60,19 @@ export function* deleteArticle({ slug }) {
   }
 }
 
+export function* postComment({ slug, comment }) {
+  yield put(postingComment());
+  try {
+    const payload = yield call(api.Comments.add, slug, comment);
+    yield put(postCommentCompleted(payload));
+  } catch (err) {
+    yield put(postCommentError(err));
+  }
+}
+
 export default function* articleData() {
   yield takeLatest(FETCH_ARTICLE, getArticle);
   yield takeLatest(GET_ARTICLE_SLUG, getComments);
   yield takeLatest(DELETE_ARTICLE, deleteArticle);
+  yield takeLatest(POST_COMMENT, postComment);
 }
