@@ -10,6 +10,8 @@ let user = {
 
 describe('api', () => {
   describe('Auth', () => {
+    afterEach(() => fetchMock.restore());
+
     it('should match the post request for login', () => {
       const url = `${API_DOMAIN}/users/login`;
       fetchMock.post(url, {
@@ -60,6 +62,8 @@ describe('api', () => {
   });
 
   describe('Article', () => {
+    afterEach(() => fetchMock.restore());
+
     it('should match the get request for an article', () => {
       const slug = 'sample-slug';
       const article = {
@@ -76,7 +80,7 @@ describe('api', () => {
       api.Article.get(slug);
       expect(fetchMock.called()).toEqual(true);
       expect(fetchMock.lastUrl()).toEqual(url);
-      expect(fetchMock.routes[2].response.body).toEqual(article);
+      expect(fetchMock.routes[0].response.body).toEqual(article);
       expect(fetchMock.lastOptions()).toEqual({
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -132,7 +136,7 @@ describe('api', () => {
     it('should match the delete request and delete an article base on the slug', () => {
       const slug = 'sample-slug';
       const url = `${API_DOMAIN}/articles/${slug}`;
-      fetchMock.delete(url, {
+      fetchMock.deleteOnce(url, {
         status: 200,
       });
       api.Article.delete(slug);
@@ -146,6 +150,8 @@ describe('api', () => {
   });
 
   describe('Comments', () => {
+    afterEach(() => fetchMock.restore());
+
     it('should match the post request for posting a comment', () => {
       const slug = 'sample-slug';
       const url = `${API_DOMAIN}/articles/${slug}/comments`;
@@ -159,6 +165,22 @@ describe('api', () => {
       expect(fetchMock.lastOptions()).toEqual({
         method: 'POST',
         body: JSON.stringify({ comment: { body: comment } }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+
+    it('should match the delete request for deleting a comment', () => {
+      const slug = 'sample-slug';
+      const commentId = '0909';
+      const url = `${API_DOMAIN}/articles/${slug}/comments/${commentId}`;
+      fetchMock.delete(url, {
+        status: 200,
+      });
+      api.Comments.delete(slug, commentId);
+      expect(fetchMock.called()).toEqual(true);
+      expect(fetchMock.lastUrl()).toEqual(url);
+      expect(fetchMock.lastOptions()).toEqual({
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
     });
