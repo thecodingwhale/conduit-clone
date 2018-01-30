@@ -88,6 +88,9 @@ const Comments = {
       },
     });
   },
+  delete: (slug, commentId) => {
+    reqX.delete(`/articles/${slug}/comments/${commentId}`);
+  },
 };
 
 export default {

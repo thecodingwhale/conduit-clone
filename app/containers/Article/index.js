@@ -26,12 +26,14 @@ import {
   fetchArticle,
   deleteArticle,
   postComment,
+  deleteComment,
 } from './actions';
 import {
   makeSelectError,
   makeSelectArticleData,
   makeSelectArticleError,
   makeSelectArticleFetching,
+  makeSelectCommentsDeleting,
   makeSelectCommentsData,
   makeSelectCommentsError,
   makeSelectCommentsFetching,
@@ -44,7 +46,10 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import { ArticlePropTypes, CommentPropTypes } from '../../PropTypesValues';
-import { isEditableByAuthorUsername } from '../../auth';
+import {
+  isEditableByAuthorUsername,
+  getCurrentUser,
+} from '../../auth';
 
 export class Article extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -53,6 +58,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
     this.onEditArticle = this.onEditArticle.bind(this);
     this.onDeleteArticle = this.onDeleteArticle.bind(this);
     this.onCommentFormSubmit = this.onCommentFormSubmit.bind(this);
+    this.onDeleteComment = this.onDeleteComment.bind(this);
   }
 
   componentDidMount() {
@@ -79,6 +85,10 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
     this.props.postComment(this.props.article.data.slug, getComment);
   }
 
+  onDeleteComment(commentId) {
+    this.props.deleteComment(this.props.article.data.slug, commentId);
+  }
+
   renderArticleButtonActions() {
     if (isEditableByAuthorUsername(this.props.article.data.author.username)) {
       const setDeleteButtonText = this.props.article.deleting ? 'Deleting Article...' : 'Delete Article';
@@ -99,7 +109,7 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
 
   renderContent() {
     const { title, description, body, tagList, author, createdAt } = this.props.article.data;
-    const { fetching, error, data } = this.props.comments;
+    const { fetching, error, deleting, data } = this.props.comments;
     /* istanbul ignore next */
     const renderAlertError = this.props.error ? (
       <Alert color="danger">
@@ -131,7 +141,15 @@ export class Article extends React.PureComponent { // eslint-disable-line react/
         {this.renderArticleButtonActions()}
         <div dangerouslySetInnerHTML={{ __html: body }} />
         <hr />
-        <Comments error={error} fetching={fetching} comments={data} />
+        <Comments
+          error={error}
+          fetching={fetching}
+          deleting={deleting}
+          comments={data}
+          enableAuthorToDelete={getCurrentUser().username}
+          setDeleteCommentText="Delete"
+          deleteComment={this.onDeleteComment}
+        />
         {renderAlertPostingCompleted}
         {renderAlertPostingError}
         <CommentForm
@@ -188,10 +206,12 @@ Article.propTypes = {
   editArticle: PropTypes.func,
   deleteArticle: PropTypes.func,
   postComment: PropTypes.func,
+  deleteComment: PropTypes.func,
   error: PropTypes.bool,
   comments: PropTypes.shape({
     error: PropTypes.bool,
     fetching: PropTypes.bool,
+    deleting: PropTypes.bool,
     posting: PropTypes.bool,
     postingError: PropTypes.bool,
     postingCompleted: PropTypes.bool,
@@ -218,6 +238,7 @@ const mapStateToProps = createStructuredSelector({
   comments: createStructuredSelector({
     error: makeSelectCommentsError(),
     fetching: makeSelectCommentsFetching(),
+    deleting: makeSelectCommentsDeleting(),
     posting: makeSelectCommentsPosting(),
     postingError: makeSelectCommentsPostingError(),
     postingCompleted: makeSelectCommentsPostingCompleted(),
@@ -231,6 +252,7 @@ export function mapDispatchToProps(dispatch) {
     editArticle: (slug, article) => dispatch(push(`/editor/${slug}`, article)),
     deleteArticle: (slug) => dispatch(deleteArticle(slug)),
     postComment: (slug, comment) => dispatch(postComment(slug, comment)),
+    deleteComment: (slug, commentId) => dispatch(deleteComment(slug, commentId)),
   };
 }
 

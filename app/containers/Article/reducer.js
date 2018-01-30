@@ -16,6 +16,8 @@ import {
   POSTING_COMMENT,
   POST_COMMENT_COMPLETED,
   POST_COMMENT_ERROR,
+  DELETING_COMMENT,
+  DELETE_COMMENT_COMPLETED,
 } from './constants';
 
 const initialState = fromJS({
@@ -31,6 +33,7 @@ const initialState = fromJS({
   comments: {
     error: false,
     fetching: true,
+    deleting: false,
     posting: false,
     postingError: false,
     postingCompleted: false,
@@ -84,6 +87,13 @@ function articleReducer(state = initialState, action) {
       return state
         .setIn(['comments', 'posting'], false)
         .setIn(['comments', 'postingError'], true);
+    case DELETING_COMMENT:
+      return state
+        .setIn(['comments', 'deleting'], true);
+    case DELETE_COMMENT_COMPLETED:
+      return state
+        .setIn(['comments', 'deleting'], false)
+        .setIn(['comments', 'data'], fromJS(state.getIn(['comments', 'data']).toJS().filter((comment) => comment.id !== action.commentId)));
     default:
       return state;
   }

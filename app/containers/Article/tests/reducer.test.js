@@ -6,9 +6,11 @@ import {
   commentsLoaded,
   articleLoadingError,
   commentsLoadingError,
+  deletingComment,
   deletingArticle,
   deleteArticleCompleted,
   deleteArticleError,
+  deleteCommentCompleted,
   postingComment,
   postCommentCompleted,
   postCommentError,
@@ -30,6 +32,7 @@ describe('articleReducer', () => {
       comments: {
         error: false,
         fetching: true,
+        deleting: false,
         posting: false,
         postingError: false,
         postingCompleted: false,
@@ -132,5 +135,24 @@ describe('articleReducer', () => {
       .setIn(['comments', 'posting'], false)
       .setIn(['comments', 'postingCompleted'], true);
     expect(articleReducer(state, postCommentCompleted({ comment }))).toEqual(expectedResult);
+  });
+
+  it('should handle the deletingComment action correctly', () => {
+    const expectedResult = state
+      .setIn(['comments', 'deleting'], true);
+    expect(articleReducer(state, deletingComment())).toEqual(expectedResult);
+  });
+
+  it('should handle the deleteCommentCompleted action correctly', () => {
+    const comments = [{
+      id: 1,
+    }, {
+      id: 2,
+    }, {
+      id: 3,
+    }];
+    const newState = state.setIn(['comments', 'data'], fromJS(comments));
+    const expectedState = articleReducer(newState, deleteCommentCompleted(3));
+    expect(expectedState.getIn(['comments', 'data']).toJS().length).toEqual(2);
   });
 });

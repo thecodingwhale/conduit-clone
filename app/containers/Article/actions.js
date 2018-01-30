@@ -20,6 +20,10 @@ import {
   POSTING_COMMENT,
   POST_COMMENT_COMPLETED,
   POST_COMMENT_ERROR,
+  DELETE_COMMENT,
+  DELETING_COMMENT,
+  DELETE_COMMENT_COMPLETED,
+  DELETE_COMMENT_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -118,6 +122,34 @@ export function postCommentCompleted({ comment }) {
 export function postCommentError(err) {
   return {
     type: POST_COMMENT_ERROR,
+    err,
+  };
+}
+
+export function deleteComment(slug, commentId) {
+  return {
+    type: DELETE_COMMENT,
+    slug,
+    commentId,
+  };
+}
+
+export function deletingComment() {
+  return {
+    type: DELETING_COMMENT,
+  };
+}
+
+export function deleteCommentCompleted(commentId) {
+  return {
+    type: DELETE_COMMENT_COMPLETED,
+    commentId,
+  };
+}
+
+export function deleteCommentError(err) {
+  return {
+    type: DELETE_COMMENT_ERROR,
     err,
   };
 }

@@ -1,9 +1,8 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { Alert, Card, CardBody, CardFooter, CardText } from 'reactstrap';
 import Loader from 'components/Loader';
-import AuthorCard from 'components/AuthorCard';
-import { Comments, CardWrapper } from '../Comments';
+import { Comments, CardWrapper, AuthorCardStyled } from '../Comments';
 import { fixture } from './sampleData';
 
 describe('<Comments />', () => {
@@ -57,7 +56,7 @@ describe('<Comments />', () => {
                 <CardText>{comment.body}</CardText>
               </CardBody>
               <CardFooter>
-                <AuthorCard
+                <AuthorCardStyled
                   author={comment.author}
                   createdAt={new Date(comment.createdAt).toDateString()}
                 />
@@ -68,5 +67,42 @@ describe('<Comments />', () => {
       </div>
     );
     expect(component.contains(expectedComponent)).toEqual(true);
+  });
+
+  it('should match the expected number of delete buttons', () => {
+    const component = mount(
+      <Comments
+        fetching={false}
+        comments={fixture.comments}
+        enableAuthorToDelete={fixture.author.username}
+      />
+    );
+    const button = component.find('button[name="delete-comment"]');
+    expect(button.length).toEqual(2);
+
+    expect(button.at(0).text()).toEqual('Delete');
+    component.setProps({
+      deleting: true,
+    });
+    expect(button.at(0).text()).toEqual('Deleting...');
+  });
+
+  it('should call this.props.deleteComment when a delete button is pressed', () => {
+    const deleteCommentSpy = jest.fn();
+    const component = mount(
+      <Comments
+        fetching={false}
+        comments={fixture.comments}
+        enableAuthorToDelete={fixture.author.username}
+        deleteComment={deleteCommentSpy}
+      />
+    );
+    const index = 1;
+    const button = component.find('button[name="delete-comment"]');
+    expect(button.length).toEqual(2);
+
+    button.at(index).simulate('click');
+    expect(deleteCommentSpy).toHaveBeenCalled();
+    expect(deleteCommentSpy).toHaveBeenCalledWith(fixture.comments[index].id);
   });
 });

@@ -4,6 +4,7 @@ import {
   GET_ARTICLE_SLUG,
   DELETE_ARTICLE,
   POST_COMMENT,
+  DELETE_COMMENT,
 } from 'containers/Article/constants';
 import {
   getArticleSlug,
@@ -17,6 +18,9 @@ import {
   postingComment,
   postCommentCompleted,
   postCommentError,
+  deletingComment,
+  deleteCommentCompleted,
+  deleteCommentError,
 } from 'containers/Article/actions';
 
 import request from 'utils/request';
@@ -70,9 +74,20 @@ export function* postComment({ slug, comment }) {
   }
 }
 
+export function* deleteComment({ slug, commentId }) {
+  yield put(deletingComment());
+  try {
+    yield call(api.Comments.delete, slug, commentId);
+    yield put(deleteCommentCompleted(commentId));
+  } catch (err) {
+    yield put(deleteCommentError(err));
+  }
+}
+
 export default function* articleData() {
   yield takeLatest(FETCH_ARTICLE, getArticle);
   yield takeLatest(GET_ARTICLE_SLUG, getComments);
   yield takeLatest(DELETE_ARTICLE, deleteArticle);
   yield takeLatest(POST_COMMENT, postComment);
+  yield takeLatest(DELETE_COMMENT, deleteComment);
 }

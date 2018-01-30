@@ -37,6 +37,45 @@ Object {
 }
 `;
 
+exports[`deleteComment should dispatch the deleteCommentError action if api requests failed 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "type": "app/Article/DELETING_COMMENT",
+    },
+    "channel": null,
+  },
+}
+`;
+
+exports[`deleteComment should dispatch the deleteCommentError action if api requests failed 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "sample-slug",
+      "12312",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`deleteComment should dispatch the deleteCommentError action if api requests failed 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": Object {
+      "commentId": "12312",
+      "type": "app/Article/DELETE_COMMENT_COMPLETED",
+    },
+    "channel": null,
+  },
+}
+`;
+
 exports[`getArticle should dispatch the articleLoadingError action if api requests failed 1`] = `
 Object {
   "@@redux-saga/IO": true,

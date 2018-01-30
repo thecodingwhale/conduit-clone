@@ -10,6 +10,7 @@ import {
   postingComment,
   postCommentCompleted,
   postCommentError,
+  deleteComment,
 } from '../actions';
 
 import {
@@ -24,6 +25,7 @@ import {
   POSTING_COMMENT,
   POST_COMMENT_COMPLETED,
   POST_COMMENT_ERROR,
+  DELETE_COMMENT,
 } from '../constants';
 
 const slug = 'sample-slug';
@@ -139,6 +141,18 @@ describe('Article actions', () => {
         err,
       };
       expect(postCommentError(err)).toEqual(expected);
+    });
+  });
+
+  describe('Delete Comment', () => {
+    it('has a type of DELETE_COMMENT', () => {
+      const commentId = '2323';
+      const expected = {
+        type: DELETE_COMMENT,
+        slug,
+        commentId,
+      };
+      expect(deleteComment(slug, commentId)).toEqual(expected);
     });
   });
 });
