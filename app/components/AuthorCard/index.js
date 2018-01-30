@@ -9,9 +9,10 @@ import Avatar from '../Avatar';
 import { AuthorPropTypes } from '../../PropTypesValues';
 
 function AuthorCard(props) {
-  const { createdAt, author } = props;
+  const { createdAt, author, className } = props;
+  const setClassName = className ? ` ${className}` : '';
   return (
-    <div>
+    <div className={`author-card${setClassName}`}>
       <CardLink href={`/author/@${author.username}`} style={{ float: 'left' }}>
         <Avatar image={author.image} />
       </CardLink>
@@ -41,6 +42,7 @@ function AuthorCard(props) {
 
 AuthorCard.propTypes = {
   createdAt: PropTypes.string.isRequired,
+  className: PropTypes.string,
   author: AuthorPropTypes,
 };
 
