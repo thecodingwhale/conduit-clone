@@ -13,6 +13,7 @@ import {
   makeSelectCommentsPosting,
   makeSelectCommentsPostingCompleted,
   makeSelectCommentsPostingError,
+  makeSelectCommentsDeleting,
 } from '../selectors';
 
 describe('selectArticleDomain', () => {
@@ -216,5 +217,21 @@ describe('makeSelectCommentsPostingError', () => {
       article: articleState,
     });
     expect(commentsPostingErrorSelector(mockedState)).toEqual(fixture);
+  });
+});
+
+describe('makeSelectCommentsDeleting', () => {
+  const commentsDeletingSelector = makeSelectCommentsDeleting();
+  it('should select the expected error state', () => {
+    const fixture = true;
+    const articleState = fromJS({
+      comments: {
+        deleting: fixture,
+      },
+    });
+    const mockedState = fromJS({
+      article: articleState,
+    });
+    expect(commentsDeletingSelector(mockedState)).toEqual(fixture);
   });
 });

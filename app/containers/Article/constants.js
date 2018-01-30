@@ -19,3 +19,7 @@ export const POST_COMMENT = 'app/Article/POST_COMMENT';
 export const POSTING_COMMENT = 'app/Article/POSTING_COMMENT';
 export const POST_COMMENT_COMPLETED = 'app/Article/POST_COMMENT_COMPLETED';
 export const POST_COMMENT_ERROR = 'app/Article/POST_COMMENT_ERROR';
+export const DELETE_COMMENT = 'app/Article/DELETE_COMMENT';
+export const DELETING_COMMENT = 'app/Article/DELETING_COMMENT';
+export const DELETE_COMMENT_COMPLETED = 'app/Article/DELETE_COMMENT_COMPLETED';
+export const DELETE_COMMENT_ERROR = 'app/Article/DELETE_COMMENT_ERROR';

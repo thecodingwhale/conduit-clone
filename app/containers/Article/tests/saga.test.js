@@ -9,6 +9,7 @@ import {
   GET_ARTICLE_SLUG,
   DELETE_ARTICLE,
   POST_COMMENT,
+  DELETE_COMMENT,
 } from 'containers/Article/constants';
 
 import {
@@ -16,9 +17,16 @@ import {
   commentsLoadingError,
   deleteArticleError,
   postCommentError,
+  deleteCommentError,
 } from 'containers/Article/actions';
 
-import articleData, { getArticle, getComments, deleteArticle, postComment } from '../saga';
+import articleData, {
+  getArticle,
+  getComments,
+  deleteArticle,
+  postComment,
+  deleteComment,
+} from '../saga';
 
 const payload = {
   article: {
@@ -30,6 +38,7 @@ const payload = {
 };
 const slug = 'sample-slug';
 const comment = 'sample-comment';
+const commentId = '12312';
 
 describe('getArticle', () => {
   let getArticleGenerator;
@@ -123,6 +132,29 @@ describe('postComment', () => {
   });
 });
 
+describe('deleteComment', () => {
+  let deleteCommentGenerator;
+
+  beforeEach(() => {
+    deleteCommentGenerator = deleteComment({ slug, commentId });
+
+    let putDescriptor = deleteCommentGenerator.next().value;
+    expect(putDescriptor).toMatchSnapshot();
+
+    const callDescriptor = deleteCommentGenerator.next().value;
+    expect(callDescriptor).toMatchSnapshot();
+
+    putDescriptor = deleteCommentGenerator.next(commentId).value;
+    expect(putDescriptor).toMatchSnapshot();
+  });
+
+  it('should dispatch the deleteCommentError action if api requests failed', () => {
+    const err = 'Error';
+    const putDescriptor = deleteCommentGenerator.throw(err).value;
+    expect(putDescriptor).toEqual(put(deleteCommentError(err)));
+  });
+});
+
 describe('articlesDataSaga Saga', () => {
   const articleDataSaga = articleData();
 
@@ -136,13 +168,18 @@ describe('articlesDataSaga Saga', () => {
     expect(takeLatestDescriptor).toEqual(takeLatest(GET_ARTICLE_SLUG, getComments));
   });
 
-  it('should start task to watch for DELETE_ARTICLE action with getComments', () => {
+  it('should start task to watch for DELETE_ARTICLE action with deleteArticle', () => {
     const takeLatestDescriptor = articleDataSaga.next().value;
     expect(takeLatestDescriptor).toEqual(takeLatest(DELETE_ARTICLE, deleteArticle));
   });
 
-  it('should start task to watch for POST_COMMENT action with getComments', () => {
+  it('should start task to watch for POST_COMMENT action with postComment', () => {
     const takeLatestDescriptor = articleDataSaga.next().value;
     expect(takeLatestDescriptor).toEqual(takeLatest(POST_COMMENT, postComment));
+  });
+
+  it('should start task to watch for DELETE_COMMENT action with deleteComment', () => {
+    const takeLatestDescriptor = articleDataSaga.next().value;
+    expect(takeLatestDescriptor).toEqual(takeLatest(DELETE_COMMENT, deleteComment));
   });
 });

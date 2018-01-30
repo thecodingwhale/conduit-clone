@@ -14,7 +14,7 @@ import CommentForm from 'components/CommentForm';
 
 import { Article, mapDispatchToProps } from '../index';
 import { Comments } from '../Comments';
-import { fetchArticle, deleteArticle, postComment } from '../actions';
+import { fetchArticle, deleteArticle, postComment, deleteComment } from '../actions';
 import { fixture } from './sampleData';
 import { setLocalStorage } from '../../../auth';
 import { userData } from '../../../utils/tests/auth.test';
@@ -445,6 +445,41 @@ describe('<Article />', () => {
 
       expect(component.contains(expectedComponent)).toEqual(true);
     });
+
+    it('should call this.props.deleteComment', () => {
+      const deleteCommentSpy = jest.fn();
+      component = mount(
+        <Provider store={store}>
+          <Article
+            onFetchArticle={() => {}}
+            deleteComment={deleteCommentSpy}
+            article={{
+              deleting: true,
+              fetching: false,
+              error: false,
+              data: fixture,
+            }}
+            comments={{
+              fetching: false,
+              error: false,
+              data: fixture.comments,
+            }}
+            match={{
+              params: {
+                slug: 'foo',
+              },
+            }}
+          />
+        </Provider>
+      );
+      const index = 0;
+      const deleteButtons = component.find('button[name="delete-comment"]');
+      expect(deleteButtons.length).toEqual(2);
+
+      deleteButtons.at(index).simulate('click');
+      expect(deleteCommentSpy).toHaveBeenCalled();
+      expect(deleteCommentSpy).toHaveBeenCalledWith(fixture.slug, index + 1);
+    });
   });
 });
 
@@ -514,6 +549,23 @@ describe('mapDispatchToProps', () => {
       const comment = 'sample-comment';
       result.postComment(slug, comment);
       expect(dispatch).toHaveBeenCalledWith(postComment(slug, comment));
+    });
+  });
+
+  describe('deleteComment', () => {
+    it('should be injected', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      expect(result.deleteComment).toBeDefined();
+    });
+
+    it('should dispatch deleteComment when called', () => {
+      const dispatch = jest.fn();
+      const result = mapDispatchToProps(dispatch);
+      const slug = 'sample-slug';
+      const commentId = '1231';
+      result.deleteComment(slug, commentId);
+      expect(dispatch).toHaveBeenCalledWith(deleteComment(slug, commentId));
     });
   });
 });
