@@ -13,11 +13,12 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
 import ReactPaginate from 'react-paginate';
-import { Alert, Card, CardTitle, CardText, CardLink, Button, Row, Col } from 'reactstrap';
+import { Alert, Card, CardTitle, CardText, CardLink, Row, Col } from 'reactstrap';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { BASE_LIMIT, getUrlParams, checkUrlParams } from 'utils/url';
+import FavoriteButton from 'containers/FavoriteButton';
 import Loader from 'components/Loader';
 import AuthorCard from 'components/AuthorCard';
 import ArticleTags from 'components/ArticleTags';
@@ -109,15 +110,11 @@ export class Articles extends React.PureComponent { // eslint-disable-line react
             </Col>
             <Col xs="6">
               <div className="text-right">
-                <Button
-                  active={favorited}
-                  outline
-                  color="primary"
-                  size="sm"
-                >
-                  <i className="ion-heart"></i>
-                  {favoritesCount}
-                </Button>
+                <FavoriteButton
+                  slug={slug}
+                  count={favoritesCount}
+                  favorited={favorited}
+                />
               </div>
             </Col>
           </Row>
