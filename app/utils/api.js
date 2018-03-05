@@ -66,6 +66,15 @@ const Auth = {
 };
 
 const Article = {
+  getFavoritedArticles: (limit = 10, offset = 0, username) => {
+    return reqX.get(`/articles?favorited=${username}&limit=${limit}&offset=${offset}`);
+  },
+  getAuthoredArticles: (limit = 10, offset = 0, username) => {
+    return reqX.get(`/articles?author=${username}&limit=${limit}&offset=${offset}`);
+  },
+  getArticles: (limit = 10, offset = 0) => {
+    return reqX.get(`/articles?limit=${limit}&offset=${offset}`);
+  },
   get: (slug) => {
     return reqX.get(`/articles/${slug}`);
   },

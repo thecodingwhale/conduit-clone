@@ -9,27 +9,25 @@ import {
   articlesLoadingError,
 } from 'containers/Articles/actions';
 
-import request from 'utils/request';
-import { getOffsetLimit, getKeyNameParam } from 'utils/url';
+import api from 'utils/api';
+import { getOffsetLimit } from 'utils/url';
 import { removeFirstCharacter } from 'utils/string';
 
-const API_DOMAIN = 'https://conduit.productionready.io/api';
-
 export function* getArticles(params) {
-  const options = getOffsetLimit(params.page);
-  const tag = getKeyNameParam(params, 'tag');
-  const filters = `limit=${options.limit}&offset=${options.offset}`;
-  let apiEndpoint = `${API_DOMAIN}/articles?${tag}${filters}`;
-  if (params.username) {
-    const username = removeFirstCharacter('@', params.username);
-    if (params.favorited) {
-      apiEndpoint = `${API_DOMAIN}/articles?favorited=${username}&${filters}`;
-    } else {
-      apiEndpoint = `${API_DOMAIN}/articles?author=${username}&${filters}`;
-    }
-  }
+  let repos;
+  const { limit, offset } = getOffsetLimit(params.page);
+  const { username, favorited } = params;
   try {
-    const repos = yield call(request, apiEndpoint);
+    if (username) {
+      const setUsername = removeFirstCharacter('@', username);
+      if (favorited) {
+        repos = yield call(api.Article.getFavoritedArticles, limit, offset, setUsername);
+      } else {
+        repos = yield call(api.Article.getAuthoredArticles, limit, offset, setUsername);
+      }
+    } else {
+      repos = yield call(api.Article.getArticles, limit, offset);
+    }
     yield put(articlesLoaded(repos));
   } catch (err) {
     yield put(articlesLoadingError());
